@@ -1,4 +1,4 @@
-package com.hammer.icebreaker.ui.theme
+package com.hammer.talkbbokki.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

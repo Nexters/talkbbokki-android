@@ -1,4 +1,4 @@
-package com.hammer.icebreaker
+package com.hammer.talkbbokki
 
 import org.junit.Test
 

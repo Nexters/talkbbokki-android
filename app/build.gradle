@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.hammer.icebreaker'
+    namespace 'com.hammer.talkbbokki'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.hammer.icebreaker"
+        applicationId "com.hammer.talkbbokki"
         minSdk 26
         targetSdk 33
         versionCode 1
