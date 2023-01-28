@@ -49,7 +49,7 @@ jobs:
     runs-on: macos-latest # or any other machine
     steps:
       - name: Unit Test
-      run: ./gradlew testDebugUnitTest
+        run: ./gradlew testDebugUnitTest
 
         - name: Upload Test Reports Folder
           uses: actions/upload-artifact@v2
