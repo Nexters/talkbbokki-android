@@ -12,6 +12,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "icebreaker"
+rootProject.name = "talkbbokki-android"
 include ':app'
 include ':macrobenchmark'
