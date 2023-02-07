@@ -37,7 +37,6 @@ fun TopicListScreen(modifier: Modifier = Modifier) {
     val itemWidth = with(LocalDensity.current) { 120.dp.toPx() }
     val currentIndex = remember { derivedStateOf { listState.firstVisibleItemIndex } }
     val offset = remember { derivedStateOf { listState.firstVisibleItemScrollOffset } }
-    val colors = arrayListOf<Color>(Color.Red, Color.Green, Color.Blue, Color.Cyan, Color.Yellow)
 
     val snappingLayout = remember(listState) { SnapLayoutInfoProvider(listState) }
     val snapFlingBehavior = rememberSnapFlingBehavior(snappingLayout)
@@ -56,7 +55,7 @@ fun TopicListScreen(modifier: Modifier = Modifier) {
             contentPadding = PaddingValues(start = ((maxWidth-120.dp)/2), end = ((maxWidth-120.dp)/2))
         ) {
             itemsIndexed(cardList) { definiteIndex, item ->
-                CardItems(definiteIndex, currentOffset, colors[definiteIndex % colors.size])
+                CardItems(definiteIndex, currentOffset)
             }
         }
 
@@ -78,7 +77,7 @@ fun TopicListScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CardItems(definiteIndex:Int, currentOffset: Float, backgroundColor: Color) {
+fun CardItems(definiteIndex:Int, currentOffset: Float) {
     val pageOffsetWithSign = definiteIndex - currentOffset
     val pageOffset = pageOffsetWithSign.absoluteValue
     Card(
@@ -87,7 +86,6 @@ fun CardItems(definiteIndex:Int, currentOffset: Float, backgroundColor: Color) {
             .aspectRatio(0.7f)
             .zIndex(5f - pageOffset)
             .graphicsLayer {
-
                 // 중간으로 올수록 1.6배 크게 보임
                 lerp(
                     start = 1f.dp,
@@ -127,6 +125,15 @@ fun CardItems(definiteIndex:Int, currentOffset: Float, backgroundColor: Color) {
 
             },
     ) {
+        val backgroundColor = if(pageOffset > 1.5) {
+            Color(0xFF73A2F1)
+        } else if (pageOffset > 0.5) {
+            Color(0xFF518EF5)
+        } else {
+            Color.White
+        }
+
+
         Box(modifier = Modifier
             .fillMaxSize()
             .background(backgroundColor)
@@ -175,7 +182,7 @@ fun CardAnimation() {
 
     LaunchedEffect(key1 = Unit) {
         // 살짝 커지기
-        animate(initialValue = 1f, targetValue = 1.3f) { value, _ ->
+        animate(initialValue = 1f, targetValue = 1.8f) { value, _ ->
             scale = value
         }
         val transformationAnimationSpec = tween<Float>(
@@ -205,7 +212,7 @@ fun CardAnimation() {
         coroutineScope {
             // 카드 더 커지기
             launch {
-                animate(initialValue = 1.2f, targetValue = 3f, animationSpec = transformationAnimationSpec) { value: Float, _: Float ->
+                animate(initialValue = 1.8f, targetValue = 3f, animationSpec = transformationAnimationSpec) { value: Float, _: Float ->
                     scale = value
                 }
             }
