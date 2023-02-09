@@ -7,8 +7,6 @@ import com.hammer.talkbbokki.presentation.navigation.TalkbbokkiNavigationDestina
 object MainDestination : TalkbbokkiNavigationDestination {
     override val route: String
         get() = "main_route"
-    override val destination: String
-        get() = "main_destination"
 }
 
 fun NavGraphBuilder.mainGraph() {

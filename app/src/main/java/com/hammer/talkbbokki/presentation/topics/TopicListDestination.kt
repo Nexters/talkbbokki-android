@@ -7,8 +7,6 @@ import com.hammer.talkbbokki.presentation.navigation.TalkbbokkiNavigationDestina
 object TopicListDestination : TalkbbokkiNavigationDestination {
     override val route: String
         get() = "topic_list_route"
-    override val destination: String
-        get() = "topic_list_destination"
 }
 
 fun NavGraphBuilder.topicListGraph() {
