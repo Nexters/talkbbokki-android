@@ -9,8 +9,10 @@ object TopicListDestination : TalkbbokkiNavigationDestination {
         get() = "topic_list_route"
 }
 
-fun NavGraphBuilder.topicListGraph() {
+fun NavGraphBuilder.topicListGraph(
+    navigateToDetail: () -> Unit
+) {
     composable(route = TopicListDestination.route) {
-        TopicListRoute()
+        TopicListRoute(onClickToDetail = navigateToDetail)
     }
 }
