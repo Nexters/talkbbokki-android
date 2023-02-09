@@ -1,4 +1,4 @@
-package com.hammer.talkbbokki
+package com.hammer.talkbbokki.presentation.main
 
 import android.os.Bundle
 import android.widget.Toast
@@ -9,12 +9,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.hammer.talkbbokki.TopicListScreen
 import com.hammer.talkbbokki.presentation.topics.TopicListUiState
 import com.hammer.talkbbokki.presentation.topics.TopicListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +28,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Surface {
-                Sample()
+                Scaffold { padding ->
+                    TopicListScreen(
+                        Modifier
+                            .padding(padding)
+                            .background(color = Color(0xFF1E1E1E))
+                    )
+                }
             }
         }
 
@@ -60,16 +66,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun Sample() {
-    Scaffold { padding ->
-        TopicListScreen(
-            Modifier
-                .padding(padding)
-                .background(color = Color(0xFF1E1E1E))
-        )
     }
 }

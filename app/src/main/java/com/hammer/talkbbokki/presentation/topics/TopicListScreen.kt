@@ -24,11 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
+import kotlin.math.absoluteValue
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -41,18 +40,22 @@ fun TopicListScreen(modifier: Modifier = Modifier) {
     val snappingLayout = remember(listState) { SnapLayoutInfoProvider(listState) }
     val snapFlingBehavior = rememberSnapFlingBehavior(snappingLayout)
 
-    val currentOffset = currentIndex.value+(offset.value / itemWidth)
+    val currentOffset = currentIndex.value + (offset.value / itemWidth)
 
     var isVisible by remember { mutableStateOf(false) }
 
     val cardList = (0..10).toList()
     BoxWithConstraints {
         // 대화 주제 리스트
-        LazyRow(state = listState,
+        LazyRow(
+            state = listState,
             modifier = modifier.fillMaxSize(),
             flingBehavior = snapFlingBehavior,
             verticalAlignment = Alignment.CenterVertically,
-            contentPadding = PaddingValues(start = ((maxWidth-120.dp)/2), end = ((maxWidth-120.dp)/2))
+            contentPadding = PaddingValues(
+                start = ((maxWidth - 120.dp) / 2),
+                end = ((maxWidth - 120.dp) / 2)
+            )
         ) {
             itemsIndexed(cardList) { definiteIndex, item ->
                 CardItems(definiteIndex, currentOffset)
@@ -60,7 +63,7 @@ fun TopicListScreen(modifier: Modifier = Modifier) {
         }
 
         // 카드 플립 애니메이션
-        if(isVisible) {
+        if (isVisible) {
             Box(modifier = modifier.align(Alignment.Center)) {
                 CardAnimation()
             }
@@ -73,11 +76,10 @@ fun TopicListScreen(modifier: Modifier = Modifier) {
             Text("카드 선택")
         }
     }
-
 }
 
 @Composable
-fun CardItems(definiteIndex:Int, currentOffset: Float) {
+fun CardItems(definiteIndex: Int, currentOffset: Float) {
     val pageOffsetWithSign = definiteIndex - currentOffset
     val pageOffset = pageOffsetWithSign.absoluteValue
     Card(
@@ -98,7 +100,7 @@ fun CardItems(definiteIndex:Int, currentOffset: Float) {
 
                 // 중간으로 올수록 0도에 가까워짐. (카드 사이 각도 10도씩 틀어짐)
                 lerp(
-                    start = pageOffsetWithSign * 10f.dp,  // -20, -10, 0, 10, 20 ...
+                    start = pageOffsetWithSign * 10f.dp, // -20, -10, 0, 10, 20 ...
                     stop = 0f.dp,
                     fraction = 1f - pageOffset.coerceIn(0f, 1f)
                 ).value.let { angle ->
@@ -122,10 +124,9 @@ fun CardItems(definiteIndex:Int, currentOffset: Float) {
                 ).value.let { xOffset ->
                     translationX = xOffset
                 }
-
-            },
+            }
     ) {
-        val backgroundColor = if(pageOffset > 1.5) {
+        val backgroundColor = if (pageOffset > 1.5) {
             Color(0xFF73A2F1)
         } else if (pageOffset > 0.5) {
             Color(0xFF518EF5)
@@ -133,10 +134,10 @@ fun CardItems(definiteIndex:Int, currentOffset: Float) {
             Color.White
         }
 
-
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundColor)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor)
         ) {
             /*Image(
                 painter = rememberImagePainter(
@@ -152,7 +153,6 @@ fun CardItems(definiteIndex:Int, currentOffset: Float) {
     }
 }
 
-
 @Composable
 fun CardAnimation() {
     var scale by remember { mutableStateOf(1f) }
@@ -161,22 +161,23 @@ fun CardAnimation() {
 
     // Specify the key that should trigger the animation (e.g: when one part of your state changes)
     // If you keep Unit, the animation will run at the first time composition
-    Card(modifier = Modifier
-        .graphicsLayer(
-            alpha = cardAlpha,
-            scaleX = scale,
-            scaleY = scale,
-            rotationY = rotationY,
-            cameraDistance = 12f
-        )
-        .width(192.dp)
-        .aspectRatio(0.7f)
+    Card(
+        modifier = Modifier
+            .graphicsLayer(
+                alpha = cardAlpha,
+                scaleX = scale,
+                scaleY = scale,
+                rotationY = rotationY,
+                cameraDistance = 12f
+            )
+            .width(192.dp)
+            .aspectRatio(0.7f)
     ) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
         ) {
-
         }
     }
 
@@ -187,22 +188,25 @@ fun CardAnimation() {
         }
         val transformationAnimationSpec = tween<Float>(
             durationMillis = 1000,
-            easing = FastOutSlowInEasing,
+            easing = FastOutSlowInEasing
         )
         // Core animation
         coroutineScope {
             launch {
                 val rotationAnimationSpec = tween<Float>(
                     durationMillis = 800,
-                    easing = FastOutSlowInEasing,
+                    easing = FastOutSlowInEasing
                 )
 
                 // 카드 180도 뒤집기
-                animate(initialValue = 0f, targetValue = 180f, animationSpec = rotationAnimationSpec) { value, _ ->
+                animate(
+                    initialValue = 0f,
+                    targetValue = 180f,
+                    animationSpec = rotationAnimationSpec
+                ) { value, _ ->
                     rotationY = value
                 }
             }
-
         }
 
         // Delay before starting exit animation
@@ -212,13 +216,21 @@ fun CardAnimation() {
         coroutineScope {
             // 카드 더 커지기
             launch {
-                animate(initialValue = 1.8f, targetValue = 3f, animationSpec = transformationAnimationSpec) { value: Float, _: Float ->
+                animate(
+                    initialValue = 1.8f,
+                    targetValue = 3f,
+                    animationSpec = transformationAnimationSpec
+                ) { value: Float, _: Float ->
                     scale = value
                 }
             }
             // fade out 처리
             launch {
-                animate(initialValue = 1f, targetValue = 0f, animationSpec = transformationAnimationSpec) { value: Float, _: Float ->
+                animate(
+                    initialValue = 1f,
+                    targetValue = 0f,
+                    animationSpec = transformationAnimationSpec
+                ) { value: Float, _: Float ->
                     cardAlpha = value
                 }
             }
