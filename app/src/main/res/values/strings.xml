@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">talkbbokki</string>
+
+    <string name="main_level1_title">아직 인사만 하는 사이</string>
+    <string name="main_level2_title">우리 커피 같이 먹는 사이</string>
+    <string name="main_level3_title">이젠 간맥하는 사이</string>
+    <string name="main_level4_title">만취한 모습 보여주는 사이</string>
 </resources>
