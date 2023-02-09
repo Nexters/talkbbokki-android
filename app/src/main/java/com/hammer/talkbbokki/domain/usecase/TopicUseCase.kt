@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class TopicUseCase @Inject constructor(
     private val repository: TopicRepository,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
     operator fun invoke(level: String): Flow<List<TopicItem>> {
         return repository.getTopicList(level)

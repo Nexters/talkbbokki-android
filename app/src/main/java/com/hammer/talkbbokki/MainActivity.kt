@@ -18,7 +18,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.hammer.talkbbokki.presentation.topics.TopicListUiState
 import com.hammer.talkbbokki.presentation.topics.TopicListViewModel
 import com.hammer.talkbbokki.ui.theme.IcebreakerTheme
-import androidx.compose.ui.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -33,7 +32,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colors.background,
                 ) {
                     Greeting("Android")
                 }
@@ -47,10 +46,23 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.topicList.collect {
-                    when(it) {
-                        is TopicListUiState.Success -> Toast.makeText(this@MainActivity, it.list.map { it.name }.toString(), Toast.LENGTH_SHORT).show()
-                        is TopicListUiState.Loading -> Toast.makeText(this@MainActivity, "Loading", Toast.LENGTH_SHORT).show()
-                        is TopicListUiState.Error -> Toast.makeText(this@MainActivity, "Error", Toast.LENGTH_SHORT).show()
+                    when (it) {
+                        is TopicListUiState.Success -> Toast.makeText(
+                            this@MainActivity,
+                            it.list.map { it.name }.toString(),
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                        is TopicListUiState.Loading -> Toast.makeText(
+                            this@MainActivity,
+                            "Loading",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                        is TopicListUiState.Error -> Toast.makeText(
+                            this@MainActivity,
+                            "Error",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                        TopicListUiState.Empty -> TODO()
                     }
                 }
             }

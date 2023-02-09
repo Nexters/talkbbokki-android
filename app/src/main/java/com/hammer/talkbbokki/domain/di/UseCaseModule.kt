@@ -15,6 +15,6 @@ object UseCaseModule {
     @Provides
     @Singleton
     fun bindsTopicUseCase(
-        repository: TopicRepository
+        repository: TopicRepository,
     ): TopicUseCase = TopicUseCase(repository, Dispatchers.IO)
 }

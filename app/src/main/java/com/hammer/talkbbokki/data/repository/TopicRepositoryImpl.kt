@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 internal class TopicRepositoryImpl @Inject constructor(
-    private val service: TalkbbokkiService
-): TopicRepository {
+    private val service: TalkbbokkiService,
+) : TopicRepository {
     override fun getTopicList(level: String): Flow<List<TopicItem>> = flow {
         emit(service.getTopicList(level)?.map { it.toModel() }.orEmpty())
     }

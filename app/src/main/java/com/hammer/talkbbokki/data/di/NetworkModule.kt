@@ -25,9 +25,11 @@ object NetworkModule {
             connectTimeout(200, TimeUnit.SECONDS)
             readTimeout(200, TimeUnit.SECONDS)
             if (BuildConfig.DEBUG) {
-                addInterceptor(HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
-                })
+                addInterceptor(
+                    HttpLoggingInterceptor().apply {
+                        level = HttpLoggingInterceptor.Level.BODY
+                    },
+                )
             }
         }.build()
     }
@@ -38,9 +40,8 @@ object NetworkModule {
         Retrofit.Builder()
             .baseUrl(HOST_URL)
             .addConverterFactory(
-                GsonConverterFactory.create(GsonBuilder().setLenient().create())
+                GsonConverterFactory.create(GsonBuilder().setLenient().create()),
             )
             .client(client)
             .build()
-
 }

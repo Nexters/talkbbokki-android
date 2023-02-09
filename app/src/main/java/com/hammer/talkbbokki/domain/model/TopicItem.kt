@@ -6,5 +6,5 @@ data class TopicItem(
     val viewCount: Int,
     val category: String,
     val shareLink: String,
-    val tag: String
+    val tag: String,
 )

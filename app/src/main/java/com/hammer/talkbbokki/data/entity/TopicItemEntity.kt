@@ -10,7 +10,7 @@ internal data class TopicItemEntity(
     val category: String?,
     @SerializedName("pcLink")
     val shareLink: String?,
-    val tag: String?
+    val tag: String?,
 ) {
     fun toModel(): TopicItem = TopicItem(
         id = id ?: 0,
@@ -18,6 +18,6 @@ internal data class TopicItemEntity(
         viewCount = viewCount ?: 0,
         category = category ?: "",
         shareLink = shareLink ?: "",
-        tag = tag ?: ""
+        tag = tag ?: "",
     )
 }
