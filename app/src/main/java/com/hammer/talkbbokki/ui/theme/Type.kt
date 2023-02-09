@@ -11,7 +11,7 @@ val pretendardFamily = FontFamily(
     Font(R.font.pretendard_bold, FontWeight.Bold),
     Font(R.font.pretendard_medium, FontWeight.SemiBold),
     Font(R.font.pretendard_regular, FontWeight.Medium),
-    Font(R.font.pretendard_thin, FontWeight.Thin),
+    Font(R.font.pretendard_thin, FontWeight.Thin)
 )
 
 // Set of Material typography styles to start with
@@ -20,54 +20,54 @@ data class talkbbokkiTypography constructor(
         fontFamily = pretendardFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 36.sp,
-        lineHeight = 36.sp,
+        lineHeight = 36.sp
     ),
     val h2_bold: TextStyle = TextStyle(
         fontFamily = pretendardFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
-        lineHeight = 28.sp,
+        lineHeight = 28.sp
     ),
     val h2_regular: TextStyle = TextStyle(
         fontFamily = pretendardFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 28.sp,
-        lineHeight = 28.sp,
+        lineHeight = 28.sp
     ),
     val b1_bold: TextStyle = TextStyle(
         fontFamily = pretendardFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp,
-        lineHeight = 20.sp,
+        lineHeight = 20.sp
     ),
     val b1_regular: TextStyle = TextStyle(
         fontFamily = pretendardFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 20.sp,
-        lineHeight = 20.sp,
+        lineHeight = 20.sp
     ),
     val b2_bold: TextStyle = TextStyle(
         fontFamily = pretendardFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
-        lineHeight = 14.sp,
+        lineHeight = 14.sp
     ),
     val b2_regular: TextStyle = TextStyle(
         fontFamily = pretendardFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
-        lineHeight = 14.sp,
+        lineHeight = 14.sp
     ),
     val caption: TextStyle = TextStyle(
         fontFamily = pretendardFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
-        lineHeight = 12.sp,
+        lineHeight = 12.sp
     ),
     val button: TextStyle = TextStyle(
         fontFamily = pretendardFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
-        lineHeight = 16.sp,
-    ),
+        lineHeight = 16.sp
+    )
 )

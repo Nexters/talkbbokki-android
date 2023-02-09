@@ -6,12 +6,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -28,7 +28,7 @@ object NetworkModule {
                 addInterceptor(
                     HttpLoggingInterceptor().apply {
                         level = HttpLoggingInterceptor.Level.BODY
-                    },
+                    }
                 )
             }
         }.build()
@@ -40,7 +40,7 @@ object NetworkModule {
         Retrofit.Builder()
             .baseUrl(HOST_URL)
             .addConverterFactory(
-                GsonConverterFactory.create(GsonBuilder().setLenient().create()),
+                GsonConverterFactory.create(GsonBuilder().setLenient().create())
             )
             .client(client)
             .build()

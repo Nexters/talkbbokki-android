@@ -7,6 +7,6 @@ import retrofit2.http.Path
 internal interface TalkbbokkiService {
     @GET("/api/categories/{level}/topics")
     suspend fun getTopicList(
-        @Path("level") level: String,
+        @Path("level") level: String
     ): List<TopicItemEntity>?
 }

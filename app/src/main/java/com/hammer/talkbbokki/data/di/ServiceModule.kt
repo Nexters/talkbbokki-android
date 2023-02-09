@@ -5,13 +5,15 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import retrofit2.Retrofit
 import javax.inject.Singleton
+import retrofit2.Retrofit
 
 @InstallIn(SingletonComponent::class)
 @Module
 object ServiceModule {
     @Singleton
     @Provides
-    internal fun provideDemoService(retrofit: Retrofit): TalkbbokkiService = retrofit.create(TalkbbokkiService::class.java)
+    internal fun provideDemoService(retrofit: Retrofit): TalkbbokkiService = retrofit.create(
+        TalkbbokkiService::class.java
+    )
 }

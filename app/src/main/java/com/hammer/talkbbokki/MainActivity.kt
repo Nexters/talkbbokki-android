@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background,
+                    color = MaterialTheme.colors.background
                 ) {
                     Greeting("Android")
                 }
@@ -50,17 +50,17 @@ class MainActivity : ComponentActivity() {
                         is TopicListUiState.Success -> Toast.makeText(
                             this@MainActivity,
                             it.list.map { it.name }.toString(),
-                            Toast.LENGTH_SHORT,
+                            Toast.LENGTH_SHORT
                         ).show()
                         is TopicListUiState.Loading -> Toast.makeText(
                             this@MainActivity,
                             "Loading",
-                            Toast.LENGTH_SHORT,
+                            Toast.LENGTH_SHORT
                         ).show()
                         is TopicListUiState.Error -> Toast.makeText(
                             this@MainActivity,
                             "Error",
-                            Toast.LENGTH_SHORT,
+                            Toast.LENGTH_SHORT
                         ).show()
                         TopicListUiState.Empty -> TODO()
                     }
