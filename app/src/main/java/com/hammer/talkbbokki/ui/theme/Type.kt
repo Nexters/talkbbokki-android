@@ -1,28 +1,73 @@
 package com.hammer.talkbbokki.ui.theme
 
-import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.hammer.talkbbokki.R
+
+val pretendardFamily = FontFamily(
+    Font(R.font.pretendard_bold, FontWeight.Bold),
+    Font(R.font.pretendard_medium, FontWeight.SemiBold),
+    Font(R.font.pretendard_regular, FontWeight.Medium),
+    Font(R.font.pretendard_thin, FontWeight.Thin)
+)
 
 // Set of Material typography styles to start with
-val Typography = Typography(
-    body1 = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    )
-    /* Other default text styles to override
-    button = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
+data class talkbbokkiTypography constructor(
+    val h1: TextStyle = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 36.sp,
+        lineHeight = 36.sp
     ),
-    caption = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+    val h2_bold: TextStyle = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 28.sp,
+        lineHeight = 28.sp
+    ),
+    val h2_regular: TextStyle = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 28.sp,
+        lineHeight = 28.sp
+    ),
+    val b1_bold: TextStyle = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        lineHeight = 20.sp
+    ),
+    val b1_regular: TextStyle = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 20.sp,
+        lineHeight = 20.sp
+    ),
+    val b2_bold: TextStyle = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp,
+        lineHeight = 14.sp
+    ),
+    val b2_regular: TextStyle = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 14.sp
+    ),
+    val caption: TextStyle = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp,
+        lineHeight = 12.sp
+    ),
+    val button: TextStyle = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 16.sp
     )
-    */
 )
