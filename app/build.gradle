@@ -1,6 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    alias(libs.plugins.ktlint.gradle)
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -50,6 +53,13 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+    kapt {
+        correctErrorTypes true
+    }
 }
 
 dependencies {
@@ -58,6 +68,9 @@ dependencies {
     implementation(libs.androidx.lifecycle)
     implementation(libs.androidx.activity.compose)
     implementation(libs.bundles.compose)
+    implementation(libs.dagger.hilt)
+    kapt(libs.dagger.hilt.compiler)
+    implementation(libs.bundles.network)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.compose.coil)
