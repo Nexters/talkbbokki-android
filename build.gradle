@@ -26,3 +26,7 @@ buildscript {
 //        args "-F", "src/**/*.kt"
 //    }
 }
+
+plugins {
+    alias(libs.plugins.hilt) apply false
+}
