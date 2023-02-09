@@ -193,7 +193,7 @@ fun CardAnimation() {
         coroutineScope {
             launch {
                 val rotationAnimationSpec = tween<Float>(
-                    durationMillis = 400,
+                    durationMillis = 800,
                     easing = FastOutSlowInEasing,
                 )
 
