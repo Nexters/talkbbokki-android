@@ -11,7 +11,6 @@ import com.hammer.talkbbokki.presentation.main.mainGraph
 import com.hammer.talkbbokki.presentation.topics.TopicListDestination
 import com.hammer.talkbbokki.presentation.topics.topicListGraph
 
-
 @Composable
 fun TalkbbokkiNavHost(
     navController: NavHostController,
@@ -21,7 +20,7 @@ fun TalkbbokkiNavHost(
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        modifier = modifier,
+        modifier = modifier
     ) {
         introGraph(
             navigateToMain = { navController.navigate(MainDestination.route) },

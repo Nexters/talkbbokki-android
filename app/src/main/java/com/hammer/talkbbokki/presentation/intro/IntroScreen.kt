@@ -31,6 +31,5 @@ fun IntroRoute(
                 Text(text = "카드 리스트")
             }
         }
-
     }
 }
