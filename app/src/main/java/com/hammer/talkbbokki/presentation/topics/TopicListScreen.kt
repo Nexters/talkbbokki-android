@@ -24,10 +24,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import kotlin.math.absoluteValue
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
+
+@Composable
+fun TopicListRoute(
+    modifier: Modifier = Modifier,
+    viewModel: TopicListViewModel = hiltViewModel()
+) {
+    val topicList by viewModel.topicList.collectAsState()
+    TopicListScreen()
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
