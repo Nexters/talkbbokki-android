@@ -71,6 +71,10 @@ dependencies {
     implementation(libs.dagger.hilt)
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.bundles.network)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.compose.coil)
+
     testImplementation (libs.junit)
     androidTestImplementation(libs.androidx.test.ext)
     androidTestImplementation(libs.androidx.test.espresso)
