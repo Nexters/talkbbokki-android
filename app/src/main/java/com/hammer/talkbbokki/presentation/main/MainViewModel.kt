@@ -24,10 +24,10 @@ class MainViewModel @Inject constructor() : ViewModel() {
 }
 
 enum class CategoryLevel(
-    level: String,
-    @DrawableRes icon: Int? = null,
-    @StringRes title: Int,
-    backgroundColor: Color
+    val level: String,
+    @DrawableRes val icon: Int? = null,
+    @StringRes val title: Int,
+    val backgroundColor: Color
 ) {
     Level1(
         level = "level1",
