@@ -11,13 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.hammer.talkbbokki.ui.theme.IcebreakerTheme
+import com.hammer.talkbbokki.ui.theme.TalkbbokkiTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            IcebreakerTheme {
+            TalkbbokkiTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -38,7 +38,7 @@ fun Greeting(name: String) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    IcebreakerTheme {
+    TalkbbokkiTheme {
         Greeting("Android")
     }
 }
