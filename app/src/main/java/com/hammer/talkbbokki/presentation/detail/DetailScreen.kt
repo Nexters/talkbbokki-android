@@ -35,24 +35,27 @@ fun DetailScreen(modifier: Modifier = Modifier) {
         Test()
     }
 
+    Box(
+        modifier = modifier
+            .wrapContentSize()
+    ) {
+        Text(text = "Back")
+    }
 }
 
 @Composable
 fun Test() {
-    var cardFace by remember { mutableStateOf(CardFace.Front) }
     var scale by remember { mutableStateOf(1f) }
-    var rotationY by remember { mutableStateOf(0f) }
+    var rotation by remember { mutableStateOf(1f) }
 
     FlipCard(
-        cardFace = cardFace,
-        onClick = { cardFace = cardFace.next },
+        rotation = rotation,
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(.7f)
             .graphicsLayer(
                 scaleX = scale,
                 scaleY = scale,
-                rotationY = rotationY,
                 cameraDistance = 12f
             ),
         front = {
@@ -82,24 +85,28 @@ fun Test() {
     )
 
     LaunchedEffect(key1 = Unit) {
-
-        val transformationAnimationSpec = tween<Float>(
-            durationMillis = 1000,
-            easing = FastOutSlowInEasing
-        )
-
         coroutineScope {
-            // 카드 더 커지기
             launch {
                 animate(
                     initialValue = 1f, targetValue = 1.7f,
-                    animationSpec = transformationAnimationSpec
+                    animationSpec = tween(
+                        durationMillis = 1000,
+                        easing = FastOutSlowInEasing
+                    )
                 ) { value: Float, _: Float ->
                     scale = value
                 }
+
+                animate(
+                    initialValue = 0f, targetValue = 180f,
+                    animationSpec = tween(
+                        durationMillis = 540,
+                        easing = FastOutSlowInEasing
+                    )
+                ) { value, _ ->
+                    rotation = value
+                }
             }
         }
-
-        // 카드 뒤집기
     }
 }
