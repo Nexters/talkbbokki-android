@@ -22,7 +22,7 @@ ktlint-gradle = "11.0.0"
 retrofit = "2.9.0"
 
 google-services = "4.3.15"
-firebase-bom = "31.2.0"
+firebase-analytics = "21.2.0"
 google-admob = "21.5.0"
 
 [libraries]
@@ -45,9 +45,8 @@ androidx-compose-material3 = { module = "androidx.compose.material3:material3", 
 androidx-compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose-foundation" }
 
-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
-firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
-google-admob = { module = "com.google.android.gms:play-services-ads" }
+firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebase-analytics" }
+google-admob = { module = "com.google.android.gms:play-services-ads-lite", version.ref = "google-admob" }
 
 compose-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 

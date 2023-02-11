@@ -78,7 +78,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.bundles.compose)
     implementation(libs.dagger.hilt)
-    implementation 'com.google.android.gms:play-services-ads-lite:21.5.0'
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.bundles.network)
     implementation(libs.androidx.compose.foundation)
@@ -86,7 +85,6 @@ dependencies {
     implementation(libs.compose.coil)
     implementation(libs.compose.hilt.navigation.compose)
 
-    implementation platform(libs.firebase.bom)
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.google.admob)
 
