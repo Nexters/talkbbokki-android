@@ -7,6 +7,11 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile rootProject.file("private/debug.keystore")
+        }
+    }
     namespace 'com.hammer.talkbbokki'
     compileSdk 33
 
@@ -24,6 +29,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
