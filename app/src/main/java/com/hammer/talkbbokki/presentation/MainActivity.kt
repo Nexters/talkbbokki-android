@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.ads.MobileAds
 import com.hammer.talkbbokki.presentation.navigation.TalkbbokkiNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,6 +17,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MobileAds.initialize(this) {
+        }
         setContent {
             val navController = rememberNavController()
             val navBackStackEntry by navController.currentBackStackEntryAsState()
