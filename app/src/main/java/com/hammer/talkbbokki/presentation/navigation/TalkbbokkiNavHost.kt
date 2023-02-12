@@ -32,6 +32,8 @@ fun TalkbbokkiNavHost(
         topicListGraph(
             navigateToDetail = { navController.navigate(DetailDestination.route) }
         )
-        detailGraph()
+        detailGraph(
+            navigateToTopicList = { navController.popBackStack() }
+        )
     }
 }

@@ -23,9 +23,6 @@ import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlin.math.absoluteValue
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun TopicListRoute(
@@ -69,15 +66,6 @@ fun TopicListScreen(modifier: Modifier = Modifier, onClickToDetail: () -> Unit) 
                 CardItems(definiteIndex, currentOffset)
             }
         }
-
-/*
-        // 카드 플립 애니메이션
-        if (isVisible) {
-            Box(modifier = modifier.align(Alignment.Center)) {
-                CardAnimation()
-            }
-        }
-*/
 
         Button(
             onClick = { /*isVisible = isVisible.not()*/

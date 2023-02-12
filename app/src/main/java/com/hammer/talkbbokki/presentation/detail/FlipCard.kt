@@ -7,19 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 
-enum class CardFace(val angle: Float) {
-    Front(0f) {
-        override val next: CardFace
-            get() = Back
-    },
-    Back(180f) {
-        override val next: CardFace
-            get() = Front
-    };
-
-    abstract val next: CardFace
-}
-
 @Composable
 fun FlipCard(
     rotation: Float,
@@ -27,7 +14,6 @@ fun FlipCard(
     back: @Composable () -> Unit = {},
     front: @Composable () -> Unit = {},
 ) {
-
     Card(
         modifier = modifier
             .graphicsLayer {
