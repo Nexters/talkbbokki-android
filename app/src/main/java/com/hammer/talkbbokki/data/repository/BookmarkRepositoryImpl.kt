@@ -11,8 +11,6 @@ internal class BookmarkRepositoryImpl @Inject constructor(
     private val dao: BookmarkDao
 ) : BookmarkRepository {
     override fun getBookmarkList(): Flow<List<TopicItem>> = dao.getAllBookMark().map { list ->
-        list.map { entity ->
-            entity.toModel(isBookmark = true)
-        }
+        list.map { entity -> entity.toModel(isBookmark = true) }
     }
 }
