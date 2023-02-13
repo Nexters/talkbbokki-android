@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.hammer.talkbbokki.presentation.detail.DetailDestination
+import com.hammer.talkbbokki.presentation.detail.detailGraph
 import com.hammer.talkbbokki.presentation.intro.IntroDestination
 import com.hammer.talkbbokki.presentation.intro.introGraph
 import com.hammer.talkbbokki.presentation.main.MainDestination
@@ -27,6 +29,15 @@ fun TalkbbokkiNavHost(
             navigateToTopicList = { navController.navigate(TopicListDestination.route) }
         )
         mainGraph()
-        topicListGraph()
+        topicListGraph(
+            navigateToDetail = { id ->
+                navController.navigate(DetailDestination.route + "/$id")
+            }
+        )
+        detailGraph(
+            navigateToTopicList = {
+                navController.popBackStack()
+            }
+        )
     }
 }
