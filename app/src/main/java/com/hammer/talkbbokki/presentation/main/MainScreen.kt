@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
-import com.hammer.talkbbokki.ui.theme.talkbbokkiTypography
+import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 
 @Composable
 fun MainRoute(
@@ -69,13 +69,13 @@ fun MainHeader() {
 //        Divider(modifier = Modifier.padding(top = 90.dp))
         Text(
             text = stringResource(id = R.string.main_sub_title),
-            style = talkbbokkiTypography.b3_regular,
+            style = TalkbbokkiTypography.b3_regular,
             color = Color.White
         )
         Divider(modifier = Modifier.padding(top = 6.dp))
         Text(
             text = stringResource(id = R.string.main_title),
-            style = talkbbokkiTypography.h1,
+            style = TalkbbokkiTypography.h1,
             color = Color.White
         )
         Divider(modifier = Modifier.padding(top = 20.dp))
@@ -123,7 +123,7 @@ fun LevelItem(
             ) {
                 Text(
                     text = stringResource(id = level.title),
-                    style = talkbbokkiTypography.b2_regular,
+                    style = TalkbbokkiTypography.b2_regular,
                     color = Color.White
                 )
                 Icon(
