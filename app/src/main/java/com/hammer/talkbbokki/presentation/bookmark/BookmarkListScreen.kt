@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -22,6 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -102,7 +104,11 @@ fun BookmarkList(
     bookmarks: List<TopicItem>,
     onClickItem: (TopicItem) -> Unit
 ) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp)
+    ) {
         BookmarkTotalCount(bookmarks.count())
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -159,17 +165,31 @@ fun BookmarkItem(
 @Composable
 fun BookmarkEmpty() {
     Column(
-        verticalArrangement = Arrangement.SpaceEvenly
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp)
     ) {
         BookmarkTotalCount(0)
-        Icon(
-            painter = painterResource(id = R.drawable.icon_empty_balloon),
-            contentDescription = null,
-            tint = Color.White
-        )
-        Text(
-            text = stringResource(id = R.string.bookmark_empty_list),
-            color = Color.White
-        )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_empty_balloon),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+                Spacer(modifier = Modifier.height(35.dp))
+                Text(
+                    text = stringResource(id = R.string.bookmark_empty_list),
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.height(166.dp))
+            }
+        }
     }
 }
