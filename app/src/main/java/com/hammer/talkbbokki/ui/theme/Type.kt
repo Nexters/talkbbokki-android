@@ -15,13 +15,13 @@ val pretendardFamily = FontFamily(
 )
 
 // Set of Material typography styles to start with
-class talkbbokkiTypography {
+class TalkbbokkiTypography {
     companion object {
         val h1: TextStyle = TextStyle(
             fontFamily = pretendardFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 36.sp,
-            lineHeight = 40.sp
+            fontSize = 40.sp,
+            lineHeight = 44.sp
         )
         val h2_bold: TextStyle = TextStyle(
             fontFamily = pretendardFamily,
