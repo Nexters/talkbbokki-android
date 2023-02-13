@@ -3,19 +3,22 @@ package com.hammer.talkbbokki.presentation.bookmark
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
@@ -52,9 +55,11 @@ fun BookMarkRoute(
 @Composable
 fun BookMarkScreen(bookmarkUiState: BookmarkUiState) {
     val context = LocalContext.current
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .scrollable(state = scrollState, orientation = Orientation.Vertical)
             .background(MainBackgroundColor)
     ) {
         BookmarkHeader { /* 뒤로가기 */ }
@@ -117,7 +122,7 @@ fun BookmarkList(
             columns = GridCells.Fixed(2),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            userScrollEnabled = false
+            modifier = Modifier.padding(top = 12.dp)
         ) {
             items(bookmarks) {
                 BookmarkItem(it, onClickItem)
@@ -149,7 +154,8 @@ fun BookmarkItem(
     ) {
         Column(
             modifier = Modifier
-                .aspectRatio(0.6f)
+                .width(154.dp)
+                .height(233.dp)
                 .background(Color.White)
                 .padding(16.dp)
         ) {
