@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
@@ -33,8 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
+import com.hammer.talkbbokki.ui.theme.Black
+import com.hammer.talkbbokki.ui.theme.Gray06
 import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
-import com.hammer.talkbbokki.ui.theme.Purple200
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 
 @Composable
@@ -139,6 +142,7 @@ fun BookmarkItem(
     onClickItem: (TopicItem) -> Unit
 ) {
     Card(
+        shape = RoundedCornerShape(8.dp),
         onClick = {
             onClickItem(item)
         }
@@ -147,16 +151,27 @@ fun BookmarkItem(
             modifier = Modifier
                 .aspectRatio(0.6f)
                 .background(Color.White)
-                .padding(top = 20.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
+                .padding(16.dp)
         ) {
-            Text(
-                text = item.tag,
-                color = Purple200
-            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = item.tag,
+                    style = TalkbbokkiTypography.b1_bold,
+                    color = Black
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_star_fill),
+                    tint = Gray06,
+                    contentDescription = null
+                )
+            }
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = item.name,
-                color = Color.Black
+                style = TalkbbokkiTypography.b3_regular,
+                color = Black
             )
         }
     }
