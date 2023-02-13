@@ -21,13 +21,14 @@ import kotlinx.coroutines.launch
 fun DetailRoute(
     modifier: Modifier = Modifier,
     onClickToList: () -> Unit,
+    id: String,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
-    DetailScreen(onClickToList = onClickToList)
+    DetailScreen(onClickToList = onClickToList, id = id)
 }
 
 @Composable
-fun DetailScreen(modifier: Modifier = Modifier, onClickToList: () -> Unit) {
+fun DetailScreen(modifier: Modifier = Modifier, onClickToList: () -> Unit, id: String) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
 
     Box(
@@ -36,16 +37,14 @@ fun DetailScreen(modifier: Modifier = Modifier, onClickToList: () -> Unit) {
             .wrapContentSize()
             .size(192.dp, 240.dp)
     ) {
-        TestFlipCard(cardFace, onClickToList)
+        TestFlipCard(cardFace, onClickToList, id)
     }
 
     if (cardFace == CardFace.FRONT) {
         Button(
             onClick = {
                 cardFace = CardFace.BACK
-            },
-            modifier = modifier
-                .wrapContentSize()
+            }, modifier = modifier.wrapContentSize()
         ) {
             Text(text = "Back")
         }
@@ -53,7 +52,7 @@ fun DetailScreen(modifier: Modifier = Modifier, onClickToList: () -> Unit) {
 }
 
 @Composable
-fun TestFlipCard(cardFace: CardFace, onClickToList: () -> Unit) {
+fun TestFlipCard(cardFace: CardFace, onClickToList: () -> Unit, id: String) {
     var scale by remember { mutableStateOf(1f) }
     var rotation by remember { mutableStateOf(1f) }
 
@@ -63,9 +62,7 @@ fun TestFlipCard(cardFace: CardFace, onClickToList: () -> Unit) {
             .fillMaxWidth()
             .aspectRatio(.7f)
             .graphicsLayer(
-                scaleX = scale,
-                scaleY = scale,
-                cameraDistance = 12f
+                scaleX = scale, scaleY = scale, cameraDistance = 12f
             ),
         front = {
             Box(
@@ -75,7 +72,7 @@ fun TestFlipCard(cardFace: CardFace, onClickToList: () -> Unit) {
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "카드",
+                    text = id,
                 )
             }
         },
@@ -98,20 +95,16 @@ fun TestFlipCard(cardFace: CardFace, onClickToList: () -> Unit) {
             coroutineScope {
                 launch {
                     animate(
-                        initialValue = 1f, targetValue = 1.7f,
-                        animationSpec = tween(
-                            durationMillis = 1000,
-                            easing = FastOutSlowInEasing
+                        initialValue = 1f, targetValue = 1.7f, animationSpec = tween(
+                            durationMillis = 1000, easing = FastOutSlowInEasing
                         )
                     ) { value: Float, _: Float ->
                         scale = value
                     }
 
                     animate(
-                        initialValue = 0f, targetValue = 180f,
-                        animationSpec = tween(
-                            durationMillis = 540,
-                            easing = FastOutSlowInEasing
+                        initialValue = 0f, targetValue = 180f, animationSpec = tween(
+                            durationMillis = 540, easing = FastOutSlowInEasing
                         )
                     ) { value, _ ->
                         rotation = value
@@ -124,20 +117,16 @@ fun TestFlipCard(cardFace: CardFace, onClickToList: () -> Unit) {
             coroutineScope {
                 launch {
                     animate(
-                        initialValue = 180f, targetValue = 0f,
-                        animationSpec = tween(
-                            durationMillis = 540,
-                            easing = FastOutSlowInEasing
+                        initialValue = 180f, targetValue = 0f, animationSpec = tween(
+                            durationMillis = 540, easing = FastOutSlowInEasing
                         )
                     ) { value, _ ->
                         rotation = value
                     }
 
                     animate(
-                        initialValue = 1.7f, targetValue = 1f,
-                        animationSpec = tween(
-                            durationMillis = 1000,
-                            easing = FastOutSlowInEasing
+                        initialValue = 1.7f, targetValue = 1f, animationSpec = tween(
+                            durationMillis = 1000, easing = FastOutSlowInEasing
                         )
                     ) { value: Float, _: Float ->
                         scale = value
@@ -150,6 +139,5 @@ fun TestFlipCard(cardFace: CardFace, onClickToList: () -> Unit) {
 }
 
 enum class CardFace {
-    FRONT,
-    BACK
+    FRONT, BACK
 }

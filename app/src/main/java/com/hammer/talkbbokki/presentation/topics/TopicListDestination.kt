@@ -10,7 +10,7 @@ object TopicListDestination : TalkbbokkiNavigationDestination {
 }
 
 fun NavGraphBuilder.topicListGraph(
-    navigateToDetail: () -> Unit
+    navigateToDetail: (id : String) -> Unit
 ) {
     composable(route = TopicListDestination.route) {
         TopicListRoute(onClickToDetail = navigateToDetail)

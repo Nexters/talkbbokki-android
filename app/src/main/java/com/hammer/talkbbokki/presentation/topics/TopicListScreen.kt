@@ -23,11 +23,12 @@ import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlin.math.absoluteValue
+import kotlin.math.roundToInt
 
 @Composable
 fun TopicListRoute(
     modifier: Modifier = Modifier,
-    onClickToDetail: () -> Unit,
+    onClickToDetail: (id : String) -> Unit,
     viewModel: TopicListViewModel = hiltViewModel()
 ) {
     val topicList by viewModel.topicList.collectAsState()
@@ -36,7 +37,7 @@ fun TopicListRoute(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TopicListScreen(modifier: Modifier = Modifier, onClickToDetail: () -> Unit) {
+fun TopicListScreen(modifier: Modifier = Modifier, onClickToDetail: (id : String) -> Unit) {
     val listState = rememberLazyListState()
     val itemWidth = with(LocalDensity.current) { 120.dp.toPx() }
     val currentIndex = remember { derivedStateOf { listState.firstVisibleItemIndex } }
@@ -51,6 +52,8 @@ fun TopicListScreen(modifier: Modifier = Modifier, onClickToDetail: () -> Unit) 
 
     val cardList = (0..10).toList()
     BoxWithConstraints {
+        var index = ""
+
         // 대화 주제 리스트
         LazyRow(
             state = listState,
@@ -63,13 +66,14 @@ fun TopicListScreen(modifier: Modifier = Modifier, onClickToDetail: () -> Unit) 
             )
         ) {
             itemsIndexed(cardList) { definiteIndex, item ->
+                index = currentOffset.roundToInt().toString()
                 CardItems(definiteIndex, currentOffset)
             }
         }
 
         Button(
             onClick = { /*isVisible = isVisible.not()*/
-                onClickToDetail()
+                onClickToDetail(index)
             },
             modifier = modifier.align(Alignment.BottomCenter)
         ) {
