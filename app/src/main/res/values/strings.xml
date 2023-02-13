@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">talkbbokki</string>
+
+    <string name="bookmark_header_title">기억하고 싶은 대화 주제,\n여기 다 - 모아뒀어요</string>
+    <string name="bookmark_total_count">총 %d개</string>
+    <string name="bookmark_empty_list">아직 즐겨찾기한 토픽이 없어요</string>
 </resources>
