@@ -35,14 +35,18 @@ import com.hammer.talkbbokki.ui.theme.talkbbokkiTypography
 @Composable
 fun MainRoute(
     modifier: Modifier = Modifier,
+    onClickLevel: (String) -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val categoryLevel by viewModel.categoryLevel.collectAsState()
-    MainScreen(categoryLevel)
+    MainScreen(categoryLevel) { onClickLevel(it) }
 }
 
 @Composable
-fun MainScreen(categoryLevel: List<CategoryLevel>) {
+fun MainScreen(
+    categoryLevel: List<CategoryLevel>,
+    onClickLevel: (String) -> Unit
+) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -53,6 +57,7 @@ fun MainScreen(categoryLevel: List<CategoryLevel>) {
     ) {
         MainHeader()
         CategoryLevels(categoryLevel) {
+            onClickLevel(it)
             Toast.makeText(context, "click $it", Toast.LENGTH_SHORT).show()
         }
     }
