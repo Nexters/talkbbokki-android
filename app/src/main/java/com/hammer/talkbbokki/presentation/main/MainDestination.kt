@@ -13,6 +13,6 @@ fun NavGraphBuilder.mainGraph(
     navigateToList: (level: String) -> Unit
 ) {
     composable(route = MainDestination.route) {
-        MainRoute(onClickToTopicList = navigateToList)
+        MainRoute(onClickLevel = navigateToList)
     }
 }

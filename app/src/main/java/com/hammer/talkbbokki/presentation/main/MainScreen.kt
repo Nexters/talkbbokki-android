@@ -35,11 +35,11 @@ import com.hammer.talkbbokki.ui.theme.talkbbokkiTypography
 @Composable
 fun MainRoute(
     modifier: Modifier = Modifier,
-    onClickToTopicList: (String) -> Unit,
+    onClickLevel: (String) -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val categoryLevel by viewModel.categoryLevel.collectAsState()
-    MainScreen(categoryLevel) { onClickToTopicList(it) }
+    MainScreen(categoryLevel) { onClickLevel(it) }
 }
 
 @Composable
