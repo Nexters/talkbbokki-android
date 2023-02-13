@@ -1,26 +1,29 @@
 package com.hammer.talkbbokki.presentation.main
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.Card
-import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -31,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
+import com.hammer.talkbbokki.ui.theme.White
 
 @Composable
 fun MainRoute(
@@ -52,8 +56,6 @@ fun MainScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MainBackgroundColor)
-            .padding(20.dp),
-        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         MainHeader()
         CategoryLevels(categoryLevel) {
@@ -65,20 +67,44 @@ fun MainScreen(
 
 @Composable
 fun MainHeader() {
-    Column {
-//        Divider(modifier = Modifier.padding(top = 90.dp))
-        Text(
-            text = stringResource(id = R.string.main_sub_title),
-            style = TalkbbokkiTypography.b3_regular,
-            color = Color.White
-        )
-        Divider(modifier = Modifier.padding(top = 6.dp))
-        Text(
-            text = stringResource(id = R.string.main_title),
-            style = TalkbbokkiTypography.h1,
-            color = Color.White
-        )
-        Divider(modifier = Modifier.padding(top = 20.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+                .padding(top = 24.dp, end = 20.dp, bottom = 12.dp),
+            horizontalAlignment = Alignment.End
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_like_list),
+                contentDescription = null,
+                tint = White
+            )
+        }
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.padding(top = 40.dp, start = 20.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.main_title),
+                    style = TalkbbokkiTypography.h1,
+                    color = White
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = stringResource(id = R.string.main_sub_title),
+                    style = TalkbbokkiTypography.b3_regular,
+                    color = White
+                )
+                Spacer(modifier = Modifier.height(52.dp))
+            }
+            Image(
+                painter = painterResource(id = R.drawable.image_main_graphic),
+                contentDescription = null,
+                modifier = Modifier.align(Alignment.TopEnd)
+            )
+        }
     }
 }
 
@@ -88,9 +114,10 @@ fun CategoryLevels(
     onClickLevel: (String) -> Unit
 ) {
     LazyVerticalGrid(
+        modifier = Modifier.padding(start = 20.dp, end = 20.dp),
         columns = GridCells.Fixed(2),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         userScrollEnabled = false
     ) {
         items(categoryLevel) {
