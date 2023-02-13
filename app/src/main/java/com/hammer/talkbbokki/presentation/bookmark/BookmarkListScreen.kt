@@ -35,7 +35,7 @@ import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
 import com.hammer.talkbbokki.ui.theme.Purple200
-import com.hammer.talkbbokki.ui.theme.talkbbokkiTypography
+import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 
 @Composable
 fun BookMarkRoute(
@@ -82,7 +82,7 @@ fun BookmarkHeader(
             )
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.icon_arrow2),
+            painter = painterResource(id = R.drawable.ic_arrow_left),
             contentDescription = null,
             tint = Color.White,
             modifier = Modifier.clickable {
@@ -92,7 +92,7 @@ fun BookmarkHeader(
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = stringResource(id = R.string.bookmark_header_title),
-            style = talkbbokkiTypography.h2_bold,
+            style = TalkbbokkiTypography.h2_bold,
             color = Color.White
         )
         Spacer(modifier = Modifier.height(36.dp))
@@ -127,7 +127,7 @@ fun BookmarkList(
 fun BookmarkTotalCount(totalCount: Int) {
     Text(
         text = stringResource(id = R.string.bookmark_total_count, totalCount),
-        style = talkbbokkiTypography.b2_regular,
+        style = TalkbbokkiTypography.b2_regular,
         color = Color.White
     )
 }
