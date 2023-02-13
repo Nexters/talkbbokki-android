@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">talkbbokki</string>
 
+    <string name="main_title">Let’s\nBBOKKI !</string>
+    <string name="main_sub_title">긴 --- 침묵은 이제 그만</string>
+
+    <string name="main_level1_title">아직 인사만\n하는 사이</string>
+    <string name="main_level2_title">우리, 커피 \n같이 먹는 사이</string>
+    <string name="main_level3_title">이젠, 간맥\n하는 사이</string>
+    <string name="main_level4_title">만취한 모습\n보여주는 사이</string>
+
     <string name="bookmark_header_title">기억하고 싶은 대화 주제,\n여기 다 - 모아뒀어요</string>
     <string name="bookmark_total_count">총 %d개</string>
     <string name="bookmark_empty_list">아직 즐겨찾기한 토픽이 없어요</string>
