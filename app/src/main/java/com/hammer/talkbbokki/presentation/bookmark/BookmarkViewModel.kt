@@ -2,6 +2,7 @@ package com.hammer.talkbbokki.presentation.bookmark
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.usecase.BookmarkUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -13,22 +14,15 @@ import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
 class BookmarkViewModel @Inject constructor(
-    private val bookmarkUseCase: BookmarkUseCase
+    bookmarkUseCase: BookmarkUseCase
 ) : ViewModel() {
-
-    val bookmarkUiState: StateFlow<BookmarkUiState> = bookmarkUseCase.getBookmarkList()
-        .catch { e: Throwable ->
-            BookmarkUiState.Error(e.message)
-        }
+    val bookmarkList: StateFlow<List<TopicItem>> = bookmarkUseCase.getBookmarkList()
+        .catch { }
         .map {
-            if (it.isEmpty()) {
-                BookmarkUiState.Empty
-            } else {
-                BookmarkUiState.Success(it)
-            }
+            it
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = BookmarkUiState.Loading
+            initialValue = emptyList()
         )
 }
