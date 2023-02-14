@@ -49,16 +49,22 @@ import com.hammer.talkbbokki.ui.theme.suggestionButtonColor
 @Composable
 fun MainRoute(
     modifier: Modifier = Modifier,
+    onClickBookmarkMenu: () -> Unit,
     onClickLevel: (String) -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val categoryLevel by viewModel.categoryLevel.collectAsState()
-    MainScreen(categoryLevel) { onClickLevel(it) }
+    MainScreen(
+        categoryLevel,
+        onClickBookmarkMenu = { onClickBookmarkMenu() },
+        onClickLevel = { onClickLevel(it) }
+    )
 }
 
 @Composable
 fun MainScreen(
     categoryLevel: List<CategoryLevel>,
+    onClickBookmarkMenu: () -> Unit,
     onClickLevel: (String) -> Unit
 ) {
     val context = LocalContext.current
@@ -67,7 +73,7 @@ fun MainScreen(
             .fillMaxSize()
             .background(MainBackgroundColor)
     ) {
-        MainHeader()
+        MainHeader { onClickBookmarkMenu() }
         CategoryLevels(categoryLevel) {
             onClickLevel(it)
             Toast.makeText(context, "click $it", Toast.LENGTH_SHORT).show()
@@ -78,7 +84,9 @@ fun MainScreen(
 }
 
 @Composable
-fun MainHeader() {
+fun MainHeader(
+    onClickBookmarkMenu: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -89,6 +97,7 @@ fun MainHeader() {
             horizontalAlignment = Alignment.End
         ) {
             Icon(
+                modifier = Modifier.clickable { onClickBookmarkMenu() },
                 painter = painterResource(id = R.drawable.ic_like_list),
                 contentDescription = null,
                 tint = White

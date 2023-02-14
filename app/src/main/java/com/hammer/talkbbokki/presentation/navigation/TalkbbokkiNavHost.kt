@@ -28,7 +28,8 @@ fun TalkbbokkiNavHost(
             navigateToTopicList = { navController.navigate(TopicListDestination.route) }
         )
         mainGraph(
-            navigateToList = { navController.navigate(TopicListDestination.route) }
+            navigateToList = { navController.navigate(TopicListDestination.route) },
+            navigateToBookmark = { }
         )
         topicListGraph(
             navigateToDetail = { id ->
