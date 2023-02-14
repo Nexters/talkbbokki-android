@@ -18,7 +18,7 @@ import com.hammer.talkbbokki.presentation.topics.topicListGraph
 fun TalkbbokkiNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = MainDestination.route
+    startDestination: String = BookmarkDestination.route
 ) {
     NavHost(
         navController = navController,
@@ -43,6 +43,8 @@ fun TalkbbokkiNavHost(
                 navController.popBackStack()
             }
         )
-        bookmarkGraph()
+        bookmarkGraph(
+            onBackClick = { navController.popBackStack() }
+        )
     }
 }

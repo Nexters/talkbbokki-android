@@ -9,8 +9,10 @@ object BookmarkDestination : TalkbbokkiNavigationDestination {
         get() = "bookmark_route"
 }
 
-fun NavGraphBuilder.bookmarkGraph() {
+fun NavGraphBuilder.bookmarkGraph(
+    onBackClick: () -> Unit
+) {
     composable(route = BookmarkDestination.route) {
-        BookMarkRoute()
+        BookMarkRoute(onBackClick = onBackClick)
     }
 }

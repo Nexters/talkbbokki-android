@@ -3,8 +3,6 @@ package com.hammer.talkbbokki.presentation.bookmark
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
@@ -40,53 +37,60 @@ import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.ui.theme.Black
 import com.hammer.talkbbokki.ui.theme.Gray06
-import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
+import com.hammer.talkbbokki.ui.theme.MainColor02
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 
 @Composable
 fun BookMarkRoute(
     modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
     viewModel: BookmarkViewModel = hiltViewModel()
 ) {
     val bookmarkUiState by viewModel.bookmarkUiState.collectAsState()
-    BookMarkScreen(bookmarkUiState)
+    BookMarkScreen(bookmarkUiState) { onBackClick() }
 }
 
 @Composable
-fun BookMarkScreen(bookmarkUiState: BookmarkUiState) {
+fun BookMarkScreen(
+    bookmarkUiState: BookmarkUiState,
+    onBackClick: () -> Unit
+) {
     val context = LocalContext.current
-    val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .scrollable(state = scrollState, orientation = Orientation.Vertical)
-            .background(MainBackgroundColor)
+        modifier = Modifier.background(MainColor02)
     ) {
-        BookmarkHeader { /* 뒤로가기 */ }
-        when (bookmarkUiState) {
-            is BookmarkUiState.Success -> BookmarkList(bookmarkUiState.list) { /* 상세로 이동 */ }
-            is BookmarkUiState.Empty -> BookmarkEmpty()
-            is BookmarkUiState.Error -> Toast.makeText(
-                context,
-                "error : ${bookmarkUiState.message}",
-                Toast.LENGTH_SHORT
-            ).show()
-            is BookmarkUiState.Loading -> CircularProgressIndicator()
+        BookmarkTopAppBar { onBackClick() }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            BookmarkHeader()
+            when (bookmarkUiState) {
+                is BookmarkUiState.Success -> BookmarkList(bookmarkUiState.list) { /* 상세로 이동 */ }
+                is BookmarkUiState.Empty -> BookmarkEmpty()
+                is BookmarkUiState.Error -> Toast.makeText(
+                    context,
+                    "error : ${bookmarkUiState.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                is BookmarkUiState.Loading -> CircularProgressIndicator()
+            }
         }
     }
 }
 
 @Composable
-fun BookmarkHeader(
+fun BookmarkTopAppBar(
     onClickBack: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .height(58.dp)
             .padding(
                 top = 16.dp,
                 start = 20.dp,
-                end = 20.dp
+                bottom = 16.dp
             )
     ) {
         Icon(
@@ -97,7 +101,20 @@ fun BookmarkHeader(
                 onClickBack()
             }
         )
-        Spacer(modifier = Modifier.height(24.dp))
+    }
+}
+
+@Composable
+fun BookmarkHeader() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                top = 8.dp,
+                start = 20.dp,
+                end = 20.dp
+            )
+    ) {
         Text(
             text = stringResource(id = R.string.bookmark_header_title),
             style = TalkbbokkiTypography.h2_bold,
