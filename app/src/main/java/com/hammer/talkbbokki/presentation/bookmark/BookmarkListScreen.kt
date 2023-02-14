@@ -24,6 +24,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
+import com.hammer.talkbbokki.ui.dialog.BookmarkCancelDialog
 import com.hammer.talkbbokki.ui.theme.Black
 import com.hammer.talkbbokki.ui.theme.Gray04
 import com.hammer.talkbbokki.ui.theme.Gray06
@@ -56,6 +60,17 @@ fun BookMarkScreen(
     onClickItem: (TopicItem) -> Unit,
     onBackClick: () -> Unit
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        BookmarkCancelDialog(
+            textRes = R.string.bookmark_cancel_dialog_text,
+            subTextRes = R.string.bookmark_cancel_dialog_subtext,
+            agreeTextRes = R.string.bookmark_cancel_dialog_agree,
+            agreeAction = { },
+            disagreeTextRes = R.string.bookmark_cancel_dialog_disagree,
+            disagreeAction = {}
+        )
+    }
     Column(
         modifier = Modifier.background(MainColor02)
             .padding(start = 20.dp, end = 20.dp)
@@ -78,7 +93,13 @@ fun BookMarkScreen(
                 }
             } else {
                 items(bookmarks) {
-                    BookmarkItem(it) { item -> onClickItem(item) }
+                    BookmarkItem(
+                        it,
+                        onClickItem = { item -> onClickItem(item) },
+                        onToggleBookmark = {
+                            showDialog = !showDialog
+                        }
+                    )
                 }
             }
         }
@@ -134,7 +155,8 @@ fun BookmarkHeader(totalCount: Int) {
 @Composable
 fun BookmarkItem(
     item: TopicItem,
-    onClickItem: (TopicItem) -> Unit
+    onClickItem: (TopicItem) -> Unit,
+    onToggleBookmark: (Boolean) -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -150,7 +172,9 @@ fun BookmarkItem(
                 .padding(16.dp)
         ) {
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = item.tag,
@@ -160,7 +184,8 @@ fun BookmarkItem(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_star_fill),
                     tint = Gray06,
-                    contentDescription = null
+                    contentDescription = null,
+                    modifier = Modifier.clickable { onToggleBookmark(!item.isBookmark) }
                 )
             }
             Spacer(modifier = Modifier.height(10.dp))

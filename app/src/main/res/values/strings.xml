@@ -12,4 +12,8 @@
     <string name="bookmark_header_title">기억하고 싶은 대화 주제,\n여기 다 - 모아뒀어요</string>
     <string name="bookmark_total_count">총 %d개</string>
     <string name="bookmark_empty_list">아직 즐겨찾기한 토픽이 없어요</string>
+    <string name="bookmark_cancel_dialog_text">취소하면 이 주제는 다시 보기 어려워요. 그래도 즐겨찾기를 취소하시겠어요?</string>
+    <string name="bookmark_cancel_dialog_subtext">* 이 문구는 하루에 한 번만 노출됩니다.</string>
+    <string name="bookmark_cancel_dialog_disagree">안할래요</string>
+    <string name="bookmark_cancel_dialog_agree">그래도 할래요</string>
 </resources>
