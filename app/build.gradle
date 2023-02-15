@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.compose.coil)
     implementation(libs.compose.hilt.navigation.compose)
+    implementation(libs.compose.lottie)
 
     testImplementation (libs.junit)
     androidTestImplementation(libs.androidx.test.ext)
