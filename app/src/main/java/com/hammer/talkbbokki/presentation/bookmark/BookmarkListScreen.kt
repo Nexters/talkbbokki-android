@@ -47,28 +47,40 @@ import com.hammer.talkbbokki.ui.theme.White
 @Composable
 fun BookMarkRoute(
     modifier: Modifier = Modifier,
+    navigateToDetail: (TopicItem) -> Unit,
     onBackClick: () -> Unit,
     viewModel: BookmarkViewModel = hiltViewModel()
 ) {
     val bookmarkList by viewModel.bookmarkList.collectAsState()
-    BookMarkScreen(bookmarkList, {}, { onBackClick() })
+    BookMarkScreen(
+        bookmarkList,
+        onClickItem = { navigateToDetail(it) },
+        removeBookmark = { viewModel.removeBookmark(it) },
+        onBackClick = { onBackClick() }
+    )
 }
 
 @Composable
 fun BookMarkScreen(
     bookmarks: List<TopicItem>,
     onClickItem: (TopicItem) -> Unit,
+    removeBookmark: (Int) -> Unit,
     onBackClick: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    var selectItem by remember { mutableStateOf(-1) }
+
     if (showDialog) {
         BookmarkCancelDialog(
             textRes = R.string.bookmark_cancel_dialog_text,
             subTextRes = R.string.bookmark_cancel_dialog_subtext,
             agreeTextRes = R.string.bookmark_cancel_dialog_agree,
-            agreeAction = { },
+            agreeAction = {
+                removeBookmark(selectItem)
+                showDialog = false
+            },
             disagreeTextRes = R.string.bookmark_cancel_dialog_disagree,
-            disagreeAction = {}
+            disagreeAction = { showDialog = false }
         )
     }
     Column(
@@ -96,7 +108,8 @@ fun BookMarkScreen(
                     BookmarkItem(
                         it,
                         onClickItem = { item -> onClickItem(item) },
-                        onToggleBookmark = {
+                        onToggleBookmark = { id ->
+                            selectItem = id
                             showDialog = !showDialog
                         }
                     )
@@ -156,7 +169,7 @@ fun BookmarkHeader(totalCount: Int) {
 fun BookmarkItem(
     item: TopicItem,
     onClickItem: (TopicItem) -> Unit,
-    onToggleBookmark: (Boolean) -> Unit
+    onToggleBookmark: (Int) -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -185,7 +198,7 @@ fun BookmarkItem(
                     painter = painterResource(id = R.drawable.ic_star_fill),
                     tint = Gray06,
                     contentDescription = null,
-                    modifier = Modifier.clickable { onToggleBookmark(!item.isBookmark) }
+                    modifier = Modifier.clickable { onToggleBookmark(item.id) }
                 )
             }
             Spacer(modifier = Modifier.height(10.dp))

@@ -44,6 +44,9 @@ fun TalkbbokkiNavHost(
             }
         )
         bookmarkGraph(
+            navigateToDetail = { item ->
+                navController.navigate(DetailDestination.route + "/${item.id}")
+            },
             onBackClick = { navController.popBackStack() }
         )
     }
