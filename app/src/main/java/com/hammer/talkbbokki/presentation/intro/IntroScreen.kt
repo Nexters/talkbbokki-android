@@ -1,8 +1,7 @@
 package com.hammer.talkbbokki.presentation.intro
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,23 +17,15 @@ import com.hammer.talkbbokki.ui.theme.MainColor02
 
 @Composable
 fun IntroRoute(
-    onClickToMain: () -> Unit,
-    onClickToTopicList: () -> Unit
+    navigateToMain: () -> Unit
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MainColor02),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        contentAlignment = Alignment.Center
     ) {
-        SplashLogo { onClickToMain() }
-        /*Button(onClick = { onClickToMain() }) {
-            Text(text = "메인 화면")
-        }
-        Button(onClick = { onClickToTopicList() }) {
-            Text(text = "카드 리스트")
-        }*/
+        SplashLogo { navigateToMain() }
     }
 }
 

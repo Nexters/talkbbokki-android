@@ -10,13 +10,11 @@ object IntroDestination : TalkbbokkiNavigationDestination {
 }
 
 fun NavGraphBuilder.introGraph(
-    navigateToMain: () -> Unit,
-    navigateToTopicList: () -> Unit
+    navigateToMain: () -> Unit
 ) {
     composable(route = IntroDestination.route) {
         IntroRoute(
-            onClickToMain = navigateToMain,
-            onClickToTopicList = navigateToTopicList
+            onClickToMain = navigateToMain
         )
     }
 }

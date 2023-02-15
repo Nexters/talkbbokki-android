@@ -25,8 +25,8 @@ fun TalkbbokkiNavHost(
         modifier = modifier
     ) {
         introGraph(
-            navigateToMain = { navController.navigate(MainDestination.route) },
-            navigateToTopicList = { navController.navigate(TopicListDestination.route) }
+            navigateToMain = { navController.navigate(MainDestination.route) }
+        )
         )
         mainGraph(
             navigateToList = { navController.navigate(TopicListDestination.route) },
