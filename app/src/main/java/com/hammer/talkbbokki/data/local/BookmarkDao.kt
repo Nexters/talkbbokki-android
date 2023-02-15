@@ -1,7 +1,6 @@
 package com.hammer.talkbbokki.data.local
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.hammer.talkbbokki.data.entity.TopicItemEntity
@@ -15,8 +14,8 @@ internal interface BookmarkDao {
     @Insert
     fun addBookmark(item: TopicItemEntity)
 
-    @Delete
-    fun removeBookmark(item: TopicItemEntity)
+    @Query("DELETE FROM TopicItemEntity WHERE id = :id")
+    fun removeBookmark(id: Int)
 
     @Query("DELETE FROM TopicItemEntity")
     fun deleteAllBookmark()

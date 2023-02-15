@@ -111,4 +111,8 @@ internal class BookmarkRepositoryImpl @Inject constructor(
             )
         )
     }
+
+    override fun removeBookmark(id: Int) {
+        dao.removeBookmark(id)
+    }
 }

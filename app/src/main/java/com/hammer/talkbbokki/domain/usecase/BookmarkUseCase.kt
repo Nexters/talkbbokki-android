@@ -10,4 +10,7 @@ class BookmarkUseCase @Inject constructor(
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) {
     fun getBookmarkList() = repository.getBookmarkList()
+
+    fun removeBookmark(id: Int) {
+    }
 }

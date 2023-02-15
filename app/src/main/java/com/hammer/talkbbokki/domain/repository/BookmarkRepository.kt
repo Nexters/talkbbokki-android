@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface BookmarkRepository {
     fun getBookmarkList(): Flow<List<TopicItem>>
+
+    fun removeBookmark(id: Int)
 }
