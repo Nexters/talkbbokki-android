@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.hammer.talkbbokki.presentation.showInterstitial
+import com.hammer.talkbbokki.presentation.showRewardedAd
 
 @Composable
 fun IntroRoute(
@@ -50,5 +50,5 @@ fun IntroRoute(
 fun showAds(
     navigateToList: () -> Unit
 ) {
-    showInterstitial(LocalContext.current) { navigateToList() }
+    showRewardedAd(LocalContext.current) { navigateToList() }
 }
