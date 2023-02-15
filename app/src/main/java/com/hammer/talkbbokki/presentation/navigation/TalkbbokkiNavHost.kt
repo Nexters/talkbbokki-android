@@ -10,6 +10,8 @@ import com.hammer.talkbbokki.presentation.intro.IntroDestination
 import com.hammer.talkbbokki.presentation.intro.introGraph
 import com.hammer.talkbbokki.presentation.main.MainDestination
 import com.hammer.talkbbokki.presentation.main.mainGraph
+import com.hammer.talkbbokki.presentation.onboarding.OnBoardingDestination
+import com.hammer.talkbbokki.presentation.onboarding.onboardingGraph
 import com.hammer.talkbbokki.presentation.topics.TopicListDestination
 import com.hammer.talkbbokki.presentation.topics.topicListGraph
 
@@ -25,8 +27,10 @@ fun TalkbbokkiNavHost(
         modifier = modifier
     ) {
         introGraph(
-            navigateToMain = { navController.navigate(MainDestination.route) }
+            navigateToMain = { navController.navigate(OnBoardingDestination.route) }
         )
+        onboardingGraph(
+            navigateToMain = { navController.navigate(MainDestination.route) }
         )
         mainGraph(
             navigateToList = { navController.navigate(TopicListDestination.route) },
