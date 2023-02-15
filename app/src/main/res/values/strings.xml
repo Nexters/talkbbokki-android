@@ -3,4 +3,14 @@
 
     <string name="admob_app_id">ca-app-pub-6775338233067833~3697888039</string>
     <string name="admob_ads_id">ca-app-pub-6775338233067833/5087809569</string>
+
+    <string name="main_title">Let’s\nBBOKKI !</string>
+    <string name="main_sub_title">친밀도를 골라보세요!\n딱 - 맞는 대화주제 추천 해줄게요.</string>
+
+    <string name="main_level1_title">아직 인사만\n하는 사이</string>
+    <string name="main_level2_title">우리 점심\n먹는 사이</string>
+    <string name="main_level3_title">이젠 술 한잔\n하는 사이</string>
+    <string name="main_level4_title">COMING\nSOON</string>
+    <string name="main_suggestion_topic">이런 토픽 왜없어?</string>
+    <string name="main_suggestion_topic_button">제안하기</string>
 </resources>

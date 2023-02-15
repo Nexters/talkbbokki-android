@@ -1,8 +1,5 @@
 package com.hammer.talkbbokki.presentation.topics
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animate
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
@@ -26,22 +23,21 @@ import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlin.math.absoluteValue
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @Composable
 fun TopicListRoute(
     modifier: Modifier = Modifier,
+    onClickToDetail: (id : String) -> Unit,
     viewModel: TopicListViewModel = hiltViewModel()
 ) {
     val topicList by viewModel.topicList.collectAsState()
-    TopicListScreen()
+    TopicListScreen(onClickToDetail = onClickToDetail)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TopicListScreen(modifier: Modifier = Modifier) {
+fun TopicListScreen(modifier: Modifier = Modifier, onClickToDetail: (id : String) -> Unit) {
     val listState = rememberLazyListState()
     val itemWidth = with(LocalDensity.current) { 120.dp.toPx() }
     val currentIndex = remember { derivedStateOf { listState.firstVisibleItemIndex } }
@@ -56,6 +52,8 @@ fun TopicListScreen(modifier: Modifier = Modifier) {
 
     val cardList = (0..10).toList()
     BoxWithConstraints {
+        var index = ""
+
         // 대화 주제 리스트
         LazyRow(
             state = listState,
@@ -68,19 +66,15 @@ fun TopicListScreen(modifier: Modifier = Modifier) {
             )
         ) {
             itemsIndexed(cardList) { definiteIndex, item ->
+                index = currentOffset.roundToInt().toString()
                 CardItems(definiteIndex, currentOffset)
             }
         }
 
-        // 카드 플립 애니메이션
-        if (isVisible) {
-            Box(modifier = modifier.align(Alignment.Center)) {
-                CardAnimation()
-            }
-        }
-
         Button(
-            onClick = { isVisible = isVisible.not() },
+            onClick = { /*isVisible = isVisible.not()*/
+                onClickToDetail(index)
+            },
             modifier = modifier.align(Alignment.BottomCenter)
         ) {
             Text("카드 선택")
@@ -159,91 +153,6 @@ fun CardItems(definiteIndex: Int, currentOffset: Float) {
             Text(
                 text = definiteIndex.toString()
             )
-        }
-    }
-}
-
-@Composable
-fun CardAnimation() {
-    var scale by remember { mutableStateOf(1f) }
-    var rotationY by remember { mutableStateOf(0f) }
-    var cardAlpha by remember { mutableStateOf(1f) }
-
-    // Specify the key that should trigger the animation (e.g: when one part of your state changes)
-    // If you keep Unit, the animation will run at the first time composition
-    Card(
-        modifier = Modifier
-            .graphicsLayer(
-                alpha = cardAlpha,
-                scaleX = scale,
-                scaleY = scale,
-                rotationY = rotationY,
-                cameraDistance = 12f
-            )
-            .width(192.dp)
-            .aspectRatio(0.7f)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-        ) {
-        }
-    }
-
-    LaunchedEffect(key1 = Unit) {
-        // 살짝 커지기
-        animate(initialValue = 1f, targetValue = 1.8f) { value, _ ->
-            scale = value
-        }
-        val transformationAnimationSpec = tween<Float>(
-            durationMillis = 1000,
-            easing = FastOutSlowInEasing
-        )
-        // Core animation
-        coroutineScope {
-            launch {
-                val rotationAnimationSpec = tween<Float>(
-                    durationMillis = 800,
-                    easing = FastOutSlowInEasing
-                )
-
-                // 카드 180도 뒤집기
-                animate(
-                    initialValue = 0f,
-                    targetValue = 180f,
-                    animationSpec = rotationAnimationSpec
-                ) { value, _ ->
-                    rotationY = value
-                }
-            }
-        }
-
-        // Delay before starting exit animation
-        delay(30)
-
-        // Exit animation
-        coroutineScope {
-            // 카드 더 커지기
-            launch {
-                animate(
-                    initialValue = 1.8f,
-                    targetValue = 3f,
-                    animationSpec = transformationAnimationSpec
-                ) { value: Float, _: Float ->
-                    scale = value
-                }
-            }
-            // fade out 처리
-            launch {
-                animate(
-                    initialValue = 1f,
-                    targetValue = 0f,
-                    animationSpec = transformationAnimationSpec
-                ) { value: Float, _: Float ->
-                    cardAlpha = value
-                }
-            }
         }
     }
 }
