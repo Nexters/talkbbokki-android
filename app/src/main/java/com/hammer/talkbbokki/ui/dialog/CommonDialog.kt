@@ -61,10 +61,10 @@ fun CommonDialog(
     disagreeAction: (() -> Unit)? = null,
     showIcon: Boolean = true
 ) {
-    Dialog(onDismissRequest = {}) {
+    Dialog(onDismissRequest = { disagreeAction?.invoke() }) {
         Surface(
             modifier = Modifier
-                .width(300.dp)
+                .width(304.dp)
                 .wrapContentHeight(),
             shape = RoundedCornerShape(8.dp),
             color = White
@@ -108,6 +108,7 @@ fun DialogContent(
                 painter = painterResource(id = R.drawable.image_cancel_face),
                 contentDescription = null
             )
+            Spacer(modifier = Modifier.height(16.dp))
         }
         Text(
             text = text,
@@ -127,6 +128,7 @@ fun DialogContent(
             if (disagreeText != null && disagreeAction != null) {
                 Text(
                     modifier = Modifier
+                        .weight(1f)
                         .background(
                             color = MainColor01,
                             shape = RoundedCornerShape(8.dp)
@@ -141,6 +143,7 @@ fun DialogContent(
             }
             Text(
                 modifier = Modifier
+                    .weight(1f)
                     .background(
                         color = buttonBackgroundColor,
                         shape = RoundedCornerShape(8.dp)
