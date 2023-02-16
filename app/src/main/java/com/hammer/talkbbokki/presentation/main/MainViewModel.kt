@@ -1,27 +1,27 @@
 package com.hammer.talkbbokki.presentation.main
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import com.hammer.talkbbokki.R
-import com.hammer.talkbbokki.ui.theme.Category01
-import com.hammer.talkbbokki.ui.theme.Category02
-import com.hammer.talkbbokki.ui.theme.Category03
-import com.hammer.talkbbokki.ui.theme.Gray06
+import androidx.lifecycle.viewModelScope
+import com.hammer.talkbbokki.domain.model.CategoryLevel
+import com.hammer.talkbbokki.domain.usecase.CategoryLevelUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
-    private val _categoryLevel: MutableStateFlow<List<CategoryLevel>> = MutableStateFlow(
-        CategoryLevel.values().toList()
-    )
-    val categoryLevel: StateFlow<List<CategoryLevel>> get() = _categoryLevel.asStateFlow()
+class MainViewModel @Inject constructor(
+    useCase: CategoryLevelUseCase
+) : ViewModel() {
+    val categoryLevel: StateFlow<List<CategoryLevel>> = useCase.invoke()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
 }
+/*
 
 enum class CategoryLevel(
     val level: String,
@@ -54,3 +54,4 @@ enum class CategoryLevel(
         backgroundColor = Gray06
     )
 }
+*/

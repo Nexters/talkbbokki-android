@@ -1,6 +1,8 @@
 package com.hammer.talkbbokki.domain.di
 
+import com.hammer.talkbbokki.domain.repository.CategoryLevelRepository
 import com.hammer.talkbbokki.domain.repository.TopicRepository
+import com.hammer.talkbbokki.domain.usecase.CategoryLevelUseCase
 import com.hammer.talkbbokki.domain.usecase.TopicUseCase
 import dagger.Module
 import dagger.Provides
@@ -14,7 +16,13 @@ import kotlinx.coroutines.Dispatchers
 object UseCaseModule {
     @Provides
     @Singleton
-    fun bindsTopicUseCase(
+    fun providesTopicUseCase(
         repository: TopicRepository
     ): TopicUseCase = TopicUseCase(repository, Dispatchers.IO)
+
+    @Provides
+    @Singleton
+    fun providesCategoryLevelUseCase(
+        repository: CategoryLevelRepository
+    ): CategoryLevelUseCase = CategoryLevelUseCase(repository, Dispatchers.IO)
 }
