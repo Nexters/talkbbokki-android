@@ -17,7 +17,7 @@ internal data class CategoryLevelEntity(
         id = code,
         title = text,
         bgColor = bgColor,
-        imageUrl = imageUrl,
+        image = imageUrl,
         isActive = activeYn
     )
 }

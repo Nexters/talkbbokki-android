@@ -4,6 +4,6 @@ data class CategoryLevel(
     val id: String,
     val title: String,
     val bgColor: String,
-    val imageUrl: String,
+    val image: Any,
     val isActive: Boolean
 )

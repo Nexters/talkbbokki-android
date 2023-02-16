@@ -173,10 +173,10 @@ fun LevelItem(
             ) {
                 Image(
                     painter = rememberAsyncImagePainter(
-                        model = level.imageUrl
+                        model = level.image
                     ),
                     contentDescription = null,
-                    modifier = Modifier.width(90.dp)
+                    modifier = Modifier.width(100.dp)
                 )
                 Text(
                     text = level.title,
