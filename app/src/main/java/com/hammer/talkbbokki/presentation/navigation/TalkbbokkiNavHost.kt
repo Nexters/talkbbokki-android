@@ -27,10 +27,18 @@ fun TalkbbokkiNavHost(
         modifier = modifier
     ) {
         introGraph(
-            navigateToMain = { navController.navigate(OnBoardingDestination.route) }
+            navigateToMain = {
+                navController.navigate(OnBoardingDestination.route) {
+                    popUpTo(IntroDestination.route) { inclusive = true }
+                }
+            }
         )
         onboardingGraph(
-            navigateToMain = { navController.navigate(MainDestination.route) }
+            navigateToMain = {
+                navController.navigate(MainDestination.route) {
+                    popUpTo(OnBoardingDestination.route) { inclusive = true }
+                }
+            }
         )
         mainGraph(
             navigateToList = { navController.navigate(TopicListDestination.route) },

@@ -2,7 +2,6 @@ package com.hammer.talkbbokki.presentation.onboarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
@@ -27,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,6 +42,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.ui.button.ButtonType
+import com.hammer.talkbbokki.ui.button.CommonLargeButton
 import com.hammer.talkbbokki.ui.theme.Gray04
 import com.hammer.talkbbokki.ui.theme.Gray06
 import com.hammer.talkbbokki.ui.theme.MainColor01
@@ -98,59 +99,78 @@ fun OnBoardingPager(
                 .fillMaxWidth()
                 .height(512.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-                Text(
-                    text = stringResource(id = list[it].subTitleRes),
-                    style = TalkbbokkiTypography.b3_regular,
-                    color = Gray04
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = stringResource(id = list[it].titleRes),
-                    style = TalkbbokkiTypography.h2_bold,
-                    color = White,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(54.dp))
-                if (list[it].imageRes == null) {
-                    OnBoardingAnimation()
-                } else {
-                    Image(
-                        modifier = Modifier.fillMaxWidth(),
-                        painter = painterResource(id = list[it].imageRes!!),
-                        contentDescription = null,
-                        contentScale = ContentScale.Fit
-                    )
+            onBoardingChildPage(
+                title = stringResource(id = list[it].titleRes),
+                subTitle = stringResource(id = list[it].subTitleRes),
+                image = list[it].imageRes?.let { painterResource(id = it) }
+            )
+        }
+    }
+
+    val buttonText = if (pagerState.currentPage == list.lastIndex) {
+        R.string.onboarding_button_start
+    } else {
+        R.string.onboarding_button_next
+    }
+    val buttonType = if (pagerState.currentPage == list.lastIndex) {
+        ButtonType.LargePink
+    } else {
+        ButtonType.LargeWhite
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 20.dp, end = 20.dp, bottom = 16.dp),
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        CommonLargeButton(
+            text = stringResource(id = buttonText),
+            type = buttonType
+        ) {
+            if (pagerState.currentPage < list.lastIndex) {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
                 }
+            } else {
+                navigateToMain()
             }
         }
-        Spacer(modifier = Modifier.height(40.dp))
-        val buttonColor = if (pagerState.currentPage == list.lastIndex) MainColor01 else White
-        val buttonTextColor = if (pagerState.currentPage == list.lastIndex) White else MainColor01
-        val buttonText = if (pagerState.currentPage == list.lastIndex) R.string.onboarding_button_start else R.string.onboarding_button_next
+    }
+}
+
+@Composable
+fun onBoardingChildPage(
+    title: String,
+    subTitle: String,
+    image: Painter?
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
         Text(
-            modifier = Modifier
-                .width(320.dp)
-                .background(color = buttonColor, shape = RoundedCornerShape(8.dp))
-                .clip(shape = RoundedCornerShape(8.dp))
-                .clickable {
-                    if (pagerState.currentPage < list.lastIndex) {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                        }
-                    } else {
-                        navigateToMain()
-                    }
-                }
-                .padding(20.dp),
-            text = stringResource(id = buttonText),
-            style = TalkbbokkiTypography.button_large,
-            color = buttonTextColor,
+            text = subTitle,
+            style = TalkbbokkiTypography.b3_regular,
+            color = Gray04
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = title,
+            style = TalkbbokkiTypography.h2_bold,
+            color = White,
             textAlign = TextAlign.Center
         )
+        Spacer(modifier = Modifier.height(54.dp))
+        if (image == null) {
+            OnBoardingAnimation()
+        } else {
+            Image(
+                modifier = Modifier.fillMaxWidth(),
+                painter = image,
+                contentDescription = null,
+                contentScale = ContentScale.Fit
+            )
+        }
     }
 }
 
