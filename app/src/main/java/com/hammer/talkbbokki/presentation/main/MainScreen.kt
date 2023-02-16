@@ -38,13 +38,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.domain.model.CategoryLevel
 import com.hammer.talkbbokki.ui.theme.Gray04
 import com.hammer.talkbbokki.ui.theme.Gray07
 import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import com.hammer.talkbbokki.ui.theme.White
 import com.hammer.talkbbokki.ui.theme.suggestionButtonColor
+import com.hammer.talkbbokki.ui.util.toHexColor
 
 @Composable
 fun MainRoute(
@@ -158,23 +161,25 @@ fun LevelItem(
             modifier = Modifier.fillMaxSize(),
             shape = RoundedCornerShape(8.dp),
             onClick = {
-                onClickLevel(level.level)
+                onClickLevel(level.id)
             }
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(level.backgroundColor),
+                    .background(level.bgColor.toHexColor()),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    modifier = Modifier.width(100.dp),
-                    painter = painterResource(id = level.icon),
-                    contentDescription = null
+                    painter = rememberAsyncImagePainter(
+                        model = level.imageUrl
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier.width(90.dp)
                 )
                 Text(
-                    text = stringResource(id = level.title),
+                    text = level.title,
                     style = TalkbbokkiTypography.b2_bold,
                     color = White,
                     textAlign = TextAlign.Center
