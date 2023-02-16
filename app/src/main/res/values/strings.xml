@@ -2,8 +2,11 @@
     <string name="app_name">톡뽀끼</string>
 
     <string name="onboarding_title_1">친밀도만 선택하세요!\n대화주제 제안해드려요</string>
+    <string name="onboarding_title_highlight_1">친밀도</string>
     <string name="onboarding_title_2">톡뽀끼가 제안하는\n오늘의 STARTER!</string>
+    <string name="onboarding_title_highlight_2">STARTER</string>
     <string name="onboarding_title_3">뽑은 대화주제\n손쉽게 공유하세요!</string>
+    <string name="onboarding_title_highlight_3">공유</string>
     <string name="onboarding_subtitle_1">대화 주제 고민은 그만!</string>
     <string name="onboarding_subtitle_2">오늘은 누구부터 이야기 해볼까요?</string>
     <string name="onboarding_subtitle_3">온라인이든, 오프라인이든 상관없어요!</string>

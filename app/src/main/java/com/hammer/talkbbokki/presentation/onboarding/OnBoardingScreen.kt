@@ -29,7 +29,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
@@ -50,6 +53,7 @@ import com.hammer.talkbbokki.ui.theme.MainColor01
 import com.hammer.talkbbokki.ui.theme.MainColor02
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import com.hammer.talkbbokki.ui.theme.White
+import com.hammer.talkbbokki.ui.util.getHighlightIndex
 import kotlinx.coroutines.launch
 
 @Composable
@@ -99,9 +103,10 @@ fun OnBoardingPager(
                 .fillMaxWidth()
                 .height(512.dp)
         ) {
-            onBoardingChildPage(
+            OnBoardingChildPage(
                 title = stringResource(id = list[it].titleRes),
                 subTitle = stringResource(id = list[it].subTitleRes),
+                highlight = stringResource(id = list[it].highlightRes),
                 image = list[it].imageRes?.let { painterResource(id = it) }
             )
         }
@@ -139,9 +144,10 @@ fun OnBoardingPager(
 }
 
 @Composable
-fun onBoardingChildPage(
+fun OnBoardingChildPage(
     title: String,
     subTitle: String,
+    highlight: String,
     image: Painter?
 ) {
     Column(
@@ -154,10 +160,18 @@ fun onBoardingChildPage(
             color = Gray04
         )
         Spacer(modifier = Modifier.height(8.dp))
+        val range = title.getHighlightIndex(highlight)
+        val highlightString = buildAnnotatedString {
+            title.forEachIndexed { index, char ->
+                val isPink = if (range != null && index in range) MainColor01 else White
+                withStyle(style = SpanStyle(color = isPink)) {
+                    append(char)
+                }
+            }
+        }
         Text(
-            text = title,
+            text = highlightString,
             style = TalkbbokkiTypography.h2_bold,
-            color = White,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(54.dp))
