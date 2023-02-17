@@ -36,14 +36,14 @@ import com.hammer.talkbbokki.ui.theme.White
 @Composable
 fun BookmarkCancelDialog(
     @StringRes textRes: Int,
-    @StringRes subTextRes: Int,
+    @StringRes subTextRes: Int?,
     @StringRes agreeTextRes: Int,
     agreeAction: () -> Unit,
     @StringRes disagreeTextRes: Int,
     disagreeAction: () -> Unit
 ) = CommonDialog(
     stringResource(id = textRes),
-    stringResource(id = subTextRes),
+    subTextRes?.let { stringResource(id = it) },
     stringResource(id = agreeTextRes),
     agreeAction,
     stringResource(id = disagreeTextRes),
@@ -54,7 +54,7 @@ fun BookmarkCancelDialog(
 @Composable
 fun CommonDialog(
     text: String,
-    subText: String,
+    subText: String?,
     agreeText: String,
     agreeAction: () -> Unit,
     disagreeText: String? = null,
@@ -64,7 +64,7 @@ fun CommonDialog(
     Dialog(onDismissRequest = { disagreeAction?.invoke() }) {
         Surface(
             modifier = Modifier
-                .width(304.dp)
+                .fillMaxWidth()
                 .wrapContentHeight(),
             shape = RoundedCornerShape(8.dp),
             color = White
@@ -85,7 +85,7 @@ fun CommonDialog(
 @Composable
 fun DialogContent(
     text: String,
-    subText: String,
+    subText: String?,
     agreeText: String,
     agreeAction: () -> Unit,
     disagreeText: String? = null,
@@ -105,24 +105,26 @@ fun DialogContent(
         Spacer(modifier = Modifier.height(8.dp))
         if (showIcon) {
             Image(
-                painter = painterResource(id = R.drawable.image_cancel_face),
+                painter = painterResource(id = R.drawable.image_crying_face),
                 contentDescription = null
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
         Text(
             text = text,
-            style = TalkbbokkiTypography.b1_bold,
+            style = TalkbbokkiTypography.b2_bold,
             color = Black,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = subText,
-            style = TalkbbokkiTypography.caption,
-            color = Gray04,
-            textAlign = TextAlign.Center
-        )
+        subText?.let {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = subText,
+                style = TalkbbokkiTypography.caption,
+                color = Gray04,
+                textAlign = TextAlign.Center
+            )
+        }
         Spacer(modifier = Modifier.height(24.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
             if (disagreeText != null && disagreeAction != null) {
