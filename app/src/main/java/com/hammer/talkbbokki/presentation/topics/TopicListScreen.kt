@@ -35,21 +35,21 @@ import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
+val level = "Level1"
+
 @Composable
 fun TopicListRoute(
     modifier: Modifier = Modifier,
     onClickToDetail: (id: String) -> Unit,
     viewModel: TopicListViewModel = hiltViewModel()
 ) {
-    val topicList by viewModel.topicList.collectAsState()
-    TopicListScreen(onClickToDetail = onClickToDetail)
+    TopicListScreen(onClickToDetail = onClickToDetail, viewModel = viewModel)
 }
 
-val level = "Level1"
-
 @Composable
-fun TopicListScreen(onClickToDetail: (id: String) -> Unit) {
+fun TopicListScreen(onClickToDetail: (id: String) -> Unit, viewModel: TopicListViewModel) {
     var selectedIdx by remember { mutableStateOf("0") }
+    val topicList by viewModel.topicList.collectAsState()
 
     Box(
         modifier = Modifier
@@ -59,7 +59,12 @@ fun TopicListScreen(onClickToDetail: (id: String) -> Unit) {
         TopicListHeader()
         TopicList(onFocusedCardChange = { idx -> selectedIdx = idx })
         SelectBtn(
-            onCardClicked = { onClickToDetail(selectedIdx) },
+//            viewCnt = viewModel.todayViewCnt,
+            viewCnt = 3,
+            onCardClicked = {
+                viewModel.setTodayViewCnt()
+                onClickToDetail(selectedIdx)
+            },
             Modifier.align(Alignment.BottomCenter)
         )
     }
@@ -97,6 +102,7 @@ fun TopicListHeader() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TopicList(onFocusedCardChange: (idx: String) -> Unit) {
+
     val listState = rememberLazyListState()
     val itemWidth =
         with(LocalDensity.current) { (dimensionResource(id = R.dimen.card_width)).toPx() }
@@ -136,10 +142,16 @@ fun TopicList(onFocusedCardChange: (idx: String) -> Unit) {
 }
 
 @Composable
-fun SelectBtn(onCardClicked: () -> Unit, modifier: Modifier) {
+fun SelectBtn(viewCnt: Int, onCardClicked: () -> Unit, modifier: Modifier) {
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
-        onClick = { onCardClicked() },
+        onClick = {
+            if (viewCnt >= 3)
+            //TODO : 광고 시청 후 디테일로 넘어가는 로직
+                onCardClicked()
+            else
+                onCardClicked()
+        },
         modifier = modifier
             .padding(bottom = dimensionResource(id = R.dimen.vertical_padding))
             .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
@@ -148,7 +160,9 @@ fun SelectBtn(onCardClicked: () -> Unit, modifier: Modifier) {
         shape = RoundedCornerShape(8.dp),
     ) {
         Text(
-            text = "이 카드 뽑기", style = TalkbbokkiTypography.button_large, color = Color.White
+            text = if (viewCnt >= 3) "광고 보고 뽑기" else "이 카드 뽑기",
+            style = TalkbbokkiTypography.button_large,
+            color = Color.White
         )
     }
 }
