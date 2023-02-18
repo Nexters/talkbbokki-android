@@ -1,6 +1,21 @@
 <resources>
     <string name="app_name">톡뽀끼</string>
 
+    <string name="admob_app_id">ca-app-pub-6775338233067833~3697888039</string>
+    <string name="admob_ads_id">ca-app-pub-6775338233067833/5087809569</string>
+
+    <string name="onboarding_title_1">친밀도만 선택하세요!\n대화주제 제안해드려요</string>
+    <string name="onboarding_title_highlight_1">친밀도</string>
+    <string name="onboarding_title_2">톡뽀끼가 제안하는\n오늘의 STARTER!</string>
+    <string name="onboarding_title_highlight_2">STARTER</string>
+    <string name="onboarding_title_3">뽑은 대화주제\n손쉽게 공유하세요!</string>
+    <string name="onboarding_title_highlight_3">공유</string>
+    <string name="onboarding_subtitle_1">대화 주제 고민은 그만!</string>
+    <string name="onboarding_subtitle_2">오늘은 누구부터 이야기 해볼까요?</string>
+    <string name="onboarding_subtitle_3">온라인이든, 오프라인이든 상관없어요!</string>
+    <string name="onboarding_button_next">다음</string>
+    <string name="onboarding_button_start">시작할래요!</string>
+
     <string name="main_title">Let’s\nBBOKKI !</string>
     <string name="main_sub_title">친밀도를 골라보세요!\n딱 - 맞는 대화주제 추천 해줄게요.</string>
 
@@ -10,4 +25,12 @@
     <string name="main_level4_title">COMING\nSOON</string>
     <string name="main_suggestion_topic">이런 토픽 왜없어?</string>
     <string name="main_suggestion_topic_button">제안하기</string>
+
+    <string name="bookmark_header_title">기억하고 싶은 대화 주제,\n여기 다 - 모아뒀어요</string>
+    <string name="bookmark_total_count">총 %d개</string>
+    <string name="bookmark_empty_list">아직 즐겨찾기한 토픽이 없어요</string>
+    <string name="bookmark_cancel_dialog_text">취소하면 이 주제는 다시 보기 어려워요. 그래도 즐겨찾기를 취소하시겠어요?</string>
+    <string name="bookmark_cancel_dialog_subtext">* 이 문구는 하루에 한 번만 노출됩니다.</string>
+    <string name="bookmark_cancel_dialog_disagree">안할래요</string>
+    <string name="bookmark_cancel_dialog_agree">그래도 할래요</string>
 </resources>

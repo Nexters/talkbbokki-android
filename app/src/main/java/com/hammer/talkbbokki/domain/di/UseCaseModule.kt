@@ -1,7 +1,9 @@
 package com.hammer.talkbbokki.domain.di
 
+import com.hammer.talkbbokki.domain.repository.BookmarkRepository
 import com.hammer.talkbbokki.domain.repository.CategoryLevelRepository
 import com.hammer.talkbbokki.domain.repository.TopicRepository
+import com.hammer.talkbbokki.domain.usecase.BookmarkUseCase
 import com.hammer.talkbbokki.domain.usecase.CategoryLevelUseCase
 import com.hammer.talkbbokki.domain.usecase.TopicUseCase
 import dagger.Module
@@ -19,6 +21,12 @@ object UseCaseModule {
     fun providesTopicUseCase(
         repository: TopicRepository
     ): TopicUseCase = TopicUseCase(repository, Dispatchers.IO)
+
+    @Provides
+    @Singleton
+    fun bindsBookmarkUseCase(
+        repository: BookmarkRepository
+    ): BookmarkUseCase = BookmarkUseCase(repository, Dispatchers.IO)
 
     @Provides
     @Singleton

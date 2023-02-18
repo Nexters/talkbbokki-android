@@ -1,19 +1,19 @@
-package com.hammer.talkbbokki.presentation.intro
+package com.hammer.talkbbokki.presentation.onboarding
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.hammer.talkbbokki.presentation.navigation.TalkbbokkiNavigationDestination
 
-object IntroDestination : TalkbbokkiNavigationDestination {
+object OnBoardingDestination : TalkbbokkiNavigationDestination {
     override val route: String
-        get() = "intro_route"
+        get() = "onboarding_route"
 }
 
-fun NavGraphBuilder.introGraph(
+fun NavGraphBuilder.onboardingGraph(
     navigateToMain: () -> Unit
 ) {
-    composable(route = IntroDestination.route) {
-        IntroRoute(
+    composable(route = OnBoardingDestination.route) {
+        OnBoardingRoute(
             navigateToMain = navigateToMain
         )
     }

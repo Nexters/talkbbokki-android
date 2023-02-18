@@ -16,4 +16,7 @@ class TopicUseCase @Inject constructor(
         return repository.getTopicList(level)
             .flowOn(dispatcher)
     }
+
+    fun getTodayViewCnt(): Flow<Int> = repository.getTodayViewCnt()
+    fun setTodayViewCnt(isReset: Boolean = false): Flow<Int> = repository.setTodayViewCnt(isReset).flowOn(dispatcher)
 }
