@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.ui.button.ButtonType
 import com.hammer.talkbbokki.ui.button.CommonLargeButton
+import com.hammer.talkbbokki.ui.theme.Gray04
 import com.hammer.talkbbokki.ui.theme.Gray06
 import com.hammer.talkbbokki.ui.theme.MainColor01
 import com.hammer.talkbbokki.ui.theme.MainColor02
@@ -122,24 +123,39 @@ fun SuggestionTextField(
     text: String,
     textChange: (String) -> Unit
 ) {
-    TextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 186.dp),
-        value = text,
-        onValueChange = textChange,
-        textStyle = TalkbbokkiTypography.b2_regular,
-        shape = RoundedCornerShape(8.dp),
-        colors = TextFieldDefaults.textFieldColors(
-            textColor = White,
-            disabledTextColor = Color.Transparent,
-            backgroundColor = Gray06,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-            cursorColor = MainColor01
+    var showHint by remember { mutableStateOf(true) }
+
+    Box {
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 186.dp),
+            value = text,
+            onValueChange = {
+                showHint = it.isEmpty()
+                textChange(it)
+            },
+            textStyle = TalkbbokkiTypography.b2_regular,
+            shape = RoundedCornerShape(8.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = White,
+                disabledTextColor = Color.Transparent,
+                backgroundColor = Gray06,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                cursorColor = MainColor01
+            )
         )
-    )
+        if (showHint) {
+            Text(
+                text = stringResource(id = R.string.suggestion_text_field_hint),
+                style = TalkbbokkiTypography.b2_regular,
+                color = Gray04,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
 }
 
 @Composable
