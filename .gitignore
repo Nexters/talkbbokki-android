@@ -15,3 +15,7 @@
 local.properties
 
 .idea/
+
+private/
+
+app/google-services.json
