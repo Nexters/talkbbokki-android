@@ -33,4 +33,7 @@
     <string name="bookmark_cancel_dialog_subtext">* 이 문구는 하루에 한 번만 노출됩니다.</string>
     <string name="bookmark_cancel_dialog_disagree">안할래요</string>
     <string name="bookmark_cancel_dialog_agree">그래도 할래요</string>
+
+    <string name="suggestion_title">이런 대화 주제 왜 없어?\n직접 제안 하기</string>
+    <string name="suggestion_send_button">보내기</string>
 </resources>

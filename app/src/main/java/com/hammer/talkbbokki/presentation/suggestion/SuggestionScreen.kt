@@ -1,0 +1,141 @@
+package com.hammer.talkbbokki.presentation.suggestion
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.ui.button.ButtonType
+import com.hammer.talkbbokki.ui.button.CommonLargeButton
+import com.hammer.talkbbokki.ui.theme.Gray06
+import com.hammer.talkbbokki.ui.theme.MainColor02
+import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
+import com.hammer.talkbbokki.ui.theme.White
+
+@Composable
+fun SuggestionRoute(
+    onBackClick: () -> Unit,
+    viewModel: SuggestionViewModel = hiltViewModel()
+) {
+    SuggestionScreen(
+        onBackClick = onBackClick,
+        onClickSend = { viewModel.sendSuggestion(it) }
+    )
+}
+
+@Composable
+fun SuggestionScreen(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+    onClickSend: (String) -> Unit
+) {
+    var textField by remember { mutableStateOf("") }
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MainColor02)
+            .padding(top = 16.dp, start = 20.dp, end = 20.dp, bottom = 16.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            SuggestionHeader(
+                modifier = modifier,
+                onBackClick = onBackClick
+            )
+            SuggestionTextField(
+                text = textField,
+                textChange = { textField = it }
+            )
+        }
+
+        SuggestionSendButton(modifier.align(Alignment.BottomCenter)) {
+            onClickSend(textField)
+        }
+    }
+}
+
+@Composable
+fun SuggestionHeader(
+    modifier: Modifier,
+    onBackClick: () -> Unit
+) {
+    Column(modifier = modifier) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.End
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close),
+                contentDescription = null,
+                tint = White,
+                modifier = Modifier.clickable { onBackClick() }
+            )
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = stringResource(id = R.string.suggestion_title),
+            style = TalkbbokkiTypography.h2_bold,
+            color = White
+        )
+        Spacer(modifier = Modifier.height(36.dp))
+    }
+}
+
+@Composable
+fun SuggestionTextField(
+    text: String,
+    textChange: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 186.dp)
+            .background(shape = RoundedCornerShape(8.dp), color = Gray06)
+            .padding(16.dp)
+    ) {
+        TextField(
+            value = text,
+            onValueChange = textChange,
+            textStyle = TalkbbokkiTypography.b2_regular,
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = White
+            )
+        )
+    }
+}
+
+@Composable
+fun SuggestionSendButton(
+    modifier: Modifier,
+    onClickSend: () -> Unit
+) {
+    CommonLargeButton(
+        text = stringResource(id = R.string.suggestion_send_button),
+        type = ButtonType.LargePink,
+        modifier = modifier
+    ) {
+        onClickSend()
+    }
+}

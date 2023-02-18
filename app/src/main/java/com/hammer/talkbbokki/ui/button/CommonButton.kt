@@ -38,12 +38,13 @@ enum class ButtonType(
 
 @Composable
 fun CommonLargeButton(
+    modifier: Modifier = Modifier,
     text: String,
     type: ButtonType = ButtonType.LargeBlack,
     onClickButton: () -> Unit
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(60.dp)
             .background(color = type.backgroundColor, shape = RoundedCornerShape(8.dp))
