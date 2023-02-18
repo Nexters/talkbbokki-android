@@ -5,14 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hammer.talkbbokki.domain.usecase.TopicUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onSubscription
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class TopicListViewModel @Inject constructor(
@@ -35,4 +30,13 @@ class TopicListViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = TopicListUiState.Loading
             )
+
+    val todayViewCnt = viewModelScope.launch {
+        topicUseCase.getTodayViewCnt().first()
+    }
+    fun setTodayViewCnt(isReset: Boolean = false) {
+        viewModelScope.launch {
+            topicUseCase.setTodayViewCnt(isReset).collect()
+        }
+    }
 }
