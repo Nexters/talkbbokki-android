@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun IntroRoute(
     onClickToMain: () -> Unit,
+    onClickToBookmark: () -> Unit,
     onClickToTopicList: () -> Unit
 ) {
     Scaffold { innerPadding ->
@@ -26,6 +27,9 @@ fun IntroRoute(
         ) {
             Button(onClick = { onClickToMain() }) {
                 Text(text = "메인 화면")
+            }
+            Button(onClick = { onClickToBookmark() }) {
+                Text(text = "북마크 화면")
             }
             Button(onClick = { onClickToTopicList() }) {
                 Text(text = "카드 리스트")
