@@ -21,6 +21,8 @@ material3 = "1.0.1"
 ktlint-gradle = "11.0.0"
 retrofit = "2.9.0"
 
+room-database = "2.4.2"
+
 google-services = "4.3.15"
 firebase-analytics = "21.2.0"
 google-admob = "21.5.0"
@@ -55,6 +57,10 @@ compose-coil = { module = "io.coil-kt:coil-compose", version.ref = "compose-coil
 network-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 network-retrofit-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 network-okhttp = { module = "com.squareup.okhttp3:logging-interceptor", version = "4.10.0" }
+
+room-database = { module = "androidx.room:room-runtime", version.ref = "room-database" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-database" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-database" }
 
 androidx-compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
 androidx-compose-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }

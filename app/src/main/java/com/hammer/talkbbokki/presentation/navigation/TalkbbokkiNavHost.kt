@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.hammer.talkbbokki.presentation.bookmark.BookmarkDestination
+import com.hammer.talkbbokki.presentation.bookmark.bookmarkGraph
 import com.hammer.talkbbokki.presentation.detail.DetailDestination
 import com.hammer.talkbbokki.presentation.detail.detailGraph
 import com.hammer.talkbbokki.presentation.intro.introGraph
@@ -25,11 +27,12 @@ fun TalkbbokkiNavHost(
     ) {
         introGraph(
             navigateToMain = { navController.navigate(MainDestination.route) },
+            navigateToBookmark = { navController.navigate(BookmarkDestination.route) },
             navigateToTopicList = { navController.navigate(TopicListDestination.route) }
         )
         mainGraph(
             navigateToList = { navController.navigate(TopicListDestination.route) },
-            navigateToBookmark = { }
+            navigateToBookmark = { navController.navigate(BookmarkDestination.route) }
         )
         topicListGraph(
             navigateToDetail = { id ->
@@ -40,6 +43,12 @@ fun TalkbbokkiNavHost(
             navigateToTopicList = {
                 navController.popBackStack()
             }
+        )
+        bookmarkGraph(
+            navigateToDetail = { item ->
+                navController.navigate(DetailDestination.route + "/${item.id}")
+            },
+            onBackClick = { navController.popBackStack() }
         )
     }
 }

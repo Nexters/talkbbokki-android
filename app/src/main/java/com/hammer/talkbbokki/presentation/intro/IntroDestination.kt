@@ -11,11 +11,13 @@ object IntroDestination : TalkbbokkiNavigationDestination {
 
 fun NavGraphBuilder.introGraph(
     navigateToMain: () -> Unit,
+    navigateToBookmark: () -> Unit,
     navigateToTopicList: () -> Unit
 ) {
     composable(route = IntroDestination.route) {
         IntroRoute(
             onClickToMain = navigateToMain,
+            onClickToBookmark = navigateToBookmark,
             onClickToTopicList = navigateToTopicList
         )
     }

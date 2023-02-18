@@ -108,6 +108,9 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.compose.coil)
     implementation(libs.compose.hilt.navigation.compose)
+    implementation(libs.room.database)
+    kapt(libs.room.compiler)
+    implementation(libs.room.ktx)
 
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.google.admob)
