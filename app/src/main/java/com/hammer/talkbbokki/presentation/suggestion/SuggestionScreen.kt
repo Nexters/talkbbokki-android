@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -54,20 +53,38 @@ fun SuggestionRoute(
             onClickSend = { viewModel.sendSuggestion(it) }
         )
     } else {
-        SuggestionSuccess()
+        SuggestionSuccess { onBackClick() }
     }
 }
 
 @Composable
-fun SuggestionSuccess() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center
+fun SuggestionSuccess(
+    onClickGoHome: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MainColor02)
+            .padding(start = 20.dp, end = 20.dp, bottom = 16.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.image_smile_face),
-            contentDescription = null
-        )
+        Column {
+            Image(
+                painter = painterResource(id = R.drawable.image_smile_face),
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(id = R.string.suggestion_success_message),
+                style = TalkbbokkiTypography.b1_bold,
+                color = White
+            )
+        }
+        CommonLargeButton(
+            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+            text = stringResource(id = R.string.suggestion_go_home_button),
+            type = ButtonType.LargePink
+        ) { onClickGoHome() }
     }
 }
 
@@ -107,7 +124,7 @@ fun SuggestionScreen(
         }
 
         SuggestionSendButton(modifier.align(Alignment.BottomCenter)) {
-            onClickSend(textField)
+            if (textField.isNotEmpty()) onClickSend(textField)
         }
     }
 }
