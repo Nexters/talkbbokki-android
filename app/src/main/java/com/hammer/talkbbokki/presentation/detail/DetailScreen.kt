@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -46,9 +47,7 @@ fun DetailScreen(modifier: Modifier = Modifier, onClickToList: () -> Unit, id: S
             .background(CategoryLevelDummy.valueOf(level).backgroundColor)
     ) {
         DetailHeader(cardFace = cardFace, onBackClick = { cardFace = CardFace.BACK })
-        Box(
-            modifier = modifier.fillMaxSize()
-        ) {
+        Box(modifier = modifier.fillMaxSize()) {
             TestFlipCard(Modifier.align(Alignment.Center), cardFace, onClickToList, id)
         }
     }
@@ -57,11 +56,14 @@ fun DetailScreen(modifier: Modifier = Modifier, onClickToList: () -> Unit, id: S
 @Composable
 fun DetailHeader(cardFace: CardFace, onBackClick: () -> Unit) {
     if (cardFace == CardFace.FRONT) {
-        Image(painter = painterResource(id = R.drawable.ic_arrow_left),
-            contentDescription = null,
+        Image(
             modifier = Modifier
+                .padding(horizontal = 20.dp, vertical = 16.dp)
                 .size(24.dp, 24.dp)
-                .clickable { onBackClick() })
+                .clickable { onBackClick() },
+            painter = painterResource(id = R.drawable.ic_arrow_left),
+            contentDescription = null,
+        )
     }
 }
 
@@ -169,105 +171,140 @@ fun BackCardFace() {
     ) {
         val cardImage = painterResource(id = R.drawable.card_back)
 
-        Image(
-            painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize()
-        )
+        Image(painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize())
         Column(
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 15.dp)
         ) {
-            Column(
+            Topic()
+            Spacer(
                 modifier = Modifier
-                    .padding(24.dp)
-                    .padding(bottom = 32.dp)
-            ) {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterStart),
-                        text = "TOPIC",
-                        color = Gray05,
-                    )
-                    Image(
-                        modifier = Modifier.align(Alignment.CenterEnd),
-                        painter = painterResource(id = R.drawable.ic_star_empty),
-                        contentDescription = null
-                    )
-                }
-                Spacer(
-                    modifier = Modifier
-                        .height(8.dp)
-                        .fillMaxWidth()
-                )
-                Spacer(
-                    modifier = Modifier.weight(1f)
-                )
-                Text(
-//                    text = "천사처럼 자고 있던 내 연인, 슬며시 다가가 머리를 쓰다듬는데 나도 몰랐던 가발이 벗겨졌다. 모르는척 다시 씌워준다 vs 왜 날 속였냐고 따진다.",
-                    text = "천사처럼 자고 있던 내 연인, ", style = TalkbbokkiTypography.b1_bold
-                )
-            }
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .background(Color.White)
+            )
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp)
                     .background(Gray03)
             )
-            Column(
-                modifier = Modifier
-                    .height(114.dp)
-                    .padding(24.dp)
-                    .padding(bottom = 32.dp)
-            ) {
-                Row(modifier = Modifier.height(24.dp)) {
-                    Text(
-                        text = "STARTER",
-                        color = Gray05,
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_refresh_gray),
-                        contentDescription = null
-                    )
-                }
-                Spacer(
-                    modifier = Modifier
-                        .height(8.dp)
-                        .fillMaxWidth()
-                )
-                Text(
-                    text = "1인 1닭 가능할 것 같은 사람", style = TalkbbokkiTypography.b1_bold
-                )
-            }
+            Starter()
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp)
                     .background(Gray03)
             )
-            Row(modifier = Modifier.height(64.dp)) {
-                Image(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { },
-                    painter = painterResource(id = R.drawable.ic_share),
-                    contentDescription = null,
-                    alignment = Alignment.Center
-                )
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(1.dp)
-                        .background(Gray03)
-                )
-                Image(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { },
-                    painter = painterResource(id = R.drawable.ic_download),
-                    contentDescription = null,
-                    alignment = Alignment.Center
-                )
-            }
+            ShareBottom(Modifier.weight(1f))
         }
     }
+}
+
+@Composable
+fun Topic() {
+    Column(
+        modifier = Modifier
+            .padding(24.dp)
+    ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                modifier = Modifier.align(Alignment.CenterStart),
+                text = "TOPIC",
+                color = Gray05,
+            )
+            Image(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .size(24.dp),
+                painter = painterResource(id = R.drawable.ic_star_empty_gray),
+                contentDescription = null
+            )
+        }
+        Spacer(
+            modifier = Modifier
+                .height(8.dp)
+                .fillMaxWidth(),
+        )
+        Text(
+            text = "천사처럼 자고 있던 내 연인",
+            style = TalkbbokkiTypography.b2_bold
+        )
+    }
+}
+
+@Composable
+fun Starter() {
+    Column(
+        modifier = Modifier
+            .height(114.dp)
+            .padding(24.dp)
+    ) {
+        Row(modifier = Modifier.height(24.dp)) {
+            Text(
+                text = "STARTER",
+                color = Gray05,
+            )
+            Spacer(
+                modifier = Modifier
+                    .width(4.dp)
+                    .fillMaxHeight()
+            )
+            Image(
+                modifier = Modifier.size(18.dp),
+                painter = painterResource(id = R.drawable.ic_refresh_gray),
+                contentDescription = null
+            )
+        }
+        Spacer(
+            modifier = Modifier
+                .height(8.dp)
+                .fillMaxWidth()
+        )
+        Text(
+            text = "1인 1닭 가능할 것 같은 사람", style = TalkbbokkiTypography.b2_bold
+        )
+    }
+}
+
+@Composable
+fun ShareBottom(modifier: Modifier) {
+    Row(modifier = modifier.height(64.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+                .clickable { },
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(24.dp)
+                    .align(Alignment.Center),
+                painter = painterResource(id = R.drawable.ic_share),
+                contentDescription = null,
+            )
+        }
+        Spacer(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(1.dp)
+                .background(Gray03)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+                .clickable { },
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(24.dp)
+                    .align(Alignment.Center),
+                painter = painterResource(id = R.drawable.ic_download),
+                contentDescription = null,
+            )
+        }
+    }
+
 }
 
 enum class CardFace {
