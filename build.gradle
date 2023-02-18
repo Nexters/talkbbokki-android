@@ -8,6 +8,7 @@ buildscript {
     dependencies {
         classpath(libs.android.gradle)
         classpath(libs.kotlin.plugin)
+        classpath(libs.google.services)
     }
 
 //    task ktlint(type: JavaExec, group: "verification") {
