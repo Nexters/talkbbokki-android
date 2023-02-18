@@ -1,8 +1,10 @@
 package com.hammer.talkbbokki.presentation.suggestion
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +19,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,10 +47,28 @@ fun SuggestionRoute(
     onBackClick: () -> Unit,
     viewModel: SuggestionViewModel = hiltViewModel()
 ) {
-    SuggestionScreen(
-        onBackClick = onBackClick,
-        onClickSend = { viewModel.sendSuggestion(it) }
-    )
+    val showSuccess by viewModel.suggestSuccess.collectAsState()
+    if (!showSuccess) {
+        SuggestionScreen(
+            onBackClick = onBackClick,
+            onClickSend = { viewModel.sendSuggestion(it) }
+        )
+    } else {
+        SuggestionSuccess()
+    }
+}
+
+@Composable
+fun SuggestionSuccess() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.image_smile_face),
+            contentDescription = null
+        )
+    }
 }
 
 @Composable
