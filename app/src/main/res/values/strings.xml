@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">톡뽀끼</string>
 
+    <string name="admob_app_id">ca-app-pub-6775338233067833~3697888039</string>
+    <string name="admob_ads_id">ca-app-pub-6775338233067833/5087809569</string>
+
     <string name="main_title">Let’s\nBBOKKI !</string>
     <string name="main_sub_title">친밀도를 골라보세요!\n딱 - 맞는 대화주제 추천 해줄게요.</string>
 
