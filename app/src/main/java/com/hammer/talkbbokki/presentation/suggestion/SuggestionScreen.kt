@@ -1,5 +1,6 @@
 package com.hammer.talkbbokki.presentation.suggestion
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -30,6 +33,7 @@ import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.ui.button.ButtonType
 import com.hammer.talkbbokki.ui.button.CommonLargeButton
 import com.hammer.talkbbokki.ui.theme.Gray06
+import com.hammer.talkbbokki.ui.theme.MainColor01
 import com.hammer.talkbbokki.ui.theme.MainColor02
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import com.hammer.talkbbokki.ui.theme.White
@@ -51,7 +55,15 @@ fun SuggestionScreen(
     onBackClick: () -> Unit,
     onClickSend: (String) -> Unit
 ) {
+    val textLimitCount = 200
     var textField by remember { mutableStateOf("") }
+    if (textField.count() >= textLimitCount) {
+        Toast.makeText(
+            LocalContext.current,
+            stringResource(id = R.string.suggestion_text_limit),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
 
     Box(
         modifier = modifier
@@ -66,7 +78,9 @@ fun SuggestionScreen(
             )
             SuggestionTextField(
                 text = textField,
-                textChange = { textField = it }
+                textChange = {
+                    if (it.count() <= textLimitCount) textField = it
+                }
             )
         }
 
@@ -108,22 +122,24 @@ fun SuggestionTextField(
     text: String,
     textChange: (String) -> Unit
 ) {
-    Column(
+    TextField(
         modifier = Modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = 186.dp)
-            .background(shape = RoundedCornerShape(8.dp), color = Gray06)
-            .padding(16.dp)
-    ) {
-        TextField(
-            value = text,
-            onValueChange = textChange,
-            textStyle = TalkbbokkiTypography.b2_regular,
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = White
-            )
+            .defaultMinSize(minHeight = 186.dp),
+        value = text,
+        onValueChange = textChange,
+        textStyle = TalkbbokkiTypography.b2_regular,
+        shape = RoundedCornerShape(8.dp),
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = White,
+            disabledTextColor = Color.Transparent,
+            backgroundColor = Gray06,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            cursorColor = MainColor01
         )
-    }
+    )
 }
 
 @Composable

@@ -36,4 +36,5 @@
 
     <string name="suggestion_title">이런 대화 주제 왜 없어?\n직접 제안 하기</string>
     <string name="suggestion_send_button">보내기</string>
+    <string name="suggestion_text_limit">200자 미만으로 작성해주세요.</string>
 </resources>
