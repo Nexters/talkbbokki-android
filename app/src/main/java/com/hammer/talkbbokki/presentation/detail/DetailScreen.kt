@@ -3,19 +3,28 @@ package com.hammer.talkbbokki.presentation.detail
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.material3.Button
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.presentation.main.CategoryLevelDummy
+import com.hammer.talkbbokki.ui.theme.Gray03
+import com.hammer.talkbbokki.ui.theme.Gray05
+import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+
+val level = "Level1"
 
 @Composable
 fun DetailRoute(
@@ -34,59 +43,49 @@ fun DetailScreen(modifier: Modifier = Modifier, onClickToList: () -> Unit, id: S
     Box(
         modifier = modifier
             .fillMaxSize()
-            .wrapContentSize()
-            .size(192.dp, 240.dp)
+            .background(CategoryLevelDummy.valueOf(level).backgroundColor)
     ) {
-        TestFlipCard(cardFace, onClickToList, id)
-    }
-
-    if (cardFace == CardFace.FRONT) {
-        Button(
-            onClick = {
-                cardFace = CardFace.BACK
-            }, modifier = modifier.wrapContentSize()
+        DetailHeader(cardFace = cardFace, onBackClick = { cardFace = CardFace.BACK })
+        Box(
+            modifier = modifier.fillMaxSize()
         ) {
-            Text(text = "Back")
+            TestFlipCard(Modifier.align(Alignment.Center), cardFace, onClickToList, id)
         }
     }
 }
 
 @Composable
-fun TestFlipCard(cardFace: CardFace, onClickToList: () -> Unit, id: String) {
+fun DetailHeader(cardFace: CardFace, onBackClick: () -> Unit) {
+    if (cardFace == CardFace.FRONT) {
+        Image(painter = painterResource(id = R.drawable.ic_arrow_left),
+            contentDescription = null,
+            modifier = Modifier
+                .size(24.dp, 24.dp)
+                .clickable { onBackClick() })
+    }
+}
+
+@Composable
+fun TestFlipCard(
+    modifier: Modifier = Modifier, cardFace: CardFace, onClickToList: () -> Unit, id: String
+) {
     var scale by remember { mutableStateOf(1f) }
     var rotation by remember { mutableStateOf(1f) }
 
     FlipCard(
         rotation = rotation,
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(.7f)
+        modifier = modifier
+            .width(dimensionResource(id = R.dimen.selected_card_width))
+            .aspectRatio(0.7f)
             .graphicsLayer(
                 scaleX = scale, scaleY = scale, cameraDistance = 12f
-            ),
+            )
+            .background(CategoryLevelDummy.valueOf(level).backgroundColor),
         front = {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Blue),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = id,
-                )
-            }
+            FrontCardFace(id)
         },
         back = {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Blue),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = "대화주제",
-                )
-            }
+            BackCardFace()
         },
     )
 
@@ -95,7 +94,7 @@ fun TestFlipCard(cardFace: CardFace, onClickToList: () -> Unit, id: String) {
             coroutineScope {
                 launch {
                     animate(
-                        initialValue = 1f, targetValue = 1.7f, animationSpec = tween(
+                        initialValue = 1f, targetValue = 1.3f, animationSpec = tween(
                             durationMillis = 1000, easing = FastOutSlowInEasing
                         )
                     ) { value: Float, _: Float ->
@@ -125,7 +124,7 @@ fun TestFlipCard(cardFace: CardFace, onClickToList: () -> Unit, id: String) {
                     }
 
                     animate(
-                        initialValue = 1.7f, targetValue = 1f, animationSpec = tween(
+                        initialValue = 1.3f, targetValue = 1f, animationSpec = tween(
                             durationMillis = 1000, easing = FastOutSlowInEasing
                         )
                     ) { value: Float, _: Float ->
@@ -133,6 +132,139 @@ fun TestFlipCard(cardFace: CardFace, onClickToList: () -> Unit, id: String) {
                     }
                     onClickToList()
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun FrontCardFace(id: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(CategoryLevelDummy.valueOf(level).backgroundColor),
+        contentAlignment = Alignment.Center,
+    ) {
+        val cardImage = painterResource(id = R.drawable.bg_card_large)
+        val category = painterResource(id = R.drawable.ic_tag_love)
+
+        Image(
+            painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize()
+        )
+        Image(
+            painter = category,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp, vertical = 32.dp)
+        )
+    }
+}
+
+@Composable
+fun BackCardFace() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        val cardImage = painterResource(id = R.drawable.card_back)
+
+        Image(
+            painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize()
+        )
+        Column(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 15.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .padding(bottom = 32.dp)
+            ) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        text = "TOPIC",
+                        color = Gray05,
+                    )
+                    Image(
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        painter = painterResource(id = R.drawable.ic_star_empty),
+                        contentDescription = null
+                    )
+                }
+                Spacer(
+                    modifier = Modifier
+                        .height(8.dp)
+                        .fillMaxWidth()
+                )
+                Spacer(
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+//                    text = "천사처럼 자고 있던 내 연인, 슬며시 다가가 머리를 쓰다듬는데 나도 몰랐던 가발이 벗겨졌다. 모르는척 다시 씌워준다 vs 왜 날 속였냐고 따진다.",
+                    text = "천사처럼 자고 있던 내 연인, ", style = TalkbbokkiTypography.b1_bold
+                )
+            }
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Gray03)
+            )
+            Column(
+                modifier = Modifier
+                    .height(114.dp)
+                    .padding(24.dp)
+                    .padding(bottom = 32.dp)
+            ) {
+                Row(modifier = Modifier.height(24.dp)) {
+                    Text(
+                        text = "STARTER",
+                        color = Gray05,
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_refresh_gray),
+                        contentDescription = null
+                    )
+                }
+                Spacer(
+                    modifier = Modifier
+                        .height(8.dp)
+                        .fillMaxWidth()
+                )
+                Text(
+                    text = "1인 1닭 가능할 것 같은 사람", style = TalkbbokkiTypography.b1_bold
+                )
+            }
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Gray03)
+            )
+            Row(modifier = Modifier.height(64.dp)) {
+                Image(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { },
+                    painter = painterResource(id = R.drawable.ic_share),
+                    contentDescription = null,
+                    alignment = Alignment.Center
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(1.dp)
+                        .background(Gray03)
+                )
+                Image(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { },
+                    painter = painterResource(id = R.drawable.ic_download),
+                    contentDescription = null,
+                    alignment = Alignment.Center
+                )
             }
         }
     }

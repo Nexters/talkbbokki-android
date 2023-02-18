@@ -14,7 +14,7 @@ fun FlipCard(
     back: @Composable () -> Unit = {},
     front: @Composable () -> Unit = {},
 ) {
-    Card(
+    Box(
         modifier = modifier
             .graphicsLayer {
                 rotationY = rotation
