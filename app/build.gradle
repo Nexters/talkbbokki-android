@@ -111,6 +111,8 @@ dependencies {
     implementation(libs.room.database)
     kapt(libs.room.compiler)
     implementation(libs.room.ktx)
+    implementation(libs.compose.lottie)
+    implementation(libs.bundles.accompanist)
 
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.google.admob)

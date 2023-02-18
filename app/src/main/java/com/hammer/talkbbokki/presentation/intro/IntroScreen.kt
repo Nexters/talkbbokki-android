@@ -1,52 +1,50 @@
 package com.hammer.talkbbokki.presentation.intro
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.presentation.showRewardedAd
+import com.hammer.talkbbokki.ui.theme.MainColor02
 
 @Composable
 fun IntroRoute(
-    onClickToMain: () -> Unit,
-    onClickToBookmark: () -> Unit,
-    onClickToTopicList: () -> Unit
+    navigateToMain: () -> Unit
 ) {
-    var showAds by remember { mutableStateOf(false) }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MainColor02),
+        contentAlignment = Alignment.Center
+    ) {
+        SplashLogo { navigateToMain() }
+    }
+}
 
-    if (showAds) showAds { onClickToTopicList() }
+@Composable
+fun SplashLogo(
+    navigateToMain: () -> Unit
+) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash))
+    val progress by animateLottieCompositionAsState(composition)
 
-    Scaffold { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Button(onClick = { onClickToMain() }) {
-                Text(text = "메인 화면")
-            }
-            Button(onClick = { onClickToBookmark() }) {
-                Text(text = "북마크 화면")
-            }
-            Button(onClick = {
-                showAds = !showAds
-            }) {
-                Text(text = "카드 리스트")
-            }
-        }
+    LottieAnimation(
+        composition = composition,
+        progress = { progress }
+    )
+    if (progress == 1f) {
+        LaunchedEffect(Unit) { navigateToMain() }
     }
 }
 
