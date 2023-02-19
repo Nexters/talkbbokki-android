@@ -8,6 +8,7 @@ import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.repository.BookmarkRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +26,7 @@ class DetailViewModel @Inject constructor(
     val toastMessage: StateFlow<Int> get() = _toastMessage.asStateFlow()
 
     fun addBookmark() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             bookmarkRepository.addBookmark(item)
                 .catch {
                     _toastMessage.value = R.string.detail_card_bookmark_fail

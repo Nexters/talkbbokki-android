@@ -12,11 +12,11 @@ internal interface BookmarkDao {
     fun getAllBookMark(): Flow<List<TopicItemEntity>>
 
     @Insert
-    fun addBookmark(item: TopicItemEntity): Flow<Unit>
+    fun addBookmark(item: TopicItemEntity)
 
     @Query("DELETE FROM TopicItemEntity WHERE id = :id")
-    fun removeBookmark(id: Int): Flow<Unit>
+    fun removeBookmark(id: Int)
 
     @Query("DELETE FROM TopicItemEntity")
-    fun deleteAllBookmark(): Flow<Unit>
+    fun deleteAllBookmark()
 }
