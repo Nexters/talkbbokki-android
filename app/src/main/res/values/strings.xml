@@ -40,4 +40,9 @@
     <string name="suggestion_text_limit">200자 미만으로 작성해주세요.</string>
     <string name="suggestion_success_message">소중한 의견 감사합니다 :)</string>
     <string name="suggestion_go_home_button">홈으로</string>
+
+    <string name="detail_starter">STARTER</string>
+    <string name="detail_topic">TOPIC</string>
+    <string name="list_opened_card">이미 열어본 카드에요</string>
+
 </resources>
