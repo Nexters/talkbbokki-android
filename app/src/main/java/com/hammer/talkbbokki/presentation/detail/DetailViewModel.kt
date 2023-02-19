@@ -20,19 +20,31 @@ class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val bookmarkRepository: BookmarkRepository
 ) : ViewModel() {
-    private val item: TopicItem = savedStateHandle.get<TopicItem>("topic") ?: TopicItem()
+    val item: StateFlow<TopicItem> = savedStateHandle.getStateFlow("topic", TopicItem())
 
     private val _toastMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
     val toastMessage: StateFlow<Int> get() = _toastMessage.asStateFlow()
 
     fun addBookmark() {
         viewModelScope.launch(Dispatchers.IO) {
-            bookmarkRepository.addBookmark(item)
+            bookmarkRepository.addBookmark(item.value)
                 .catch {
                     _toastMessage.value = R.string.detail_card_bookmark_fail
                 }
                 .collect {
                     _toastMessage.value = R.string.detail_card_bookmark_success
+                }
+        }
+    }
+
+    fun removeBookmark() {
+        viewModelScope.launch(Dispatchers.IO) {
+            bookmarkRepository.removeBookmark(item.value.id)
+                .catch {
+                    _toastMessage.value = R.string.detail_card_bookmark_fail
+                }
+                .collect {
+                    _toastMessage.value = R.string.detail_card_bookmark_cancel
                 }
         }
     }

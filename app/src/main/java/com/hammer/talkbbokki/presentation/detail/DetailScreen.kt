@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.main.CategoryLevelDummy
 import com.hammer.talkbbokki.ui.theme.Gray03
 import com.hammer.talkbbokki.ui.theme.Gray05
@@ -56,10 +57,13 @@ fun DetailRoute(
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val toastMessage by viewModel.toastMessage.collectAsState()
+    val item by viewModel.item.collectAsState()
     DetailScreen(
         onClickToList = onClickToList,
-        id = id,
-        onClickBookmark = { viewModel.addBookmark() }
+        item = item,
+        onClickBookmark = {
+            if (it) viewModel.addBookmark() else viewModel.removeBookmark()
+        }
     )
     if (toastMessage > 0) {
         Toast.makeText(LocalContext.current, stringResource(id = toastMessage), Toast.LENGTH_SHORT)
@@ -71,8 +75,8 @@ fun DetailRoute(
 fun DetailScreen(
     modifier: Modifier = Modifier,
     onClickToList: () -> Unit,
-    id: String,
-    onClickBookmark: () -> Unit
+    item: TopicItem,
+    onClickBookmark: (Boolean) -> Unit
 ) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
 
@@ -87,7 +91,7 @@ fun DetailScreen(
                 Modifier.align(Alignment.Center),
                 cardFace,
                 onClickToList,
-                id,
+                item,
                 onClickBookmark
             )
         }
@@ -116,8 +120,8 @@ fun DetailFlipCard(
     modifier: Modifier = Modifier,
     cardFace: CardFace,
     onClickToList: () -> Unit,
-    id: String,
-    onClickBookmark: () -> Unit
+    item: TopicItem,
+    onClickBookmark: (Boolean) -> Unit
 ) {
     var scale by remember { mutableStateOf(1f) }
     var rotation by remember { mutableStateOf(1f) }
@@ -134,10 +138,10 @@ fun DetailFlipCard(
             )
             .background(CategoryLevelDummy.valueOf(level).backgroundColor),
         front = {
-            FrontCardFace(id)
+            FrontCardFace(item.id)
         },
         back = {
-            BackCardFace(onClickBookmark)
+            BackCardFace(item, onClickBookmark)
         }
     )
 
@@ -202,7 +206,7 @@ fun DetailFlipCard(
 }
 
 @Composable
-fun FrontCardFace(id: String) {
+fun FrontCardFace(id: Int) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -232,7 +236,8 @@ fun FrontCardFace(id: String) {
 
 @Composable
 fun BackCardFace(
-    onClickBookmark: () -> Unit
+    item: TopicItem,
+    onClickBookmark: (Boolean) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -244,7 +249,7 @@ fun BackCardFace(
         Column(
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 15.dp)
         ) {
-            Topic(onClickBookmark)
+            Topic(item, onClickBookmark)
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -271,8 +276,10 @@ fun BackCardFace(
 
 @Composable
 fun Topic(
-    onClickBookmark: () -> Unit
+    item: TopicItem,
+    onClickBookmark: (Boolean) -> Unit
 ) {
+    var toggleBookmark by remember { mutableStateOf(item.isBookmark) }
     Column(
         modifier = Modifier
             .padding(24.dp)
@@ -288,8 +295,13 @@ fun Topic(
                     .align(Alignment.CenterEnd)
                     .size(24.dp)
                     .padding(2.dp)
-                    .clickable { onClickBookmark() },
-                painter = painterResource(id = R.drawable.ic_star_empty),
+                    .clickable {
+                        toggleBookmark = !toggleBookmark
+                        onClickBookmark(toggleBookmark)
+                    },
+                painter = painterResource(
+                    id = if (toggleBookmark) R.drawable.ic_star_fill else R.drawable.ic_star_empty
+                ),
                 tint = Gray05,
                 contentDescription = null
             )
