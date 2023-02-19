@@ -42,7 +42,9 @@ import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.main.CategoryLevelDummy
 import com.hammer.talkbbokki.ui.theme.Gray03
+import com.hammer.talkbbokki.ui.theme.Gray04
 import com.hammer.talkbbokki.ui.theme.Gray05
+import com.hammer.talkbbokki.ui.theme.MainColor01
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -302,7 +304,7 @@ fun Topic(
                 painter = painterResource(
                     id = if (toggleBookmark) R.drawable.ic_star_fill else R.drawable.ic_star_empty
                 ),
-                tint = Gray05,
+                tint = if (toggleBookmark) MainColor01 else Gray04,
                 contentDescription = null
             )
         }
