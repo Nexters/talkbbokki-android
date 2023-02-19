@@ -22,7 +22,7 @@ class BookmarkViewModel @Inject constructor(
     private val dataStore: DataStoreManager
 ) : ViewModel() {
     private val todayDate = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-    val showDialog: StateFlow<Boolean> = dataStore.bookmarkCancelDialogDate.map {
+    val showCancelDialog: StateFlow<Boolean> = dataStore.bookmarkCancelDialogDate.map {
         it != todayDate
     }.stateIn(
         scope = viewModelScope,
