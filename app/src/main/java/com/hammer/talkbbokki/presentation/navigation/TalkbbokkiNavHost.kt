@@ -21,7 +21,8 @@ import com.hammer.talkbbokki.presentation.topics.topicListGraph
 fun TalkbbokkiNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = IntroDestination.route
+//    startDestination: String = IntroDestination.route
+    startDestination: String = TopicListDestination.route
 ) {
     NavHost(
         navController = navController,
