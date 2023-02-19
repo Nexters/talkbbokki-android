@@ -18,5 +18,10 @@ class TopicUseCase @Inject constructor(
     }
 
     fun getTodayViewCnt(): Flow<Int> = repository.getTodayViewCnt()
-    fun setTodayViewCnt(isReset: Boolean = false): Flow<Int> = repository.setTodayViewCnt(isReset).flowOn(dispatcher)
+    fun setTodayViewCnt(isReset: Boolean = false): Flow<Int> =
+        repository.setTodayViewCnt(isReset).flowOn(dispatcher)
+
+    fun getOpenedIndex(): Flow<Set<String>> = repository.getOpenedIndex()
+    fun setOpenedIndex(isReset: Boolean = false, index: String): Flow<Set<String>> =
+        repository.setOpenedIndex(isReset, index).flowOn(dispatcher)
 }

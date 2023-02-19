@@ -20,4 +20,10 @@ internal class TopicRepositoryImpl @Inject constructor(
     override fun setTodayViewCnt(isReset: Boolean): Flow<Int> = flow {
         dataStore.setViewCnt(isReset)
     }
+
+    override fun getOpenedIndex(): Flow<Set<String>> = dataStore.openedIndex
+
+    override fun setOpenedIndex(isReset: Boolean, index: String): Flow<Set<String>> = flow {
+        dataStore.setOpenedIndex(isReset, index)
+    }
 }

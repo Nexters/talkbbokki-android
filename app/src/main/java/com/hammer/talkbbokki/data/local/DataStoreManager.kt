@@ -3,6 +3,7 @@ package com.hammer.talkbbokki.data.local
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -18,6 +19,7 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
 
     private val settingsDataStore = appContext.dataStore
     private val key = intPreferencesKey("viewCnt")
+    private val indexKey = stringSetPreferencesKey("viewIndex")
 
     suspend fun setViewCnt(isReset: Boolean = false) {
         settingsDataStore.edit { talkbbokki ->
@@ -27,5 +29,16 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
 
     val viewCnt: Flow<Int> = settingsDataStore.data.map { preferences ->
         preferences[key] ?: 0
+    }
+
+    suspend fun setOpenedIndex(isReset: Boolean = false, index: String) {
+        settingsDataStore.edit { talkbbokki ->
+            talkbbokki[indexKey] =
+                if (isReset) setOf() else (talkbbokki[indexKey] ?: setOf()).plus(index)
+        }
+    }
+
+    val openedIndex: Flow<Set<String>> = settingsDataStore.data.map { preferences ->
+        preferences[indexKey] ?: setOf()
     }
 }

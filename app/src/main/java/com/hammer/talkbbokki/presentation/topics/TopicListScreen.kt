@@ -65,10 +65,13 @@ fun TopicListScreen(onClickToDetail: (id: String) -> Unit, viewModel: TopicListV
         TopicListHeader()
         TopicList(onFocusedCardChange = { idx -> selectedIdx = idx }, viewModel)
         SelectBtn(
-            viewCnt = viewModel.todayViewCnt.value, onCardClicked = {
+            isOpened = (selectedIdx.toInt() % 2 == 0),
+            todayViewCnt = viewModel.todayViewCnt.value,
+            onCardClicked = {
                 viewModel.setTodayViewCnt()
                 onClickToDetail(selectedIdx)
-            }, Modifier.align(Alignment.BottomCenter)
+            },
+            modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 }
@@ -144,20 +147,26 @@ fun TopicList(onFocusedCardChange: (idx: String) -> Unit, viewModel: TopicListVi
 }
 
 @Composable
-fun SelectBtn(viewCnt: Int, onCardClicked: () -> Unit, modifier: Modifier) {
+fun SelectBtn(
+    isOpened: Boolean = false,
+    todayViewCnt: Int,
+    onCardClicked: () -> Unit,
+    modifier: Modifier
+) {
     val context = LocalContext.current
-    val openable by remember {
-        mutableStateOf(false)
-    }
+    val openable by remember { mutableStateOf(false) }
 
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
         onClick = {
-            if (viewCnt >= 3) {
+            if (todayViewCnt >= 10) {
+                //TODO 10회 초과 다이얼로그 노출
+            } else if (todayViewCnt >= 3) {
                 showRewardedAd(context) {
                     onCardClicked()
                 }
             } else {
+                // 이미 열어본 카드 일 경우 처리
                 onCardClicked()
             }
         },
@@ -169,11 +178,13 @@ fun SelectBtn(viewCnt: Int, onCardClicked: () -> Unit, modifier: Modifier) {
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(
-            text = if (viewCnt >= 3) stringResource(R.string.detail_ad_pick_btn) else stringResource(
-                R.string.detail_pick_btn
-            ),
-            style = TalkbbokkiTypography.button_large,
-            color = Color.White
+            text = if (isOpened)
+                stringResource(R.string.detail_re_pick_btn)
+            else if (todayViewCnt >= 3)
+                stringResource(R.string.detail_ad_pick_btn)
+            else
+                stringResource(R.string.detail_pick_btn),
+            style = TalkbbokkiTypography.button_large, color = Color.White
         )
     }
 }
@@ -182,78 +193,79 @@ fun SelectBtn(viewCnt: Int, onCardClicked: () -> Unit, modifier: Modifier) {
 fun CardItem(definiteIndex: Int, currentOffset: Float, viewModel: TopicListViewModel) {
     val pageOffsetWithSign = definiteIndex - currentOffset
     val pageOffset = pageOffsetWithSign.absoluteValue
-    Box(
-        modifier = Modifier
-            .width(dimensionResource(id = R.dimen.card_width))
-            .aspectRatio(0.65f)
-            .background(Color.Transparent)
-            .zIndex(5f - pageOffset)
-            .graphicsLayer {
-                // 중간으로 올수록 크게 보임
-                lerp(
-                    start = 1f.dp,
-                    stop = 1.9.dp,
-                    fraction = 1f - pageOffset.coerceIn(0f, 1.3f)
-                ).let { scale ->
-                    scaleX = scale.value
-                    scaleY = scale.value
-                }
-
-                // 중간으로 올수록 0도에 가까워짐. (카드 사이 각도 15도씩 틀어짐)
-                lerp(
-                    start = pageOffsetWithSign * 15f.dp, // -30, -15, 0, 15, 30 ...
-                    stop = 0f.dp, fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                ).value.let { angle ->
-                    rotationZ = angle
-                }
-
-                // 중간에서 멀어질수록 수직으로 내려가도록 조정.
-                lerp(
-                    start = pageOffset * 50f.dp,
-                    stop = 0f.dp,
-                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                ).value.let { yOffset ->
-                    translationY = yOffset
-                }
-
-                // 카드가 겹치게 보이도록 중앙으로 모이도록 조정.
-                lerp(
-                    start = pageOffsetWithSign * pageOffset * (50f * -1).dp,
-                    stop = 0f.dp,
-                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                ).value.let { xOffset ->
-                    translationX = xOffset
-                }
+    Box(modifier = Modifier
+        .width(dimensionResource(id = R.dimen.card_width))
+        .aspectRatio(0.65f)
+        .background(Color.Transparent)
+        .zIndex(5f - pageOffset)
+        .graphicsLayer {
+            // 중간으로 올수록 크게 보임
+            lerp(
+                start = 1f.dp, stop = 1.9.dp, fraction = 1f - pageOffset.coerceIn(0f, 1.3f)
+            ).let { scale ->
+                scaleX = scale.value
+                scaleY = scale.value
             }
-    ) {
-        val cardImage: Painter =
-            if (pageOffset > 1.5) {
-                painterResource(id = R.drawable.bg_card_small)
-            } else if (pageOffset > 0.5) {
-                painterResource(id = R.drawable.bg_card_regular)
-            } else {
-                painterResource(id = R.drawable.bg_card_large)
+
+            // 중간으로 올수록 0도에 가까워짐. (카드 사이 각도 15도씩 틀어짐)
+            lerp(
+                start = pageOffsetWithSign * 15f.dp, // -30, -15, 0, 15, 30 ...
+                stop = 0f.dp, fraction = 1f - pageOffset.coerceIn(0f, 1f)
+            ).value.let { angle ->
+                rotationZ = angle
             }
+
+            // 중간에서 멀어질수록 수직으로 내려가도록 조정.
+            lerp(
+                start = pageOffset * 50f.dp,
+                stop = 0f.dp,
+                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+            ).value.let { yOffset ->
+                translationY = yOffset
+            }
+
+            // 카드가 겹치게 보이도록 중앙으로 모이도록 조정.
+            lerp(
+                start = pageOffsetWithSign * pageOffset * (50f * -1).dp,
+                stop = 0f.dp,
+                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+            ).value.let { xOffset ->
+                translationX = xOffset
+            }
+        }) {
+        val cardImage: Painter = if (pageOffset > 1.5) {
+            painterResource(id = R.drawable.bg_card_small)
+        } else if (pageOffset > 0.5) {
+            painterResource(id = R.drawable.bg_card_regular)
+        } else {
+            painterResource(id = R.drawable.bg_card_large)
+        }
 
         Image(
-            painter = cardImage,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize()
+            painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize()
         )
 
         Box(modifier = Modifier.fillMaxSize()) {
-            val category = painterResource(id = R.drawable.ic_tag_love)
+            val tag = "LOVE"
+            val tagImage: Painter = when (tag) {
+                "LOVE" -> {
+                    painterResource(id = R.drawable.ic_tag_love)
+                }
+                "DAILY" -> {
+                    painterResource(id = R.drawable.ic_tag_daily)
+                }
+                else -> {
+                    painterResource(id = R.drawable.ic_tag_if)
+                }
+            }
             var isCenter by remember { mutableStateOf(true) }
-
             isCenter = pageOffset < 0.5
 
             AnimatedVisibility(
-                visible = isCenter,
-                enter = fadeIn(),
-                exit = fadeOut()
+                visible = isCenter, enter = fadeIn(), exit = fadeOut()
             ) {
                 Image(
-                    painter = category,
+                    painter = tagImage,
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
@@ -261,21 +273,19 @@ fun CardItem(definiteIndex: Int, currentOffset: Float, viewModel: TopicListViewM
                 )
             }
         }
+
         if (pageOffset <= 0.5 && viewModel.todayViewCnt.value >= 3) {
-            Logic(Modifier.align(Alignment.TopCenter))
+            ShowLogic(Modifier.align(Alignment.TopCenter), definiteIndex % 2 == 0)
         }
     }
 }
 
 
 @Composable
-fun Logic(modifier: Modifier = Modifier) {
+fun ShowLogic(modifier: Modifier = Modifier, isOpened: Boolean = false) {
     Box(
-        modifier = modifier
-            .size(dimensionResource(id = R.dimen.card_tooltip_width), 40.dp)
+        modifier = modifier.size(dimensionResource(id = R.dimen.card_tooltip_width), 40.dp)
     ) {
-        val isOpened by remember { mutableStateOf(false) }
-
         if (isOpened) {
             Text(
                 modifier = Modifier.align(Alignment.TopCenter),
@@ -305,7 +315,8 @@ fun Logic(modifier: Modifier = Modifier) {
                     .padding(top = 34.dp)
                     .size(8.dp)
                     .align(Alignment.TopCenter),
-                painter = painterResource(id = R.drawable.triangle), contentDescription = null
+                painter = painterResource(id = R.drawable.triangle),
+                contentDescription = null
             )
         }
     }

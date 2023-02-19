@@ -1,5 +1,6 @@
 package com.hammer.talkbbokki.presentation.topics
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -51,6 +52,23 @@ class TopicListViewModel @Inject constructor(
     fun setTodayViewCnt(isReset: Boolean = false) {
         viewModelScope.launch {
             topicUseCase.setTodayViewCnt(isReset).collect()
+        }
+    }
+
+    var indexSet = MutableStateFlow(setOf<String>())
+    fun getOpenedIndex() {
+        viewModelScope.launch {
+            topicUseCase.getOpenedIndex().collect {
+                indexSet.value = it
+            }
+        }
+    }
+
+    fun findIndex(index: String) = indexSet.value.find { it == index } != null
+
+    fun setOpenedIndex(isReset: Boolean = false, index: String) {
+        viewModelScope.launch {
+            topicUseCase.setOpenedIndex(isReset, index).collect()
         }
     }
 }
