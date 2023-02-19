@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
@@ -41,14 +43,14 @@ fun DetailRoute(
 fun DetailScreen(modifier: Modifier = Modifier, onClickToList: () -> Unit, id: String) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
 
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize()
             .background(CategoryLevelDummy.valueOf(level).backgroundColor)
     ) {
         DetailHeader(cardFace = cardFace, onBackClick = { cardFace = CardFace.BACK })
         Box(modifier = modifier.fillMaxSize()) {
-            TestFlipCard(Modifier.align(Alignment.Center), cardFace, onClickToList, id)
+            DetailFlipCard(Modifier.align(Alignment.Center), cardFace, onClickToList, id)
         }
     }
 }
@@ -56,10 +58,13 @@ fun DetailScreen(modifier: Modifier = Modifier, onClickToList: () -> Unit, id: S
 @Composable
 fun DetailHeader(cardFace: CardFace, onBackClick: () -> Unit) {
     if (cardFace == CardFace.FRONT) {
-        Image(
+        Icon(
             modifier = Modifier
-                .padding(horizontal = 20.dp, vertical = 16.dp)
-                .size(24.dp, 24.dp)
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.horizontal_padding),
+                    vertical = dimensionResource(id = R.dimen.vertical_padding)
+                )
+                .size(24.dp)
                 .clickable { onBackClick() },
             painter = painterResource(id = R.drawable.ic_arrow_left),
             contentDescription = null,
@@ -68,7 +73,7 @@ fun DetailHeader(cardFace: CardFace, onBackClick: () -> Unit) {
 }
 
 @Composable
-fun TestFlipCard(
+fun DetailFlipCard(
     modifier: Modifier = Modifier, cardFace: CardFace, onClickToList: () -> Unit, id: String
 ) {
     var scale by remember { mutableStateOf(1f) }
@@ -158,7 +163,10 @@ fun FrontCardFace(id: String) {
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 32.dp)
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.horizontal_padding),
+                    vertical = 32.dp
+                )
         )
     }
 }
@@ -195,7 +203,7 @@ fun BackCardFace() {
                     .height(1.dp)
                     .background(Gray03)
             )
-            ShareBottom(Modifier.weight(1f))
+            ShareBottom()
         }
     }
 }
@@ -209,14 +217,18 @@ fun Topic() {
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(
                 modifier = Modifier.align(Alignment.CenterStart),
-                text = "TOPIC",
+                text = stringResource(R.string.detail_topic),
                 color = Gray05,
             )
-            Image(
+            Icon(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .size(24.dp),
-                painter = painterResource(id = R.drawable.ic_star_empty_gray),
+                    .size(24.dp)
+                    .padding(2.dp)
+                    .clickable {  }
+                ,
+                painter = painterResource(id = R.drawable.ic_star_empty),
+                tint = Gray05,
                 contentDescription = null
             )
         }
@@ -226,7 +238,7 @@ fun Topic() {
                 .fillMaxWidth(),
         )
         Text(
-            text = "천사처럼 자고 있던 내 연인",
+            text = "천사처럼 자고 있던 내 연인, 슬며시 다가가 머리를 쓰다듬는데 나도 몰랐던 가발이 벗겨졌다. 모르는척 다시 씌워준다 vs 왜 날 속였냐고 따진다.",
             style = TalkbbokkiTypography.b2_bold
         )
     }
@@ -241,7 +253,7 @@ fun Starter() {
     ) {
         Row(modifier = Modifier.height(24.dp)) {
             Text(
-                text = "STARTER",
+                text = stringResource(R.string.detail_starter),
                 color = Gray05,
             )
             Spacer(
@@ -249,9 +261,13 @@ fun Starter() {
                     .width(4.dp)
                     .fillMaxHeight()
             )
-            Image(
-                modifier = Modifier.size(18.dp),
-                painter = painterResource(id = R.drawable.ic_refresh_gray),
+            Icon(
+                modifier = Modifier
+                    .size(18.dp)
+                    .padding(2.dp)
+                    .clickable { },
+                painter = painterResource(id = R.drawable.ic_refresh),
+                tint = Gray05,
                 contentDescription = null
             )
         }
@@ -267,8 +283,8 @@ fun Starter() {
 }
 
 @Composable
-fun ShareBottom(modifier: Modifier) {
-    Row(modifier = modifier.height(64.dp)) {
+fun ShareBottom() {
+    Row(modifier = Modifier.height(62.dp)) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -304,7 +320,6 @@ fun ShareBottom(modifier: Modifier) {
             )
         }
     }
-
 }
 
 enum class CardFace {
