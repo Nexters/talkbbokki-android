@@ -6,10 +6,26 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -67,14 +83,17 @@ fun DetailHeader(cardFace: CardFace, onBackClick: () -> Unit) {
                 .size(24.dp)
                 .clickable { onBackClick() },
             painter = painterResource(id = R.drawable.ic_arrow_left),
-            contentDescription = null,
+            contentDescription = null
         )
     }
 }
 
 @Composable
 fun DetailFlipCard(
-    modifier: Modifier = Modifier, cardFace: CardFace, onClickToList: () -> Unit, id: String
+    modifier: Modifier = Modifier,
+    cardFace: CardFace,
+    onClickToList: () -> Unit,
+    id: String
 ) {
     var scale by remember { mutableStateOf(1f) }
     var rotation by remember { mutableStateOf(1f) }
@@ -85,7 +104,9 @@ fun DetailFlipCard(
             .width(dimensionResource(id = R.dimen.selected_card_width))
             .aspectRatio(0.7f)
             .graphicsLayer(
-                scaleX = scale, scaleY = scale, cameraDistance = 12f
+                scaleX = scale,
+                scaleY = scale,
+                cameraDistance = 12f
             )
             .background(CategoryLevelDummy.valueOf(level).backgroundColor),
         front = {
@@ -93,7 +114,7 @@ fun DetailFlipCard(
         },
         back = {
             BackCardFace()
-        },
+        }
     )
 
     if (cardFace == CardFace.FRONT) {
@@ -101,16 +122,22 @@ fun DetailFlipCard(
             coroutineScope {
                 launch {
                     animate(
-                        initialValue = 1f, targetValue = 1.3f, animationSpec = tween(
-                            durationMillis = 1000, easing = FastOutSlowInEasing
+                        initialValue = 1f,
+                        targetValue = 1.3f,
+                        animationSpec = tween(
+                            durationMillis = 1000,
+                            easing = FastOutSlowInEasing
                         )
                     ) { value: Float, _: Float ->
                         scale = value
                     }
 
                     animate(
-                        initialValue = 0f, targetValue = 180f, animationSpec = tween(
-                            durationMillis = 540, easing = FastOutSlowInEasing
+                        initialValue = 0f,
+                        targetValue = 180f,
+                        animationSpec = tween(
+                            durationMillis = 540,
+                            easing = FastOutSlowInEasing
                         )
                     ) { value, _ ->
                         rotation = value
@@ -123,16 +150,22 @@ fun DetailFlipCard(
             coroutineScope {
                 launch {
                     animate(
-                        initialValue = 180f, targetValue = 0f, animationSpec = tween(
-                            durationMillis = 540, easing = FastOutSlowInEasing
+                        initialValue = 180f,
+                        targetValue = 0f,
+                        animationSpec = tween(
+                            durationMillis = 540,
+                            easing = FastOutSlowInEasing
                         )
                     ) { value, _ ->
                         rotation = value
                     }
 
                     animate(
-                        initialValue = 1.3f, targetValue = 1f, animationSpec = tween(
-                            durationMillis = 1000, easing = FastOutSlowInEasing
+                        initialValue = 1.3f,
+                        targetValue = 1f,
+                        animationSpec = tween(
+                            durationMillis = 1000,
+                            easing = FastOutSlowInEasing
                         )
                     ) { value: Float, _: Float ->
                         scale = value
@@ -150,13 +183,15 @@ fun FrontCardFace(id: String) {
         modifier = Modifier
             .fillMaxSize()
             .background(CategoryLevelDummy.valueOf(level).backgroundColor),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         val cardImage = painterResource(id = R.drawable.bg_card_large)
         val category = painterResource(id = R.drawable.ic_tag_love)
 
         Image(
-            painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize()
+            painter = cardImage,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
         )
         Image(
             painter = category,
@@ -175,7 +210,7 @@ fun FrontCardFace(id: String) {
 fun BackCardFace() {
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         val cardImage = painterResource(id = R.drawable.card_back)
 
@@ -218,15 +253,14 @@ fun Topic() {
             Text(
                 modifier = Modifier.align(Alignment.CenterStart),
                 text = stringResource(R.string.detail_topic),
-                color = Gray05,
+                color = Gray05
             )
             Icon(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .size(24.dp)
                     .padding(2.dp)
-                    .clickable {  }
-                ,
+                    .clickable { },
                 painter = painterResource(id = R.drawable.ic_star_empty),
                 tint = Gray05,
                 contentDescription = null
@@ -235,7 +269,7 @@ fun Topic() {
         Spacer(
             modifier = Modifier
                 .height(8.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
         )
         Text(
             text = "천사처럼 자고 있던 내 연인, 슬며시 다가가 머리를 쓰다듬는데 나도 몰랐던 가발이 벗겨졌다. 모르는척 다시 씌워준다 vs 왜 날 속였냐고 따진다.",
@@ -254,7 +288,7 @@ fun Starter() {
         Row(modifier = Modifier.height(24.dp)) {
             Text(
                 text = stringResource(R.string.detail_starter),
-                color = Gray05,
+                color = Gray05
             )
             Spacer(
                 modifier = Modifier
@@ -277,7 +311,8 @@ fun Starter() {
                 .fillMaxWidth()
         )
         Text(
-            text = "1인 1닭 가능할 것 같은 사람", style = TalkbbokkiTypography.b2_bold
+            text = "1인 1닭 가능할 것 같은 사람",
+            style = TalkbbokkiTypography.b2_bold
         )
     }
 }
@@ -289,14 +324,14 @@ fun ShareBottom() {
             modifier = Modifier
                 .fillMaxSize()
                 .weight(1f)
-                .clickable { },
+                .clickable { }
         ) {
             Image(
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.Center),
                 painter = painterResource(id = R.drawable.ic_share),
-                contentDescription = null,
+                contentDescription = null
             )
         }
         Spacer(
@@ -309,14 +344,14 @@ fun ShareBottom() {
             modifier = Modifier
                 .fillMaxSize()
                 .weight(1f)
-                .clickable { },
+                .clickable { }
         ) {
             Image(
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.Center),
                 painter = painterResource(id = R.drawable.ic_download),
-                contentDescription = null,
+                contentDescription = null
             )
         }
     }
