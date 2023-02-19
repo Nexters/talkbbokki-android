@@ -1,5 +1,6 @@
 package com.hammer.talkbbokki.data.repository
 
+import com.hammer.talkbbokki.data.entity.toEntity
 import com.hammer.talkbbokki.data.local.BookmarkDao
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.repository.BookmarkRepository
@@ -112,7 +113,8 @@ internal class BookmarkRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun removeBookmark(id: Int) {
-        dao.removeBookmark(id)
-    }
+    override fun removeBookmark(id: Int) = dao.removeBookmark(id)
+
+    override fun addBookmark(item: TopicItem) =
+        dao.addBookmark(item.toEntity(System.currentTimeMillis()))
 }
