@@ -44,5 +44,7 @@
     <string name="detail_starter">STARTER</string>
     <string name="detail_topic">TOPIC</string>
     <string name="list_opened_card">이미 열어본 카드에요</string>
+    <string name="detail_card_bookmark_success">즐겨찾기 등록 완료!</string>
+    <string name="detail_card_bookmark_fail">즐겨찾기 실패!</string>
 
 </resources>

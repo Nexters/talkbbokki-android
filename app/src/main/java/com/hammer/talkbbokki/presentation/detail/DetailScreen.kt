@@ -1,5 +1,6 @@
 package com.hammer.talkbbokki.presentation.detail
 
+import android.widget.Toast
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
@@ -22,6 +23,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -52,11 +55,25 @@ fun DetailRoute(
     id: String,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
-    DetailScreen(onClickToList = onClickToList, id = id)
+    val toastMessage by viewModel.toastMessage.collectAsState()
+    DetailScreen(
+        onClickToList = onClickToList,
+        id = id,
+        onClickBookmark = { viewModel.addBookmark() }
+    )
+    if (toastMessage > 0) {
+        Toast.makeText(LocalContext.current, stringResource(id = toastMessage), Toast.LENGTH_SHORT)
+            .show()
+    }
 }
 
 @Composable
-fun DetailScreen(modifier: Modifier = Modifier, onClickToList: () -> Unit, id: String) {
+fun DetailScreen(
+    modifier: Modifier = Modifier,
+    onClickToList: () -> Unit,
+    id: String,
+    onClickBookmark: () -> Unit
+) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
 
     Column(
@@ -66,7 +83,13 @@ fun DetailScreen(modifier: Modifier = Modifier, onClickToList: () -> Unit, id: S
     ) {
         DetailHeader(cardFace = cardFace, onBackClick = { cardFace = CardFace.BACK })
         Box(modifier = modifier.fillMaxSize()) {
-            DetailFlipCard(Modifier.align(Alignment.Center), cardFace, onClickToList, id)
+            DetailFlipCard(
+                Modifier.align(Alignment.Center),
+                cardFace,
+                onClickToList,
+                id,
+                onClickBookmark
+            )
         }
     }
 }
@@ -93,7 +116,8 @@ fun DetailFlipCard(
     modifier: Modifier = Modifier,
     cardFace: CardFace,
     onClickToList: () -> Unit,
-    id: String
+    id: String,
+    onClickBookmark: () -> Unit
 ) {
     var scale by remember { mutableStateOf(1f) }
     var rotation by remember { mutableStateOf(1f) }
@@ -113,7 +137,7 @@ fun DetailFlipCard(
             FrontCardFace(id)
         },
         back = {
-            BackCardFace()
+            BackCardFace(onClickBookmark)
         }
     )
 
@@ -207,7 +231,9 @@ fun FrontCardFace(id: String) {
 }
 
 @Composable
-fun BackCardFace() {
+fun BackCardFace(
+    onClickBookmark: () -> Unit
+) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -218,7 +244,7 @@ fun BackCardFace() {
         Column(
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 15.dp)
         ) {
-            Topic()
+            Topic(onClickBookmark)
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -244,7 +270,9 @@ fun BackCardFace() {
 }
 
 @Composable
-fun Topic() {
+fun Topic(
+    onClickBookmark: () -> Unit
+) {
     Column(
         modifier = Modifier
             .padding(24.dp)
@@ -260,7 +288,7 @@ fun Topic() {
                     .align(Alignment.CenterEnd)
                     .size(24.dp)
                     .padding(2.dp)
-                    .clickable { },
+                    .clickable { onClickBookmark() },
                 painter = painterResource(id = R.drawable.ic_star_empty),
                 tint = Gray05,
                 contentDescription = null
