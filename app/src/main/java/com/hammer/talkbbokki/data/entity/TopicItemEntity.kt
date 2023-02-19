@@ -26,3 +26,13 @@ internal data class TopicItemEntity(
         isBookmark = isBookmark
     )
 }
+
+internal fun TopicItem.toEntity(timeStamp: Long? = null) = TopicItemEntity(
+    id = id,
+    name = name,
+    viewCount = viewCount,
+    category = category,
+    shareLink = shareLink,
+    tag = tag,
+    timeStamp = timeStamp
+)

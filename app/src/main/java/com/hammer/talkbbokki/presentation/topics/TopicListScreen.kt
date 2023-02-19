@@ -188,11 +188,11 @@ fun SelectBtn(
     ) {
         Text(
             text = if (isOpened)
-                stringResource(R.string.detail_re_pick_btn)
+                stringResource(R.string.list_re_pick_btn)
             else if (todayViewCnt >= 3)
-                stringResource(R.string.detail_ad_pick_btn)
+                stringResource(R.string.list_ad_pick_btn)
             else
-                stringResource(R.string.detail_pick_btn),
+                stringResource(R.string.list_pick_btn),
             style = TalkbbokkiTypography.button_large, color = Color.White
         )
     }

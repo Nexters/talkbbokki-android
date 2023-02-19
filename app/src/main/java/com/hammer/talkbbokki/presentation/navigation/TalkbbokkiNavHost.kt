@@ -14,6 +14,8 @@ import com.hammer.talkbbokki.presentation.main.MainDestination
 import com.hammer.talkbbokki.presentation.main.mainGraph
 import com.hammer.talkbbokki.presentation.onboarding.OnBoardingDestination
 import com.hammer.talkbbokki.presentation.onboarding.onboardingGraph
+import com.hammer.talkbbokki.presentation.suggestion.SuggestionDestination
+import com.hammer.talkbbokki.presentation.suggestion.suggestionGraph
 import com.hammer.talkbbokki.presentation.topics.TopicListDestination
 import com.hammer.talkbbokki.presentation.topics.topicListGraph
 
@@ -44,7 +46,8 @@ fun TalkbbokkiNavHost(
         )
         mainGraph(
             navigateToList = { navController.navigate(TopicListDestination.route) },
-            navigateToBookmark = { navController.navigate(BookmarkDestination.route) }
+            navigateToBookmark = { navController.navigate(BookmarkDestination.route) },
+            navigateToSuggestion = { navController.navigate(SuggestionDestination.route) }
         )
         topicListGraph(
             navigateToDetail = { id ->
@@ -63,6 +66,9 @@ fun TalkbbokkiNavHost(
             navigateToDetail = { item ->
                 navController.navigate(DetailDestination.route + "/${item.id}")
             },
+            onBackClick = { navController.popBackStack() }
+        )
+        suggestionGraph(
             onBackClick = { navController.popBackStack() }
         )
     }
