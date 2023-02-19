@@ -39,9 +39,15 @@ class TopicListViewModel @Inject constructor(
                 initialValue = TopicListUiState.Loading
             )
 
-    val todayViewCnt = viewModelScope.launch {
-        topicUseCase.getTodayViewCnt().first()
+    val todayViewCnt = MutableStateFlow(0)
+    fun getTodayViewCnt() {
+        viewModelScope.launch {
+            topicUseCase.getTodayViewCnt().collect {
+                todayViewCnt.value = it
+            }
+        }
     }
+
     fun setTodayViewCnt(isReset: Boolean = false) {
         viewModelScope.launch {
             topicUseCase.setTodayViewCnt(isReset).collect()

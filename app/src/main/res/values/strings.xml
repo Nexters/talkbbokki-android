@@ -33,7 +33,13 @@
     <string name="bookmark_cancel_dialog_subtext">* 이 문구는 하루에 한 번만 노출됩니다.</string>
     <string name="bookmark_cancel_dialog_disagree">안할래요</string>
     <string name="bookmark_cancel_dialog_agree">그래도 할래요</string>
+
     <string name="detail_starter">STARTER</string>
     <string name="detail_topic">TOPIC</string>
+
     <string name="list_opened_card">이미 열어본 카드에요</string>
+    <string name="list_more_card">4개 부터는 광고를\n보면 뽑을 수 있어요</string>
+    <string name="detail_ad_pick_btn">광고 보고 뽑기</string>
+    <string name="detail_pick_btn">이 카드 뽑기</string>
+
 </resources>

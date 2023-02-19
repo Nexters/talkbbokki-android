@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.times
@@ -31,7 +32,9 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.presentation.main.CategoryLevelDummy
+import com.hammer.talkbbokki.ui.theme.Gray07
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
+import com.hammer.talkbbokki.ui.theme.White
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -50,6 +53,7 @@ fun TopicListRoute(
 fun TopicListScreen(onClickToDetail: (id: String) -> Unit, viewModel: TopicListViewModel) {
     var selectedIdx by remember { mutableStateOf("0") }
     val topicList by viewModel.topicList.collectAsState()
+    viewModel.getTodayViewCnt()
 
     Box(
         modifier = Modifier
@@ -57,15 +61,12 @@ fun TopicListScreen(onClickToDetail: (id: String) -> Unit, viewModel: TopicListV
             .background(CategoryLevelDummy.valueOf(level).backgroundColor)
     ) {
         TopicListHeader()
-        TopicList(onFocusedCardChange = { idx -> selectedIdx = idx })
+        TopicList(onFocusedCardChange = { idx -> selectedIdx = idx }, viewModel)
         SelectBtn(
-//            viewCnt = viewModel.todayViewCnt,
-            viewCnt = 3,
-            onCardClicked = {
+            viewCnt = viewModel.todayViewCnt.value, onCardClicked = {
                 viewModel.setTodayViewCnt()
                 onClickToDetail(selectedIdx)
-            },
-            Modifier.align(Alignment.BottomCenter)
+            }, Modifier.align(Alignment.BottomCenter)
         )
     }
 }
@@ -101,7 +102,7 @@ fun TopicListHeader() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TopicList(onFocusedCardChange: (idx: String) -> Unit) {
+fun TopicList(onFocusedCardChange: (idx: String) -> Unit, viewModel: TopicListViewModel) {
     val listState = rememberLazyListState()
     val itemWidth =
         with(LocalDensity.current) { (dimensionResource(id = R.dimen.card_width)).toPx() }
@@ -133,7 +134,7 @@ fun TopicList(onFocusedCardChange: (idx: String) -> Unit) {
             ) {
                 itemsIndexed(cardList) { definiteIndex, _ ->
                     onFocusedCardChange(currentOffset.roundToInt().toString())
-                    CardItem(definiteIndex, currentOffset)
+                    CardItem(definiteIndex, currentOffset, viewModel)
                 }
             }
         }
@@ -160,7 +161,7 @@ fun SelectBtn(viewCnt: Int, onCardClicked: () -> Unit, modifier: Modifier) {
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(
-            text = if (viewCnt >= 3) "광고 보고 뽑기" else "이 카드 뽑기",
+            text = if (viewCnt >= 3) stringResource(R.string.detail_ad_pick_btn) else stringResource(R.string.detail_pick_btn),
             style = TalkbbokkiTypography.button_large,
             color = Color.White
         )
@@ -168,13 +169,13 @@ fun SelectBtn(viewCnt: Int, onCardClicked: () -> Unit, modifier: Modifier) {
 }
 
 @Composable
-fun CardItem(definiteIndex: Int, currentOffset: Float) {
+fun CardItem(definiteIndex: Int, currentOffset: Float, viewModel: TopicListViewModel) {
     val pageOffsetWithSign = definiteIndex - currentOffset
     val pageOffset = pageOffsetWithSign.absoluteValue
     Box(
         modifier = Modifier
             .width(dimensionResource(id = R.dimen.card_width))
-            .aspectRatio(0.7f)
+            .aspectRatio(0.65f)
             .background(Color.Transparent)
             .zIndex(5f - pageOffset)
             .graphicsLayer {
@@ -191,8 +192,7 @@ fun CardItem(definiteIndex: Int, currentOffset: Float) {
                 // 중간으로 올수록 0도에 가까워짐. (카드 사이 각도 15도씩 틀어짐)
                 lerp(
                     start = pageOffsetWithSign * 15f.dp, // -30, -15, 0, 15, 30 ...
-                    stop = 0f.dp,
-                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                    stop = 0f.dp, fraction = 1f - pageOffset.coerceIn(0f, 1f)
                 ).value.let { angle ->
                     rotationZ = angle
                 }
@@ -250,6 +250,53 @@ fun CardItem(definiteIndex: Int, currentOffset: Float) {
                         .padding(horizontal = 16.dp, vertical = 32.dp)
                 )
             }
+        }
+        if (pageOffset <= 0.5 && viewModel.todayViewCnt.value >= 3) {
+            Logic(Modifier.align(Alignment.TopCenter))
+        }
+    }
+}
+
+
+@Composable
+fun Logic(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(dimensionResource(id = R.dimen.card_tooltip_width), 40.dp)
+    ) {
+        val isOpened by remember { mutableStateOf(false) }
+
+        if (isOpened) {
+            Text(
+                modifier = Modifier.align(Alignment.TopCenter),
+                text = stringResource(R.string.list_opened_card),
+//                style = TalkbbokkiTypography.b2_bold,
+                style = TalkbbokkiTypography.test,
+                color = Color.White
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .height(34.dp)
+                    .background(Gray07, RoundedCornerShape(8.dp))
+            ) {
+                Text(
+                    text = stringResource(R.string.list_more_card),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+//                    style = TalkbbokkiTypography.b3_regular,
+                    style = TalkbbokkiTypography.test,
+                    color = White,
+                    textAlign = TextAlign.Center
+                )
+            }
+            Image(
+                modifier = Modifier
+                    .padding(top = 34.dp)
+                    .size(8.dp)
+                    .align(Alignment.TopCenter),
+                painter = painterResource(id = R.drawable.triangle), contentDescription = null
+            )
         }
     }
 }
