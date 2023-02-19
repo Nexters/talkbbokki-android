@@ -8,6 +8,4 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
-) : ViewModel() {
-
-}
+) : ViewModel()

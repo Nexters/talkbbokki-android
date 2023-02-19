@@ -74,7 +74,10 @@ fun DetailHeader(cardFace: CardFace, onBackClick: () -> Unit) {
 
 @Composable
 fun DetailFlipCard(
-    modifier: Modifier = Modifier, cardFace: CardFace, onClickToList: () -> Unit, id: String
+    modifier: Modifier = Modifier,
+    cardFace: CardFace,
+    onClickToList: () -> Unit,
+    id: String
 ) {
     var scale by remember { mutableStateOf(1f) }
     var rotation by remember { mutableStateOf(1f) }
@@ -101,7 +104,8 @@ fun DetailFlipCard(
             coroutineScope {
                 launch {
                     animate(
-                        initialValue = 1f, targetValue = 1.3f, animationSpec = tween(
+                        initialValue = 1f, targetValue = 1.3f,
+                        animationSpec = tween(
                             durationMillis = 1000, easing = FastOutSlowInEasing
                         )
                     ) { value: Float, _: Float ->
@@ -109,7 +113,8 @@ fun DetailFlipCard(
                     }
 
                     animate(
-                        initialValue = 0f, targetValue = 180f, animationSpec = tween(
+                        initialValue = 0f, targetValue = 180f,
+                        animationSpec = tween(
                             durationMillis = 540, easing = FastOutSlowInEasing
                         )
                     ) { value, _ ->
@@ -123,7 +128,8 @@ fun DetailFlipCard(
             coroutineScope {
                 launch {
                     animate(
-                        initialValue = 180f, targetValue = 0f, animationSpec = tween(
+                        initialValue = 180f, targetValue = 0f,
+                        animationSpec = tween(
                             durationMillis = 540, easing = FastOutSlowInEasing
                         )
                     ) { value, _ ->
@@ -131,7 +137,8 @@ fun DetailFlipCard(
                     }
 
                     animate(
-                        initialValue = 1.3f, targetValue = 1f, animationSpec = tween(
+                        initialValue = 1.3f, targetValue = 1f,
+                        animationSpec = tween(
                             durationMillis = 1000, easing = FastOutSlowInEasing
                         )
                     ) { value: Float, _: Float ->
@@ -225,8 +232,7 @@ fun Topic() {
                     .align(Alignment.CenterEnd)
                     .size(24.dp)
                     .padding(2.dp)
-                    .clickable {  }
-                ,
+                    .clickable { },
                 painter = painterResource(id = R.drawable.ic_star_empty),
                 tint = Gray05,
                 contentDescription = null

@@ -6,7 +6,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.hammer.talkbbokki.presentation.navigation.TalkbbokkiNavigationDestination
 
-
 object DetailDestination : TalkbbokkiNavigationDestination {
     override val route: String
         get() = "detail_route"

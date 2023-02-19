@@ -4,9 +4,9 @@ import com.hammer.talkbbokki.data.local.DataStoreManager
 import com.hammer.talkbbokki.data.remote.TalkbbokkiService
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.repository.TopicRepository
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
 internal class TopicRepositoryImpl @Inject constructor(
     private val service: TalkbbokkiService,
