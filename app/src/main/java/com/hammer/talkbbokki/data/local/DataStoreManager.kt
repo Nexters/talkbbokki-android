@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.hammer.talkbbokki.data.local.PreferenceKeys.BOOKMARK_CANCEL_DIALOG
 import com.hammer.talkbbokki.data.local.PreferenceKeys.SHOW_ON_BOARDING
 import com.hammer.talkbbokki.data.local.PreferenceKeys.VIEW_COUNT
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -17,6 +18,7 @@ private val Context.dataStore by preferencesDataStore(STORE_NAME)
 
 object PreferenceKeys {
     val SHOW_ON_BOARDING = booleanPreferencesKey("onBoarding")
+    val BOOKMARK_CANCEL_DIALOG = intPreferencesKey("bookmark_cancel_dialog")
     val VIEW_COUNT = intPreferencesKey("viewCnt")
 }
 
@@ -38,6 +40,16 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
     suspend fun updateShowOnBoarding() {
         settingsDataStore.edit { pref ->
             pref[SHOW_ON_BOARDING] = false
+        }
+    }
+
+    val bookmarkCancelDialogDate: Flow<Int> = settingsDataStore.data.map {
+        it[BOOKMARK_CANCEL_DIALOG] ?: 0
+    }
+
+    suspend fun updateBookmarkCancelDialogDate(date: Int) {
+        settingsDataStore.edit { pref ->
+            pref[BOOKMARK_CANCEL_DIALOG] = date
         }
     }
 }
