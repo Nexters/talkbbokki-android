@@ -110,8 +110,13 @@ fun MainHeader(
             )
         }
         Box(modifier = Modifier.fillMaxWidth()) {
+            Image(
+                painter = painterResource(id = R.drawable.image_main_graphic),
+                contentDescription = null,
+                modifier = Modifier.align(Alignment.BottomEnd)
+            )
             Column(
-                modifier = Modifier.padding(top = 40.dp, start = 20.dp)
+                modifier = Modifier.padding(top = 32.dp, start = 20.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.main_title),
@@ -122,15 +127,10 @@ fun MainHeader(
                 Text(
                     text = stringResource(id = R.string.main_sub_title),
                     style = TalkbbokkiTypography.b3_regular,
-                    color = White
+                    color = Gray04
                 )
-                Spacer(modifier = Modifier.height(52.dp))
+                Spacer(modifier = Modifier.height(48.dp))
             }
-            Image(
-                painter = painterResource(id = R.drawable.image_main_graphic),
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.TopEnd)
-            )
         }
     }
 }
@@ -179,7 +179,7 @@ fun LevelItem(
                         model = level.image
                     ),
                     contentDescription = null,
-                    modifier = Modifier.width(100.dp)
+                    modifier = Modifier.fillMaxSize(fraction = 0.58f)
                 )
                 Text(
                     text = level.title,
