@@ -30,6 +30,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -41,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.CategoryLevel
+import com.hammer.talkbbokki.ui.dialog.CommonDialog
 import com.hammer.talkbbokki.ui.theme.Gray04
 import com.hammer.talkbbokki.ui.theme.Gray07
 import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
@@ -73,6 +77,15 @@ fun MainScreen(
     onClickLevel: (String) -> Unit,
     onClickSuggestion: () -> Unit
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        CommonDialog(
+            text = stringResource(id = R.string.main_coming_soon_dialog_text),
+            subText = null,
+            agreeText = stringResource(id = R.string.main_coming_soon_dialog_close_button),
+            agreeAction = { showDialog = false }
+        )
+    }
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxSize()
@@ -87,7 +100,7 @@ fun MainScreen(
         }
 
         items(categoryLevel) {
-            LevelItem(it, onClickLevel)
+            LevelItem(it, onClickLevel) { showDialog = true }
         }
 
         item(span = { GridItemSpan(2) }) {
@@ -142,36 +155,19 @@ fun MainHeader(
     }
 }
 
-@Composable
-fun CategoryLevels(
-    categoryLevel: List<CategoryLevel>,
-    onClickLevel: (String) -> Unit
-) {
-    LazyVerticalGrid(
-        modifier = Modifier.padding(start = 22.dp, end = 22.dp),
-        columns = GridCells.Fixed(2),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        userScrollEnabled = false
-    ) {
-        items(categoryLevel) {
-            LevelItem(it, onClickLevel)
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LevelItem(
     level: CategoryLevel,
-    onClickLevel: (String) -> Unit
+    onClickLevel: (String) -> Unit,
+    showDialog: () -> Unit
 ) {
     Box(modifier = Modifier.aspectRatio(1f)) {
         Card(
             modifier = Modifier.fillMaxSize(),
             shape = RoundedCornerShape(8.dp),
             onClick = {
-                onClickLevel(level.id)
+                if (level.isActive) onClickLevel(level.id) else showDialog()
             }
         ) {
             Column(
