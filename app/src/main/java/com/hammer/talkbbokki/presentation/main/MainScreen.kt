@@ -54,13 +54,15 @@ fun MainRoute(
     modifier: Modifier = Modifier,
     onClickBookmarkMenu: () -> Unit,
     onClickLevel: (String) -> Unit,
+    onClickSuggestion: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val categoryLevel by viewModel.categoryLevel.collectAsState()
     MainScreen(
         categoryLevel,
         onClickBookmarkMenu = { onClickBookmarkMenu() },
-        onClickLevel = { onClickLevel(it) }
+        onClickLevel = { onClickLevel(it) },
+        onClickSuggestion = { onClickSuggestion() }
     )
 }
 
@@ -68,7 +70,8 @@ fun MainRoute(
 fun MainScreen(
     categoryLevel: List<CategoryLevel>,
     onClickBookmarkMenu: () -> Unit,
-    onClickLevel: (String) -> Unit
+    onClickLevel: (String) -> Unit,
+    onClickSuggestion: () -> Unit
 ) {
     val context = LocalContext.current
     Column(
@@ -82,7 +85,7 @@ fun MainScreen(
             Toast.makeText(context, "click $it", Toast.LENGTH_SHORT).show()
         }
         Spacer(modifier = Modifier.height(20.dp))
-        SuggestionButton {}
+        SuggestionButton { onClickSuggestion() }
     }
 }
 
