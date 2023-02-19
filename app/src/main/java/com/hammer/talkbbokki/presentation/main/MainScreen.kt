@@ -1,6 +1,5 @@
 package com.hammer.talkbbokki.presentation.main
 
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,10 +14,12 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,7 +33,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -59,7 +59,7 @@ fun MainRoute(
 ) {
     val categoryLevel by viewModel.categoryLevel.collectAsState()
     MainScreen(
-        categoryLevel,
+        categoryLevel = categoryLevel,
         onClickBookmarkMenu = { onClickBookmarkMenu() },
         onClickLevel = { onClickLevel(it) },
         onClickSuggestion = { onClickSuggestion() }
@@ -73,19 +73,26 @@ fun MainScreen(
     onClickLevel: (String) -> Unit,
     onClickSuggestion: () -> Unit
 ) {
-    val context = LocalContext.current
-    Column(
+    LazyVerticalGrid(
         modifier = Modifier
             .fillMaxSize()
             .background(MainBackgroundColor)
+            .padding(start = 20.dp, end = 20.dp, bottom = 22.dp),
+        columns = GridCells.Fixed(2),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        MainHeader { onClickBookmarkMenu() }
-        CategoryLevels(categoryLevel) {
-            onClickLevel(it)
-            Toast.makeText(context, "click $it", Toast.LENGTH_SHORT).show()
+        item(span = { GridItemSpan(2) }) {
+            MainHeader { onClickBookmarkMenu() }
         }
-        Spacer(modifier = Modifier.height(20.dp))
-        SuggestionButton { onClickSuggestion() }
+
+        items(categoryLevel) {
+            LevelItem(it, onClickLevel)
+        }
+
+        item(span = { GridItemSpan(2) }) {
+            SuggestionButton { onClickSuggestion() }
+        }
     }
 }
 
@@ -99,7 +106,7 @@ fun MainHeader(
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
-                .padding(top = 24.dp, end = 20.dp, bottom = 12.dp),
+                .padding(top = 24.dp),
             horizontalAlignment = Alignment.End
         ) {
             Icon(
@@ -113,10 +120,10 @@ fun MainHeader(
             Image(
                 painter = painterResource(id = R.drawable.image_main_graphic),
                 contentDescription = null,
-                modifier = Modifier.align(Alignment.BottomEnd)
+                modifier = Modifier.align(Alignment.BottomEnd).offset(x = 20.dp)
             )
             Column(
-                modifier = Modifier.padding(top = 32.dp, start = 20.dp)
+                modifier = Modifier.padding(top = 32.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.main_title),
@@ -206,6 +213,7 @@ fun SuggestionButton(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier
                 .wrapContentSize()
