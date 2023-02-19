@@ -4,6 +4,7 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
@@ -46,13 +47,20 @@ val level = "Level1"
 fun TopicListRoute(
     modifier: Modifier = Modifier,
     onClickToDetail: (id: String) -> Unit,
+    onClickToMain: () -> Unit,
     viewModel: TopicListViewModel = hiltViewModel()
 ) {
-    TopicListScreen(onClickToDetail = onClickToDetail, viewModel = viewModel)
+    TopicListScreen(
+        onClickToDetail = onClickToDetail, onClickToMain = onClickToMain, viewModel = viewModel
+    )
 }
 
 @Composable
-fun TopicListScreen(onClickToDetail: (id: String) -> Unit, viewModel: TopicListViewModel) {
+fun TopicListScreen(
+    onClickToDetail: (id: String) -> Unit,
+    onClickToMain: () -> Unit,
+    viewModel: TopicListViewModel
+) {
     var selectedIdx by remember { mutableStateOf("0") }
     val topicList by viewModel.topicList.collectAsState()
     viewModel.getTodayViewCnt()
@@ -62,7 +70,7 @@ fun TopicListScreen(onClickToDetail: (id: String) -> Unit, viewModel: TopicListV
             .fillMaxSize()
             .background(CategoryLevelDummy.valueOf(level).backgroundColor)
     ) {
-        TopicListHeader()
+        TopicListHeader(onClickToMain)
         TopicList(onFocusedCardChange = { idx -> selectedIdx = idx }, viewModel)
         SelectBtn(
             isOpened = (selectedIdx.toInt() % 2 == 0),
@@ -77,7 +85,7 @@ fun TopicListScreen(onClickToDetail: (id: String) -> Unit, viewModel: TopicListV
 }
 
 @Composable
-fun TopicListHeader() {
+fun TopicListHeader(onClickToMain: () -> Unit) {
     Column(
         modifier = Modifier
             .padding(
@@ -92,6 +100,7 @@ fun TopicListHeader() {
             modifier = Modifier
                 .align(Alignment.End)
                 .size(24.dp, 24.dp)
+                .clickable { onClickToMain() }
         )
         Spacer(modifier = Modifier.height(24.dp))
         stringResource(id = CategoryLevelDummy.valueOf(level).title).split("\n")
