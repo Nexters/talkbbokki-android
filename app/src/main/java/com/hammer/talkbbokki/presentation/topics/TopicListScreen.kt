@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -32,6 +33,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.presentation.main.CategoryLevelDummy
+import com.hammer.talkbbokki.presentation.showRewardedAd
 import com.hammer.talkbbokki.ui.theme.Gray07
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import com.hammer.talkbbokki.ui.theme.White
@@ -143,12 +145,18 @@ fun TopicList(onFocusedCardChange: (idx: String) -> Unit, viewModel: TopicListVi
 
 @Composable
 fun SelectBtn(viewCnt: Int, onCardClicked: () -> Unit, modifier: Modifier) {
+    val context = LocalContext.current
+    val openable by remember {
+        mutableStateOf(false)
+    }
+
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
         onClick = {
             if (viewCnt >= 3) {
-                // TODO : 광고 시청 후 디테일로 넘어가는 로직
-                onCardClicked()
+                showRewardedAd(context) {
+                    onCardClicked()
+                }
             } else {
                 onCardClicked()
             }
@@ -161,7 +169,9 @@ fun SelectBtn(viewCnt: Int, onCardClicked: () -> Unit, modifier: Modifier) {
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(
-            text = if (viewCnt >= 3) stringResource(R.string.detail_ad_pick_btn) else stringResource(R.string.detail_pick_btn),
+            text = if (viewCnt >= 3) stringResource(R.string.detail_ad_pick_btn) else stringResource(
+                R.string.detail_pick_btn
+            ),
             style = TalkbbokkiTypography.button_large,
             color = Color.White
         )
