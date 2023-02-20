@@ -79,14 +79,13 @@ fun TopicListScreen(
                 selectedTopic = topic
                 selectedIdx = idx
             },
-            viewModel,
             todayViewCnt
         )
         SelectBtn(
-            isOpened = (selectedIdx.toInt() % 2 == 0),
-            todayViewCnt = todayViewCnt,
+            isOpened = list.getOrNull(selectedIdx)?.isOpened ?: false,
+            viewCountOver = todayViewCnt >= 3,
             onCardClicked = {
-                viewModel.setTodayViewCnt(id = selectedIdx.toInt())
+                viewModel.setTodayViewCnt(id = selectedIdx)
                 onClickToDetail(topicLevel, selectedIdx, selectedTopic)
             },
             modifier = Modifier.align(Alignment.BottomCenter)
@@ -129,7 +128,6 @@ fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
 fun TopicList(
     cardList: List<TopicItem>,
     onFocusedCardChange: (idx: Int, topic: String) -> Unit,
-    viewModel: TopicListViewModel,
     todayViewCnt: Int
 ) {
     val listState = rememberLazyListState()
@@ -164,7 +162,7 @@ fun TopicList(
                         item.id,
                         item.name
                     )
-                    CardItem(definiteIndex, currentOffset, viewModel, item, todayViewCnt)
+                    CardItem(definiteIndex, currentOffset, item, todayViewCnt)
                 }
             }
         }
@@ -174,12 +172,11 @@ fun TopicList(
 @Composable
 fun SelectBtn(
     isOpened: Boolean = false,
-    todayViewCnt: Int,
+    viewCountOver: Boolean = false,
     onCardClicked: () -> Unit,
     modifier: Modifier
 ) {
     val context = LocalContext.current
-    val openable by remember { mutableStateOf(false) }
 
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
@@ -187,7 +184,7 @@ fun SelectBtn(
             /*if (todayViewCnt >= 10) {
                 // TODO 10회 초과 다이얼로그 노출
             } else */
-            if (todayViewCnt >= 3) {
+            if (viewCountOver) {
                 showRewardedAd(context) {
                     onCardClicked()
                 }
@@ -206,7 +203,7 @@ fun SelectBtn(
         Text(
             text = if (isOpened) {
                 stringResource(R.string.list_re_pick_btn)
-            } else if (todayViewCnt >= 3) {
+            } else if (viewCountOver) {
                 stringResource(R.string.list_ad_pick_btn)
             } else {
                 stringResource(R.string.list_pick_btn)
@@ -221,7 +218,6 @@ fun SelectBtn(
 fun CardItem(
     definiteIndex: Int,
     currentOffset: Float,
-    viewModel: TopicListViewModel,
     item: TopicItem,
     todayViewCnt: Int
 ) {
@@ -317,14 +313,22 @@ fun CardItem(
             }
         }
 
-        if (pageOffset <= 0.5 && todayViewCnt >= 3) {
-            ShowLogic(Modifier.align(Alignment.TopCenter), definiteIndex % 2 == 0)
+        if (pageOffset <= 0.5) {
+            ShowLogic(
+                modifier = Modifier.align(Alignment.TopCenter),
+                isOpened = item.isOpened,
+                viewCountOver = todayViewCnt >= 3
+            )
         }
     }
 }
 
 @Composable
-fun ShowLogic(modifier: Modifier = Modifier, isOpened: Boolean = false) {
+fun ShowLogic(
+    modifier: Modifier = Modifier,
+    isOpened: Boolean = false,
+    viewCountOver: Boolean = false
+) {
     Box(
         modifier = modifier.size(dimensionResource(id = R.dimen.card_tooltip_width), 40.dp)
     ) {
@@ -336,7 +340,7 @@ fun ShowLogic(modifier: Modifier = Modifier, isOpened: Boolean = false) {
                 style = TalkbbokkiTypography.test,
                 color = Color.White
             )
-        } else {
+        } else if (viewCountOver) {
             Box(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
