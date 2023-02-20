@@ -7,5 +7,6 @@ data class TopicItem(
     val category: String = "",
     val shareLink: String = "",
     val tag: String = "",
-    val isBookmark: Boolean = false
+    val isBookmark: Boolean = false,
+    val isOpened: Boolean = false
 )

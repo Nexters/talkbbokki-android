@@ -64,24 +64,8 @@ fun TopicListScreen(
 ) {
     var selectedIdx by remember { mutableStateOf(0) }
     var selectedTopic by remember { mutableStateOf("") }
-    val topicList by viewModel.topicList.collectAsState()
-    viewModel.getTodayViewCnt()
-
-    //TODO 상태 처리
-    val list = when (topicList) {
-        is TopicListUiState.Loading -> {
-            listOf()
-        }
-        is TopicListUiState.Empty -> {
-            listOf()
-        }
-        is TopicListUiState.Success -> {
-            (topicList as TopicListUiState.Success).list
-        }
-        else -> {
-            listOf()
-        }
-    }
+    val list by viewModel.topicList.collectAsState()
+    val todayViewCnt by viewModel.todayViewCnt.collectAsState()
 
     Box(
         modifier = Modifier
@@ -95,13 +79,14 @@ fun TopicListScreen(
                 selectedTopic = topic
                 selectedIdx = idx
             },
-            viewModel
+            viewModel,
+            todayViewCnt
         )
         SelectBtn(
-            isOpened = (selectedIdx % 2 == 0),
-            todayViewCnt = viewModel.todayViewCnt.value,
+            isOpened = (selectedIdx.toInt() % 2 == 0),
+            todayViewCnt = todayViewCnt,
             onCardClicked = {
-                viewModel.setTodayViewCnt()
+                viewModel.setTodayViewCnt(id = selectedIdx.toInt())
                 onClickToDetail(topicLevel, selectedIdx, selectedTopic)
             },
             modifier = Modifier.align(Alignment.BottomCenter)
@@ -142,7 +127,8 @@ fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
 fun TopicList(
     cardList: List<TopicItem>,
     onFocusedCardChange: (idx: Int, topic: String) -> Unit,
-    viewModel: TopicListViewModel
+    viewModel: TopicListViewModel,
+    todayViewCnt: Int
 ) {
     val listState = rememberLazyListState()
     val itemWidth =
@@ -176,7 +162,7 @@ fun TopicList(
                         item.id,
                         item.name
                     )
-                    CardItem(definiteIndex, currentOffset, viewModel, item)
+                    CardItem(definiteIndex, currentOffset, viewModel, item, todayViewCnt)
                 }
             }
         }
@@ -195,7 +181,7 @@ fun SelectBtn(
         onClick = {
             /*if (todayViewCnt >= 10) {
                 // TODO 10회 초과 다이얼로그 노출
-            } else*/
+            } else */
             if (todayViewCnt >= 3) {
                 showRewardedAd(context) {
                     onCardClicked()
@@ -213,9 +199,13 @@ fun SelectBtn(
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(
-            text = if (isOpened) stringResource(R.string.list_re_pick_btn)
-            else if (todayViewCnt >= 3) stringResource(R.string.list_ad_pick_btn)
-            else stringResource(R.string.list_pick_btn),
+            text = if (isOpened) {
+                stringResource(R.string.list_re_pick_btn)
+            } else if (todayViewCnt >= 3) {
+                stringResource(R.string.list_ad_pick_btn)
+            } else {
+                stringResource(R.string.list_pick_btn)
+            },
             style = TalkbbokkiTypography.button_large,
             color = Color.White
         )
@@ -227,7 +217,8 @@ fun CardItem(
     definiteIndex: Int,
     currentOffset: Float,
     viewModel: TopicListViewModel,
-    item: TopicItem
+    item: TopicItem,
+    todayViewCnt: Int
 ) {
     val pageOffsetWithSign = definiteIndex - currentOffset
     val pageOffset = pageOffsetWithSign.absoluteValue
@@ -312,7 +303,7 @@ fun CardItem(
             }
         }
 
-        if (pageOffset <= 0.5 && viewModel.todayViewCnt.value >= 3) {
+        if (pageOffset <= 0.5 && todayViewCnt >= 3) {
             ShowLogic(Modifier.align(Alignment.TopCenter), definiteIndex % 2 == 0)
         }
     }
