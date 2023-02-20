@@ -62,10 +62,9 @@ fun TopicListScreen(
     topicLevel: String,
     viewModel: TopicListViewModel
 ) {
-    var selectedIdx by remember { mutableStateOf(0) }
-    var selectedTopic by remember { mutableStateOf("") }
     val list by viewModel.topicList.collectAsState()
     val todayViewCnt by viewModel.todayViewCnt.collectAsState()
+    var selectedTopicItem by remember { mutableStateOf(TopicItem()) }
 
     Box(
         modifier = Modifier
@@ -75,18 +74,17 @@ fun TopicListScreen(
         TopicListHeader(onClickToMain, topicLevel)
         TopicList(
             cardList = list,
-            onFocusedCardChange = { idx, topic ->
-                selectedTopic = topic
-                selectedIdx = idx
-            },
+            onFocusedCardChange = { item -> selectedTopicItem = item },
             todayViewCnt
         )
         SelectBtn(
-            isOpened = list.getOrNull(selectedIdx)?.isOpened ?: false,
+            isOpened = selectedTopicItem.isOpened,
             viewCountOver = todayViewCnt >= 3,
             onCardClicked = {
-                viewModel.setTodayViewCnt(id = selectedIdx)
-                onClickToDetail(topicLevel, selectedIdx, selectedTopic)
+                selectedTopicItem.let { item ->
+                    viewModel.setTodayViewCnt(id = item.id)
+                    onClickToDetail(topicLevel, item.id, item.name)
+                }
             },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
@@ -127,7 +125,7 @@ fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
 @Composable
 fun TopicList(
     cardList: List<TopicItem>,
-    onFocusedCardChange: (idx: Int, topic: String) -> Unit,
+    onFocusedCardChange: (item: TopicItem) -> Unit,
     todayViewCnt: Int
 ) {
     val listState = rememberLazyListState()
@@ -158,11 +156,9 @@ fun TopicList(
                 )
             ) {
                 itemsIndexed(cardList) { definiteIndex, item ->
-                    onFocusedCardChange(
-                        item.id,
-                        item.name
-                    )
-                    CardItem(definiteIndex, currentOffset, item, todayViewCnt)
+                    CardItem(definiteIndex, currentOffset, item, todayViewCnt) {
+                        onFocusedCardChange(it)
+                    }
                 }
             }
         }
@@ -219,7 +215,8 @@ fun CardItem(
     definiteIndex: Int,
     currentOffset: Float,
     item: TopicItem,
-    todayViewCnt: Int
+    todayViewCnt: Int,
+    currentItem: (TopicItem) -> Unit
 ) {
     val pageOffsetWithSign = definiteIndex - currentOffset
     val pageOffset = pageOffsetWithSign.absoluteValue
@@ -282,6 +279,9 @@ fun CardItem(
             modifier = Modifier.fillMaxSize()
         )
 
+        var isCenter by remember { mutableStateOf(true) }
+        isCenter = pageOffset < 0.5
+
         Box(modifier = Modifier.fillMaxSize()) {
             val tag = item.tag
             val tagImage: Painter = when (tag) {
@@ -295,8 +295,6 @@ fun CardItem(
                     painterResource(id = R.drawable.ic_tag_if)
                 }
             }
-            var isCenter by remember { mutableStateOf(true) }
-            isCenter = pageOffset < 0.5
 
             AnimatedVisibility(
                 visible = isCenter,
@@ -313,12 +311,13 @@ fun CardItem(
             }
         }
 
-        if (pageOffset <= 0.5) {
+        if (isCenter) {
             ShowLogic(
                 modifier = Modifier.align(Alignment.TopCenter),
                 isOpened = item.isOpened,
                 viewCountOver = todayViewCnt >= 3
             )
+            currentItem(item)
         }
     }
 }
