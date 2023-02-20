@@ -67,7 +67,10 @@ fun OnBoardingRoute(
             .fillMaxSize()
             .background(MainColor02)
     ) {
-        OnBoardingPager(onBoardingList) { navigateToMain() }
+        OnBoardingPager(onBoardingList) {
+            viewModel.updateOnBoarding()
+            navigateToMain()
+        }
     }
 }
 

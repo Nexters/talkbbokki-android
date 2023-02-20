@@ -3,19 +3,30 @@ package com.hammer.talkbbokki.presentation.onboarding
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.data.local.DataStoreManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class OnBoardingViewModel @Inject constructor() : ViewModel() {
+class OnBoardingViewModel @Inject constructor(
+    private val dataStore: DataStoreManager
+) : ViewModel() {
     private val _onBoardingList: MutableStateFlow<List<OnBoardingInfo>> = MutableStateFlow(
         OnBoardingInfo.values().asList()
     )
     val onBoardingList: StateFlow<List<OnBoardingInfo>> get() = _onBoardingList.asStateFlow()
+
+    fun updateOnBoarding() {
+        viewModelScope.launch {
+            dataStore.updateShowOnBoarding()
+        }
+    }
 }
 
 enum class OnBoardingInfo(

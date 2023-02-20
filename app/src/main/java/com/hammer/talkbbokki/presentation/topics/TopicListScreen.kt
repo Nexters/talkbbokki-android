@@ -42,7 +42,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun TopicListRoute(
-    onClickToDetail: (id: String) -> Unit,
+    onClickToDetail: (level: String, id: String, topic: String) -> Unit,
     onClickToMain: () -> Unit,
     viewModel: TopicListViewModel = hiltViewModel(),
     topicLevel: String
@@ -57,7 +57,7 @@ fun TopicListRoute(
 
 @Composable
 fun TopicListScreen(
-    onClickToDetail: (id: String) -> Unit,
+    onClickToDetail: (level: String, id: String, topic: String) -> Unit,
     onClickToMain: () -> Unit,
     topicLevel: String,
     viewModel: TopicListViewModel
@@ -78,7 +78,7 @@ fun TopicListScreen(
             todayViewCnt = viewModel.todayViewCnt.value,
             onCardClicked = {
                 viewModel.setTodayViewCnt()
-                onClickToDetail(selectedIdx)
+                onClickToDetail(topicLevel, "id", "topic")
             },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
@@ -177,7 +177,7 @@ fun SelectBtn(
                     onCardClicked()
                 }
             } else {
-                // 이미 열어본 카드 일 경우 처리git
+                // 이미 열어본 카드 일 경우 처리
                 onCardClicked()
             }
         },

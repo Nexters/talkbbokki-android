@@ -31,8 +31,13 @@ fun TalkbbokkiNavHost(
         modifier = modifier
     ) {
         introGraph(
-            navigateToMain = {
+            navigateToOnBoarding = {
                 navController.navigate(OnBoardingDestination.route) {
+                    popUpTo(IntroDestination.route) { inclusive = true }
+                }
+            },
+            navigateToMain = {
+                navController.navigate(MainDestination.route) {
                     popUpTo(IntroDestination.route) { inclusive = true }
                 }
             }
@@ -46,14 +51,14 @@ fun TalkbbokkiNavHost(
         )
         mainGraph(
             navigateToList = { level ->
-                navController.navigate(TopicListDestination.route + "/$level")
+                navController.navigate(TopicListDestination.route + "/${level}")
             },
             navigateToBookmark = { navController.navigate(BookmarkDestination.route) },
             navigateToSuggestion = { navController.navigate(SuggestionDestination.route) }
         )
         topicListGraph(
-            navigateToDetail = { id ->
-                navController.navigate(DetailDestination.route + "/$id")
+            navigateToDetail = { level, id, keyword ->
+                navController.navigate(DetailDestination.route + "?level=${level}&id=${id}&keyword=${keyword}")
             },
             navigateToMain = {
                 navController.popBackStack()

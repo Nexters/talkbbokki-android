@@ -25,20 +25,24 @@ import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.topics.TopicLevel
 import com.hammer.talkbbokki.ui.theme.Gray03
+import com.hammer.talkbbokki.ui.theme.Gray04
 import com.hammer.talkbbokki.ui.theme.Gray05
+import com.hammer.talkbbokki.ui.theme.MainColor01
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-
-val level = "LEVEL1"
 
 @Composable
 fun DetailRoute(
     modifier: Modifier = Modifier,
     onClickToList: () -> Unit,
+    level: String,
     id: String,
+    topic: String,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
+    println("level:$level id:$id, topic:$topic")
+
     val toastMessage by viewModel.toastMessage.collectAsState()
     val item by viewModel.item.collectAsState()
     DetailScreen(
@@ -285,7 +289,7 @@ fun Topic(
                 painter = painterResource(
                     id = if (toggleBookmark) R.drawable.ic_star_fill else R.drawable.ic_star_empty
                 ),
-                tint = Gray05,
+                tint = if (toggleBookmark) MainColor01 else Gray04,
                 contentDescription = null
             )
         }
