@@ -32,8 +32,13 @@ fun TalkbbokkiNavHost(
         modifier = modifier
     ) {
         introGraph(
-            navigateToMain = {
+            navigateToOnBoarding = {
                 navController.navigate(OnBoardingDestination.route) {
+                    popUpTo(IntroDestination.route) { inclusive = true }
+                }
+            },
+            navigateToMain = {
+                navController.navigate(MainDestination.route) {
                     popUpTo(IntroDestination.route) { inclusive = true }
                 }
             }
