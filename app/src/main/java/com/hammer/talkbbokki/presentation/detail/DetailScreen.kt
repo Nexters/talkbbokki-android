@@ -20,8 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
@@ -279,7 +278,7 @@ fun Topic(
                 modifier = Modifier.align(Alignment.CenterStart),
                 text = stringResource(R.string.detail_topic),
                 color = Gray05,
-                style = TalkbbokkiTypography.test
+                style = TalkbbokkiTypography.card_title
             )
             Icon(
                 modifier = Modifier
@@ -317,9 +316,11 @@ fun Starter(starter: String) {
     ) {
         Row(modifier = Modifier.height(24.dp)) {
             Text(
+                modifier = Modifier.align(Alignment.CenterVertically),
                 text = stringResource(R.string.detail_starter),
                 color = Gray05,
-                style = TalkbbokkiTypography.test
+                style = TalkbbokkiTypography.card_title,
+                textAlign = TextAlign.Center,
             )
             Spacer(
                 modifier = Modifier
@@ -332,7 +333,9 @@ fun Starter(starter: String) {
                     .padding(2.dp)
                     .clickable {
 
-                    },
+                    }
+                    .align(Alignment.CenterVertically)
+                ,
                 painter = painterResource(id = R.drawable.ic_refresh),
                 tint = Gray05,
                 contentDescription = null
