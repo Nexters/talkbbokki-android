@@ -1,23 +1,8 @@
 package com.hammer.talkbbokki.presentation.main
 
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -41,12 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.CategoryLevel
-import com.hammer.talkbbokki.ui.theme.Gray04
-import com.hammer.talkbbokki.ui.theme.Gray07
-import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
-import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
-import com.hammer.talkbbokki.ui.theme.White
-import com.hammer.talkbbokki.ui.theme.suggestionButtonColor
+import com.hammer.talkbbokki.ui.theme.*
 import com.hammer.talkbbokki.ui.util.toHexColor
 
 @Composable
@@ -98,7 +78,8 @@ fun MainHeader(
             .fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(top = 24.dp, end = 20.dp, bottom = 12.dp),
             horizontalAlignment = Alignment.End
         ) {
@@ -164,7 +145,8 @@ fun LevelItem(
             modifier = Modifier.fillMaxSize(),
             shape = RoundedCornerShape(8.dp),
             onClick = {
-                onClickLevel(level.id)
+                if (level.id != "event")
+                    onClickLevel(level.id)
             }
         ) {
             Column(
@@ -229,7 +211,9 @@ fun SuggestionButton(
             )
             Spacer(modifier = Modifier.width(2.dp))
             Icon(
-                modifier = Modifier.width(14.dp).height(14.dp),
+                modifier = Modifier
+                    .width(14.dp)
+                    .height(14.dp),
                 painter = painterResource(id = R.drawable.ic_arrow_next),
                 tint = White,
                 contentDescription = null

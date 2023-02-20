@@ -7,27 +7,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,14 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
-import com.hammer.talkbbokki.presentation.main.CategoryLevelDummy
+import com.hammer.talkbbokki.presentation.topics.TopicLevel
 import com.hammer.talkbbokki.ui.theme.Gray03
 import com.hammer.talkbbokki.ui.theme.Gray05
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
-val level = "Level1"
+val level = "LEVEL1"
 
 @Composable
 fun DetailRoute(
@@ -83,15 +66,15 @@ fun DetailScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(CategoryLevelDummy.valueOf(level).backgroundColor)
+            .background(TopicLevel.valueOf(level).backgroundColor)
     ) {
         DetailHeader(cardFace = cardFace, onBackClick = { cardFace = CardFace.BACK })
         Box(modifier = modifier.fillMaxSize()) {
             DetailFlipCard(
                 Modifier.align(Alignment.Center),
                 cardFace,
-                onClickToList,
                 item,
+                onClickToList,
                 onClickBookmark
             )
         }
@@ -119,8 +102,8 @@ fun DetailHeader(cardFace: CardFace, onBackClick: () -> Unit) {
 fun DetailFlipCard(
     modifier: Modifier = Modifier,
     cardFace: CardFace,
-    onClickToList: () -> Unit,
     item: TopicItem,
+    onClickToList: () -> Unit,
     onClickBookmark: (Boolean) -> Unit
 ) {
     var scale by remember { mutableStateOf(1f) }
@@ -136,7 +119,7 @@ fun DetailFlipCard(
                 scaleY = scale,
                 cameraDistance = 12f
             )
-            .background(CategoryLevelDummy.valueOf(level).backgroundColor),
+            .background(TopicLevel.valueOf(level).backgroundColor),
         front = {
             FrontCardFace(item.id)
         },
@@ -210,7 +193,7 @@ fun FrontCardFace(id: Int) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(CategoryLevelDummy.valueOf(level).backgroundColor),
+            .background(TopicLevel.valueOf(level).backgroundColor),
         contentAlignment = Alignment.Center
     ) {
         val cardImage = painterResource(id = R.drawable.bg_card_large)

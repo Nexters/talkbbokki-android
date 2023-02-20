@@ -45,7 +45,9 @@ fun TalkbbokkiNavHost(
             }
         )
         mainGraph(
-            navigateToList = { navController.navigate(TopicListDestination.route) },
+            navigateToList = { level ->
+                navController.navigate(TopicListDestination.route + "/$level")
+            },
             navigateToBookmark = { navController.navigate(BookmarkDestination.route) },
             navigateToSuggestion = { navController.navigate(SuggestionDestination.route) }
         )

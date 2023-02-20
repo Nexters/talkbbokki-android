@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
-import com.hammer.talkbbokki.presentation.main.CategoryLevelDummy
 import com.hammer.talkbbokki.presentation.showRewardedAd
 import com.hammer.talkbbokki.ui.theme.Gray07
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
@@ -41,17 +40,18 @@ import com.hammer.talkbbokki.ui.theme.White
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
-val level = "Level1"
-
 @Composable
 fun TopicListRoute(
-    modifier: Modifier = Modifier,
     onClickToDetail: (id: String) -> Unit,
     onClickToMain: () -> Unit,
-    viewModel: TopicListViewModel = hiltViewModel()
+    viewModel: TopicListViewModel = hiltViewModel(),
+    topicLevel: String
 ) {
     TopicListScreen(
-        onClickToDetail = onClickToDetail, onClickToMain = onClickToMain, viewModel = viewModel
+        onClickToDetail = onClickToDetail,
+        onClickToMain = onClickToMain,
+        topicLevel = topicLevel.toUpperCase(),
+        viewModel = viewModel
     )
 }
 
@@ -59,6 +59,7 @@ fun TopicListRoute(
 fun TopicListScreen(
     onClickToDetail: (id: String) -> Unit,
     onClickToMain: () -> Unit,
+    topicLevel: String,
     viewModel: TopicListViewModel
 ) {
     var selectedIdx by remember { mutableStateOf("0") }
@@ -68,9 +69,9 @@ fun TopicListScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(CategoryLevelDummy.valueOf(level).backgroundColor)
+            .background(TopicLevel.valueOf(topicLevel).backgroundColor)
     ) {
-        TopicListHeader(onClickToMain)
+        TopicListHeader(onClickToMain, topicLevel)
         TopicList(onFocusedCardChange = { idx -> selectedIdx = idx }, viewModel)
         SelectBtn(
             isOpened = (selectedIdx.toInt() % 2 == 0),
@@ -85,7 +86,7 @@ fun TopicListScreen(
 }
 
 @Composable
-fun TopicListHeader(onClickToMain: () -> Unit) {
+fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
     Column(
         modifier = Modifier
             .padding(
@@ -103,10 +104,10 @@ fun TopicListHeader(onClickToMain: () -> Unit) {
                 .clickable { onClickToMain() }
         )
         Spacer(modifier = Modifier.height(24.dp))
-        stringResource(id = CategoryLevelDummy.valueOf(level).title).split("\n")
+        stringResource(id = TopicLevel.valueOf(topicLevel).title).split("\n")
             .forEachIndexed { index, s ->
                 Text(
-                    text = s,
+                    text = if (index == 0) s else s,
                     style = TalkbbokkiTypography.h2_bold,
                     color = if (index == 0) Color.Black else Color(0x80000000)
                 )
@@ -168,14 +169,15 @@ fun SelectBtn(
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
         onClick = {
-            if (todayViewCnt >= 10) {
+            /*if (todayViewCnt >= 10) {
                 // TODO 10회 초과 다이얼로그 노출
-            } else if (todayViewCnt >= 3) {
+            } else*/
+            if (todayViewCnt >= 3) {
                 showRewardedAd(context) {
                     onCardClicked()
                 }
             } else {
-                // 이미 열어본 카드 일 경우 처리
+                // 이미 열어본 카드 일 경우 처리git
                 onCardClicked()
             }
         },

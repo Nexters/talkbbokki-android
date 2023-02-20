@@ -1,7 +1,9 @@
 package com.hammer.talkbbokki.presentation.topics
 
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.hammer.talkbbokki.presentation.navigation.TalkbbokkiNavigationDestination
 
 object TopicListDestination : TalkbbokkiNavigationDestination {
@@ -13,7 +15,13 @@ fun NavGraphBuilder.topicListGraph(
     navigateToDetail: (id: String) -> Unit,
     navigateToMain: () -> Unit
 ) {
-    composable(route = TopicListDestination.route) {
-        TopicListRoute(onClickToDetail = navigateToDetail, onClickToMain = navigateToMain)
+    composable(
+        route = TopicListDestination.route + "/{level}",
+        arguments = listOf(navArgument("level") { type = NavType.StringType })
+    ) {
+        val arguments = requireNotNull(it.arguments)
+        val level = requireNotNull(arguments.getString("level"))
+
+        TopicListRoute(onClickToDetail = navigateToDetail, onClickToMain = navigateToMain, topicLevel = level)
     }
 }
