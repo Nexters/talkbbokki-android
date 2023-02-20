@@ -51,7 +51,9 @@ fun TopicListRoute(
     viewModel: TopicListViewModel = hiltViewModel()
 ) {
     TopicListScreen(
-        onClickToDetail = onClickToDetail, onClickToMain = onClickToMain, viewModel = viewModel
+        onClickToDetail = onClickToDetail,
+        onClickToMain = onClickToMain,
+        viewModel = viewModel
     )
 }
 
@@ -63,7 +65,7 @@ fun TopicListScreen(
 ) {
     var selectedIdx by remember { mutableStateOf("0") }
     val topicList by viewModel.topicList.collectAsState()
-    viewModel.getTodayViewCnt()
+    val todayViewCnt by viewModel.todayViewCnt.collectAsState()
 
     Box(
         modifier = Modifier
@@ -71,12 +73,12 @@ fun TopicListScreen(
             .background(CategoryLevelDummy.valueOf(level).backgroundColor)
     ) {
         TopicListHeader(onClickToMain)
-        TopicList(onFocusedCardChange = { idx -> selectedIdx = idx }, viewModel)
+        TopicList(onFocusedCardChange = { idx -> selectedIdx = idx }, todayViewCnt)
         SelectBtn(
             isOpened = (selectedIdx.toInt() % 2 == 0),
-            todayViewCnt = viewModel.todayViewCnt.value,
+            todayViewCnt = todayViewCnt,
             onCardClicked = {
-                viewModel.setTodayViewCnt()
+                viewModel.setTodayViewCnt(id = selectedIdx.toInt())
                 onClickToDetail(selectedIdx)
             },
             modifier = Modifier.align(Alignment.BottomCenter)
@@ -116,7 +118,7 @@ fun TopicListHeader(onClickToMain: () -> Unit) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TopicList(onFocusedCardChange: (idx: String) -> Unit, viewModel: TopicListViewModel) {
+fun TopicList(onFocusedCardChange: (idx: String) -> Unit, todayViewCnt: Int) {
     val listState = rememberLazyListState()
     val itemWidth =
         with(LocalDensity.current) { (dimensionResource(id = R.dimen.card_width)).toPx() }
@@ -148,7 +150,7 @@ fun TopicList(onFocusedCardChange: (idx: String) -> Unit, viewModel: TopicListVi
             ) {
                 itemsIndexed(cardList) { definiteIndex, _ ->
                     onFocusedCardChange(currentOffset.roundToInt().toString())
-                    CardItem(definiteIndex, currentOffset, viewModel)
+                    CardItem(definiteIndex, currentOffset, todayViewCnt)
                 }
             }
         }
@@ -188,19 +190,21 @@ fun SelectBtn(
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(
-            text = if (isOpened)
+            text = if (isOpened) {
                 stringResource(R.string.list_re_pick_btn)
-            else if (todayViewCnt >= 3)
+            } else if (todayViewCnt >= 3) {
                 stringResource(R.string.list_ad_pick_btn)
-            else
-                stringResource(R.string.list_pick_btn),
-            style = TalkbbokkiTypography.button_large, color = Color.White
+            } else {
+                stringResource(R.string.list_pick_btn)
+            },
+            style = TalkbbokkiTypography.button_large,
+            color = Color.White
         )
     }
 }
 
 @Composable
-fun CardItem(definiteIndex: Int, currentOffset: Float, viewModel: TopicListViewModel) {
+fun CardItem(definiteIndex: Int, currentOffset: Float, todayViewCnt: Int) {
     val pageOffsetWithSign = definiteIndex - currentOffset
     val pageOffset = pageOffsetWithSign.absoluteValue
     Box(
@@ -212,7 +216,9 @@ fun CardItem(definiteIndex: Int, currentOffset: Float, viewModel: TopicListViewM
             .graphicsLayer {
                 // 중간으로 올수록 크게 보임
                 lerp(
-                    start = 1f.dp, stop = 1.9.dp, fraction = 1f - pageOffset.coerceIn(0f, 1.3f)
+                    start = 1f.dp,
+                    stop = 1.9.dp,
+                    fraction = 1f - pageOffset.coerceIn(0f, 1.3f)
                 ).let { scale ->
                     scaleX = scale.value
                     scaleY = scale.value
@@ -221,7 +227,8 @@ fun CardItem(definiteIndex: Int, currentOffset: Float, viewModel: TopicListViewM
                 // 중간으로 올수록 0도에 가까워짐. (카드 사이 각도 15도씩 틀어짐)
                 lerp(
                     start = pageOffsetWithSign * 15f.dp, // -30, -15, 0, 15, 30 ...
-                    stop = 0f.dp, fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                    stop = 0f.dp,
+                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
                 ).value.let { angle ->
                     rotationZ = angle
                 }
@@ -254,7 +261,9 @@ fun CardItem(definiteIndex: Int, currentOffset: Float, viewModel: TopicListViewM
         }
 
         Image(
-            painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize()
+            painter = cardImage,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
         )
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -274,7 +283,9 @@ fun CardItem(definiteIndex: Int, currentOffset: Float, viewModel: TopicListViewM
             isCenter = pageOffset < 0.5
 
             AnimatedVisibility(
-                visible = isCenter, enter = fadeIn(), exit = fadeOut()
+                visible = isCenter,
+                enter = fadeIn(),
+                exit = fadeOut()
             ) {
                 Image(
                     painter = tagImage,
@@ -286,7 +297,7 @@ fun CardItem(definiteIndex: Int, currentOffset: Float, viewModel: TopicListViewM
             }
         }
 
-        if (pageOffset <= 0.5 && viewModel.todayViewCnt.value >= 3) {
+        if (pageOffset <= 0.5 && todayViewCnt >= 3) {
             ShowLogic(Modifier.align(Alignment.TopCenter), definiteIndex % 2 == 0)
         }
     }
