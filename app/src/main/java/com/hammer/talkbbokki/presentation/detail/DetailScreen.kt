@@ -48,9 +48,16 @@ fun DetailRoute(
     println("level:$level id:$id, topic:$topic")
     val toastMessage by viewModel.toastMessage.collectAsState()
     val item by viewModel.item.collectAsState()
-    DetailScreen(onClickToList = onClickToList, item = item, onClickBookmark = {
-        if (it) viewModel.addBookmark() else viewModel.removeBookmark()
-    })
+    val starter by viewModel.talkOrder.collectAsState()
+
+    DetailScreen(
+        onClickToList = onClickToList,
+        item = item,
+        onClickBookmark = {
+            if (it) viewModel.addBookmark() else viewModel.removeBookmark()
+        },
+        starter = starter?:""
+    )
     if (toastMessage > 0) {
         Toast.makeText(LocalContext.current, stringResource(id = toastMessage), Toast.LENGTH_SHORT)
             .show()
@@ -62,7 +69,8 @@ fun DetailScreen(
     modifier: Modifier = Modifier,
     onClickToList: () -> Unit,
     item: TopicItem,
-    onClickBookmark: (Boolean) -> Unit
+    onClickBookmark: (Boolean) -> Unit,
+    starter : String
 ) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
 
@@ -74,7 +82,7 @@ fun DetailScreen(
         DetailHeader(cardFace = cardFace, onBackClick = { cardFace = CardFace.BACK })
         Box(modifier = modifier.fillMaxSize()) {
             DetailFlipCard(
-                Modifier.align(Alignment.Center), cardFace, item, onClickToList, onClickBookmark
+                Modifier.align(Alignment.Center), cardFace, item, starter, onClickToList, onClickBookmark
             )
         }
     }
@@ -102,6 +110,7 @@ fun DetailFlipCard(
     modifier: Modifier = Modifier,
     cardFace: CardFace,
     item: TopicItem,
+    starter : String,
     onClickToList: () -> Unit,
     onClickBookmark: (Boolean) -> Unit
 ) {
@@ -120,7 +129,7 @@ fun DetailFlipCard(
             FrontCardFace(item.id)
         },
         back = {
-            BackCardFace(item, onClickBookmark)
+            BackCardFace(item, starter, onClickBookmark)
         })
 
     if (cardFace == CardFace.FRONT) {
@@ -200,7 +209,7 @@ fun FrontCardFace(id: Int) {
 
 @Composable
 fun BackCardFace(
-    item: TopicItem, onClickBookmark: (Boolean) -> Unit
+    item: TopicItem, starter : String, onClickBookmark: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
     Box(
@@ -225,7 +234,7 @@ fun BackCardFace(
                     .height(1.dp)
                     .background(Gray03)
             )
-            Starter()
+            Starter(starter)
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -284,7 +293,7 @@ fun Topic(
 }
 
 @Composable
-fun Starter() {
+fun Starter(starter : String) {
     Column(
         modifier = Modifier
             .height(114.dp)
@@ -315,7 +324,7 @@ fun Starter() {
                 .fillMaxWidth()
         )
         Text(
-            text = "1인 1닭 가능할 것 같은 사람", style = TalkbbokkiTypography.b2_bold
+            text = starter, style = TalkbbokkiTypography.b2_bold
         )
     }
 }
