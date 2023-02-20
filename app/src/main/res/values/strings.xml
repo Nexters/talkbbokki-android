@@ -17,7 +17,7 @@
     <string name="onboarding_button_start">시작할래요!</string>
 
     <string name="main_title">Let’s\nBBOKKI !</string>
-    <string name="main_sub_title">친밀도를 골라보세요!\n딱 - 맞는 대화주제 추천 해줄게요.</string>
+    <string name="main_sub_title">친밀도를 골라보세요!\n딱 - 맞는 대화주제 추천해줄게요!</string>
 
     <string name="main_level1_title">아직 인사만\n하는 사이</string>
     <string name="main_level2_title">우리 점심\n먹는 사이</string>
@@ -25,6 +25,8 @@
     <string name="main_level4_title">COMING\nSOON</string>
     <string name="main_suggestion_topic">이런 토픽 왜없어?</string>
     <string name="main_suggestion_topic_button">제안하기</string>
+    <string name="main_coming_soon_dialog_text">아직 준비중이에요!\n조금만 기다려주세요.</string>\
+    <string name="main_coming_soon_dialog_close_button">슬프지만 닫기</string>
 
     <string name="bookmark_header_title">기억하고 싶은 대화 주제,\n여기 다 - 모아뒀어요</string>
     <string name="bookmark_total_count">총 %d개</string>

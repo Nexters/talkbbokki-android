@@ -39,7 +39,7 @@ import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.ui.dialog.BookmarkCancelDialog
 import com.hammer.talkbbokki.ui.theme.Black
 import com.hammer.talkbbokki.ui.theme.Gray04
-import com.hammer.talkbbokki.ui.theme.Gray06
+import com.hammer.talkbbokki.ui.theme.MainColor01
 import com.hammer.talkbbokki.ui.theme.MainColor02
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import com.hammer.talkbbokki.ui.theme.White
@@ -205,7 +205,7 @@ fun BookmarkItem(
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_star_fill),
-                    tint = Gray06,
+                    tint = MainColor01,
                     contentDescription = null,
                     modifier = Modifier.clickable { onToggleBookmark(item.id) }
                 )
