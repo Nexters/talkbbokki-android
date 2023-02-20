@@ -39,20 +39,16 @@ fun DetailRoute(
     modifier: Modifier = Modifier,
     onClickToList: () -> Unit,
     level: String,
-    id: String,
+    id: Int,
     topic: String,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     println("level:$level id:$id, topic:$topic")
     val toastMessage by viewModel.toastMessage.collectAsState()
     val item by viewModel.item.collectAsState()
-    DetailScreen(
-        onClickToList = onClickToList,
-        item = item,
-        onClickBookmark = {
-            if (it) viewModel.addBookmark() else viewModel.removeBookmark()
-        }
-    )
+    DetailScreen(onClickToList = onClickToList, item = item, onClickBookmark = {
+        if (it) viewModel.addBookmark() else viewModel.removeBookmark()
+    })
     if (toastMessage > 0) {
         Toast.makeText(LocalContext.current, stringResource(id = toastMessage), Toast.LENGTH_SHORT)
             .show()
@@ -76,11 +72,7 @@ fun DetailScreen(
         DetailHeader(cardFace = cardFace, onBackClick = { cardFace = CardFace.BACK })
         Box(modifier = modifier.fillMaxSize()) {
             DetailFlipCard(
-                Modifier.align(Alignment.Center),
-                cardFace,
-                item,
-                onClickToList,
-                onClickBookmark
+                Modifier.align(Alignment.Center), cardFace, item, onClickToList, onClickBookmark
             )
         }
     }
@@ -114,15 +106,12 @@ fun DetailFlipCard(
     var scale by remember { mutableStateOf(1f) }
     var rotation by remember { mutableStateOf(1f) }
 
-    FlipCard(
-        rotation = rotation,
+    FlipCard(rotation = rotation,
         modifier = modifier
             .width(dimensionResource(id = R.dimen.selected_card_width))
             .aspectRatio(0.7f)
             .graphicsLayer(
-                scaleX = scale,
-                scaleY = scale,
-                cameraDistance = 12f
+                scaleX = scale, scaleY = scale, cameraDistance = 12f
             )
             .background(TopicLevel.valueOf(level).backgroundColor),
         front = {
@@ -130,30 +119,23 @@ fun DetailFlipCard(
         },
         back = {
             BackCardFace(item, onClickBookmark)
-        }
-    )
+        })
 
     if (cardFace == CardFace.FRONT) {
         LaunchedEffect(key1 = Unit) {
             coroutineScope {
                 launch {
                     animate(
-                        initialValue = 1f,
-                        targetValue = 1.3f,
-                        animationSpec = tween(
-                            durationMillis = 1000,
-                            easing = FastOutSlowInEasing
+                        initialValue = 1f, targetValue = 1.3f, animationSpec = tween(
+                            durationMillis = 1000, easing = FastOutSlowInEasing
                         )
                     ) { value: Float, _: Float ->
                         scale = value
                     }
 
                     animate(
-                        initialValue = 0f,
-                        targetValue = 180f,
-                        animationSpec = tween(
-                            durationMillis = 540,
-                            easing = FastOutSlowInEasing
+                        initialValue = 0f, targetValue = 180f, animationSpec = tween(
+                            durationMillis = 540, easing = FastOutSlowInEasing
                         )
                     ) { value, _ ->
                         rotation = value
@@ -166,22 +148,16 @@ fun DetailFlipCard(
             coroutineScope {
                 launch {
                     animate(
-                        initialValue = 180f,
-                        targetValue = 0f,
-                        animationSpec = tween(
-                            durationMillis = 540,
-                            easing = FastOutSlowInEasing
+                        initialValue = 180f, targetValue = 0f, animationSpec = tween(
+                            durationMillis = 540, easing = FastOutSlowInEasing
                         )
                     ) { value, _ ->
                         rotation = value
                     }
 
                     animate(
-                        initialValue = 1.3f,
-                        targetValue = 1f,
-                        animationSpec = tween(
-                            durationMillis = 1000,
-                            easing = FastOutSlowInEasing
+                        initialValue = 1.3f, targetValue = 1f, animationSpec = tween(
+                            durationMillis = 1000, easing = FastOutSlowInEasing
                         )
                     ) { value: Float, _: Float ->
                         scale = value
@@ -205,9 +181,7 @@ fun FrontCardFace(id: Int) {
         val category = painterResource(id = R.drawable.ic_tag_love)
 
         Image(
-            painter = cardImage,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize()
+            painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize()
         )
         Image(
             painter = category,
@@ -224,12 +198,10 @@ fun FrontCardFace(id: Int) {
 
 @Composable
 fun BackCardFace(
-    item: TopicItem,
-    onClickBookmark: (Boolean) -> Unit
+    item: TopicItem, onClickBookmark: (Boolean) -> Unit
 ) {
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
         val cardImage = painterResource(id = R.drawable.card_back)
 
@@ -264,13 +236,11 @@ fun BackCardFace(
 
 @Composable
 fun Topic(
-    item: TopicItem,
-    onClickBookmark: (Boolean) -> Unit
+    item: TopicItem, onClickBookmark: (Boolean) -> Unit
 ) {
     var toggleBookmark by remember { mutableStateOf(item.isBookmark) }
     Column(
-        modifier = Modifier
-            .padding(24.dp)
+        modifier = Modifier.padding(24.dp)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -286,12 +256,9 @@ fun Topic(
                     .clickable {
                         toggleBookmark = !toggleBookmark
                         onClickBookmark(toggleBookmark)
-                    },
-                painter = painterResource(
+                    }, painter = painterResource(
                     id = if (toggleBookmark) R.drawable.ic_star_fill else R.drawable.ic_star_empty
-                ),
-                tint = if (toggleBookmark) MainColor01 else Gray04,
-                contentDescription = null
+                ), tint = if (toggleBookmark) MainColor01 else Gray04, contentDescription = null
             )
         }
         Spacer(
@@ -315,8 +282,7 @@ fun Starter() {
     ) {
         Row(modifier = Modifier.height(24.dp)) {
             Text(
-                text = stringResource(R.string.detail_starter),
-                color = Gray05
+                text = stringResource(R.string.detail_starter), color = Gray05
             )
             Spacer(
                 modifier = Modifier
@@ -339,8 +305,7 @@ fun Starter() {
                 .fillMaxWidth()
         )
         Text(
-            text = "1인 1닭 가능할 것 같은 사람",
-            style = TalkbbokkiTypography.b2_bold
+            text = "1인 1닭 가능할 것 같은 사람", style = TalkbbokkiTypography.b2_bold
         )
     }
 }
@@ -348,12 +313,10 @@ fun Starter() {
 @Composable
 fun ShareBottom() {
     Row(modifier = Modifier.height(62.dp)) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-                .clickable { }
-        ) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .weight(1f)
+            .clickable { }) {
             Image(
                 modifier = Modifier
                     .size(24.dp)
@@ -368,12 +331,10 @@ fun ShareBottom() {
                 .width(1.dp)
                 .background(Gray03)
         )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-                .clickable { }
-        ) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .weight(1f)
+            .clickable { }) {
             Image(
                 modifier = Modifier
                     .size(24.dp)

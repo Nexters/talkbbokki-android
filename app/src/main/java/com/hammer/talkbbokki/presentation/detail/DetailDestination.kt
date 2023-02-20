@@ -18,13 +18,13 @@ fun NavGraphBuilder.detailGraph(
         route = DetailDestination.route + "?level={level}&id={id}&topic={topic}",
         arguments = listOf(
             navArgument("level") { type = NavType.StringType },
-            navArgument("id") { type = NavType.StringType },
+            navArgument("id") { type = NavType.IntType },
             navArgument("topic") { type = NavType.StringType },
         )
     ) {
         val arguments = requireNotNull(it.arguments)
         val level = requireNotNull(arguments.getString("level"))
-        val id = requireNotNull(arguments.getString("id"))
+        val id = requireNotNull(arguments.getInt("id"))
         val topic = requireNotNull(arguments.getString("topic"))
 
         DetailRoute(onClickToList = navigateToTopicList, level = level, id = id, topic = topic)

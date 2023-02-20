@@ -36,3 +36,7 @@ internal fun TopicItem.toEntity(timeStamp: Long? = null) = TopicItemEntity(
     tag = tag,
     timeStamp = timeStamp
 )
+
+internal data class TopicListResult(
+    val result: List<TopicItemEntity>?
+)

@@ -33,16 +33,16 @@ import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.showRewardedAd
 import com.hammer.talkbbokki.ui.theme.Gray07
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import com.hammer.talkbbokki.ui.theme.White
 import kotlin.math.absoluteValue
-import kotlin.math.roundToInt
 
 @Composable
 fun TopicListRoute(
-    onClickToDetail: (level: String, id: String, topic: String) -> Unit,
+    onClickToDetail: (level: String, id: Int, topic: String) -> Unit,
     onClickToMain: () -> Unit,
     viewModel: TopicListViewModel = hiltViewModel(),
     topicLevel: String
@@ -57,14 +57,31 @@ fun TopicListRoute(
 
 @Composable
 fun TopicListScreen(
-    onClickToDetail: (level: String, id: String, topic: String) -> Unit,
+    onClickToDetail: (level: String, id: Int, topic: String) -> Unit,
     onClickToMain: () -> Unit,
     topicLevel: String,
     viewModel: TopicListViewModel
 ) {
-    var selectedIdx by remember { mutableStateOf("0") }
+    var selectedIdx by remember { mutableStateOf(0) }
+    var selectedTopic by remember { mutableStateOf("") }
     val topicList by viewModel.topicList.collectAsState()
     viewModel.getTodayViewCnt()
+
+    //TODO 상태 처리
+    val list = when (topicList) {
+        is TopicListUiState.Loading -> {
+            listOf()
+        }
+        is TopicListUiState.Empty -> {
+            listOf()
+        }
+        is TopicListUiState.Success -> {
+            (topicList as TopicListUiState.Success).list
+        }
+        else -> {
+            listOf()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -72,13 +89,20 @@ fun TopicListScreen(
             .background(TopicLevel.valueOf(topicLevel).backgroundColor)
     ) {
         TopicListHeader(onClickToMain, topicLevel)
-        TopicList(onFocusedCardChange = { idx -> selectedIdx = idx }, viewModel)
+        TopicList(
+            cardList = list,
+            onFocusedCardChange = { idx, topic ->
+                selectedTopic = topic
+                selectedIdx = idx
+            },
+            viewModel
+        )
         SelectBtn(
-            isOpened = (selectedIdx.toInt() % 2 == 0),
+            isOpened = (selectedIdx % 2 == 0),
             todayViewCnt = viewModel.todayViewCnt.value,
             onCardClicked = {
                 viewModel.setTodayViewCnt()
-                onClickToDetail(topicLevel, "id", "topic")
+                onClickToDetail(topicLevel, selectedIdx, selectedTopic)
             },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
@@ -95,14 +119,12 @@ fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
             )
             .fillMaxWidth()
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_close),
+        Image(painter = painterResource(id = R.drawable.ic_close),
             contentDescription = null,
             modifier = Modifier
                 .align(Alignment.End)
                 .size(24.dp, 24.dp)
-                .clickable { onClickToMain() }
-        )
+                .clickable { onClickToMain() })
         Spacer(modifier = Modifier.height(24.dp))
         stringResource(id = TopicLevel.valueOf(topicLevel).title).split("\n")
             .forEachIndexed { index, s ->
@@ -117,7 +139,11 @@ fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TopicList(onFocusedCardChange: (idx: String) -> Unit, viewModel: TopicListViewModel) {
+fun TopicList(
+    cardList: List<TopicItem>,
+    onFocusedCardChange: (idx: Int, topic: String) -> Unit,
+    viewModel: TopicListViewModel
+) {
     val listState = rememberLazyListState()
     val itemWidth =
         with(LocalDensity.current) { (dimensionResource(id = R.dimen.card_width)).toPx() }
@@ -128,8 +154,6 @@ fun TopicList(onFocusedCardChange: (idx: String) -> Unit, viewModel: TopicListVi
     val snapFlingBehavior = rememberSnapFlingBehavior(snappingLayout)
 
     val currentOffset = currentIndex.value + (offset.value / itemWidth)
-
-    val cardList = (0..10).toList()
 
     Column() {
         Spacer(modifier = Modifier.weight(1f))
@@ -147,9 +171,12 @@ fun TopicList(onFocusedCardChange: (idx: String) -> Unit, viewModel: TopicListVi
                     end = ((maxWidth - (dimensionResource(id = R.dimen.card_width))) / 2)
                 )
             ) {
-                itemsIndexed(cardList) { definiteIndex, _ ->
-                    onFocusedCardChange(currentOffset.roundToInt().toString())
-                    CardItem(definiteIndex, currentOffset, viewModel)
+                itemsIndexed(cardList) { definiteIndex, item ->
+                    onFocusedCardChange(
+                        item.id,
+                        item.name
+                    )
+                    CardItem(definiteIndex, currentOffset, viewModel, item)
                 }
             }
         }
@@ -158,10 +185,7 @@ fun TopicList(onFocusedCardChange: (idx: String) -> Unit, viewModel: TopicListVi
 
 @Composable
 fun SelectBtn(
-    isOpened: Boolean = false,
-    todayViewCnt: Int,
-    onCardClicked: () -> Unit,
-    modifier: Modifier
+    isOpened: Boolean = false, todayViewCnt: Int, onCardClicked: () -> Unit, modifier: Modifier
 ) {
     val context = LocalContext.current
     val openable by remember { mutableStateOf(false) }
@@ -189,63 +213,64 @@ fun SelectBtn(
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(
-            text = if (isOpened)
-                stringResource(R.string.list_re_pick_btn)
-            else if (todayViewCnt >= 3)
-                stringResource(R.string.list_ad_pick_btn)
-            else
-                stringResource(R.string.list_pick_btn),
-            style = TalkbbokkiTypography.button_large, color = Color.White
+            text = if (isOpened) stringResource(R.string.list_re_pick_btn)
+            else if (todayViewCnt >= 3) stringResource(R.string.list_ad_pick_btn)
+            else stringResource(R.string.list_pick_btn),
+            style = TalkbbokkiTypography.button_large,
+            color = Color.White
         )
     }
 }
 
 @Composable
-fun CardItem(definiteIndex: Int, currentOffset: Float, viewModel: TopicListViewModel) {
+fun CardItem(
+    definiteIndex: Int,
+    currentOffset: Float,
+    viewModel: TopicListViewModel,
+    item: TopicItem
+) {
     val pageOffsetWithSign = definiteIndex - currentOffset
     val pageOffset = pageOffsetWithSign.absoluteValue
-    Box(
-        modifier = Modifier
-            .width(dimensionResource(id = R.dimen.card_width))
-            .aspectRatio(0.65f)
-            .background(Color.Transparent)
-            .zIndex(5f - pageOffset)
-            .graphicsLayer {
-                // 중간으로 올수록 크게 보임
-                lerp(
-                    start = 1f.dp, stop = 1.9.dp, fraction = 1f - pageOffset.coerceIn(0f, 1.3f)
-                ).let { scale ->
-                    scaleX = scale.value
-                    scaleY = scale.value
-                }
-
-                // 중간으로 올수록 0도에 가까워짐. (카드 사이 각도 15도씩 틀어짐)
-                lerp(
-                    start = pageOffsetWithSign * 15f.dp, // -30, -15, 0, 15, 30 ...
-                    stop = 0f.dp, fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                ).value.let { angle ->
-                    rotationZ = angle
-                }
-
-                // 중간에서 멀어질수록 수직으로 내려가도록 조정.
-                lerp(
-                    start = pageOffset * 50f.dp,
-                    stop = 0f.dp,
-                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                ).value.let { yOffset ->
-                    translationY = yOffset
-                }
-
-                // 카드가 겹치게 보이도록 중앙으로 모이도록 조정.
-                lerp(
-                    start = pageOffsetWithSign * pageOffset * (50f * -1).dp,
-                    stop = 0f.dp,
-                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                ).value.let { xOffset ->
-                    translationX = xOffset
-                }
+    Box(modifier = Modifier
+        .width(dimensionResource(id = R.dimen.card_width))
+        .aspectRatio(0.65f)
+        .background(Color.Transparent)
+        .zIndex(5f - pageOffset)
+        .graphicsLayer {
+            // 중간으로 올수록 크게 보임
+            lerp(
+                start = 1f.dp, stop = 1.9.dp, fraction = 1f - pageOffset.coerceIn(0f, 1.3f)
+            ).let { scale ->
+                scaleX = scale.value
+                scaleY = scale.value
             }
-    ) {
+
+            // 중간으로 올수록 0도에 가까워짐. (카드 사이 각도 15도씩 틀어짐)
+            lerp(
+                start = pageOffsetWithSign * 15f.dp, // -30, -15, 0, 15, 30 ...
+                stop = 0f.dp, fraction = 1f - pageOffset.coerceIn(0f, 1f)
+            ).value.let { angle ->
+                rotationZ = angle
+            }
+
+            // 중간에서 멀어질수록 수직으로 내려가도록 조정.
+            lerp(
+                start = pageOffset * 50f.dp,
+                stop = 0f.dp,
+                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+            ).value.let { yOffset ->
+                translationY = yOffset
+            }
+
+            // 카드가 겹치게 보이도록 중앙으로 모이도록 조정.
+            lerp(
+                start = pageOffsetWithSign * pageOffset * (50f * -1).dp,
+                stop = 0f.dp,
+                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+            ).value.let { xOffset ->
+                translationX = xOffset
+            }
+        }) {
         val cardImage: Painter = if (pageOffset > 1.5) {
             painterResource(id = R.drawable.bg_card_small)
         } else if (pageOffset > 0.5) {
@@ -259,7 +284,7 @@ fun CardItem(definiteIndex: Int, currentOffset: Float, viewModel: TopicListViewM
         )
 
         Box(modifier = Modifier.fillMaxSize()) {
-            val tag = "LOVE"
+            val tag = item.tag
             val tagImage: Painter = when (tag) {
                 "LOVE" -> {
                     painterResource(id = R.drawable.ic_tag_love)
