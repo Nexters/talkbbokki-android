@@ -7,20 +7,20 @@ import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.repository.BookmarkRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val bookmarkRepository: BookmarkRepository
 ) : ViewModel() {
-    val item: StateFlow<TopicItem> = savedStateHandle.getStateFlow("topic", TopicItem())
+    val item: StateFlow<TopicItem> = savedStateHandle.getStateFlow("topic_test", TopicItem())
 
     private val _toastMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
     val toastMessage: StateFlow<Int> get() = _toastMessage.asStateFlow()

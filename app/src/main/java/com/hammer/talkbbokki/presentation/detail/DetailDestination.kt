@@ -15,12 +15,18 @@ fun NavGraphBuilder.detailGraph(
     navigateToTopicList: () -> Unit
 ) {
     composable(
-        route = DetailDestination.route + "/{id}",
-        arguments = listOf(navArgument("id") { type = NavType.StringType })
+        route = DetailDestination.route + "?level={level}&id={id}&topic={topic}",
+        arguments = listOf(
+            navArgument("level") { type = NavType.StringType },
+            navArgument("id") { type = NavType.IntType },
+            navArgument("topic") { type = NavType.StringType },
+        )
     ) {
         val arguments = requireNotNull(it.arguments)
-        val id = requireNotNull(arguments.getString("id"))
+        val level = requireNotNull(arguments.getString("level"))
+        val id = requireNotNull(arguments.getInt("id"))
+        val topic = requireNotNull(arguments.getString("topic"))
 
-        DetailRoute(onClickToList = navigateToTopicList, id = id)
+        DetailRoute(onClickToList = navigateToTopicList, level = level, id = id, topic = topic)
     }
 }

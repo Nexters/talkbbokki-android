@@ -14,7 +14,7 @@ internal class TopicRepositoryImpl @Inject constructor(
     private val dataStore: DataStoreManager
 ) : TopicRepository {
     override fun getTopicList(level: String): Flow<List<TopicItem>> = flow {
-        emit(service.getTopicList(level)?.map { it.toModel() }.orEmpty())
+        emit(service.getTopicList(level)?.result?.map { it.toModel() }.orEmpty())
     }
 
     override fun getTodayViewCnt(): Flow<Int> = dataStore.viewCnt

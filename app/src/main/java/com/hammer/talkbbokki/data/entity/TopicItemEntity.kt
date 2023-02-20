@@ -5,6 +5,10 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import com.hammer.talkbbokki.domain.model.TopicItem
 
+internal data class TopicItemListEntity(
+    val result: List<TopicItemEntity>
+)
+
 @Entity
 internal data class TopicItemEntity(
     @PrimaryKey val id: Int?,
@@ -36,3 +40,4 @@ internal fun TopicItem.toEntity(timeStamp: Long? = null) = TopicItemEntity(
     tag = tag,
     timeStamp = timeStamp
 )
+
