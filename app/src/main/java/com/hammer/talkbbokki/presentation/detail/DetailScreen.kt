@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
+import com.hammer.talkbbokki.presentation.shareLink
+import com.hammer.talkbbokki.presentation.shareScreenShot
 import com.hammer.talkbbokki.presentation.topics.TopicLevel
 import com.hammer.talkbbokki.ui.theme.Gray03
 import com.hammer.talkbbokki.ui.theme.Gray04
@@ -200,6 +202,7 @@ fun FrontCardFace(id: Int) {
 fun BackCardFace(
     item: TopicItem, onClickBookmark: (Boolean) -> Unit
 ) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
@@ -229,7 +232,14 @@ fun BackCardFace(
                     .height(1.dp)
                     .background(Gray03)
             )
-            ShareBottom()
+            ShareBottom(
+                onClickShareLink = {
+                    shareLink(context, "https://talkbbokki.me/share?topic=14&rule=3")
+                },
+                onClickScreenShot = {
+                    shareScreenShot(context)
+                }
+            )
         }
     }
 }
@@ -311,12 +321,17 @@ fun Starter() {
 }
 
 @Composable
-fun ShareBottom() {
+fun ShareBottom(
+    onClickShareLink: () -> Unit,
+    onClickScreenShot: () -> Unit
+) {
     Row(modifier = Modifier.height(62.dp)) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .weight(1f)
-            .clickable { }) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+                .clickable { onClickShareLink() }
+        ) {
             Image(
                 modifier = Modifier
                     .size(24.dp)
@@ -331,10 +346,12 @@ fun ShareBottom() {
                 .width(1.dp)
                 .background(Gray03)
         )
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .weight(1f)
-            .clickable { }) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+                .clickable { onClickScreenShot() }
+        ) {
             Image(
                 modifier = Modifier
                     .size(24.dp)
