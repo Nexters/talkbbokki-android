@@ -5,11 +5,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
@@ -20,15 +21,20 @@ import com.hammer.talkbbokki.ui.theme.MainColor02
 
 @Composable
 fun IntroRoute(
-    navigateToMain: () -> Unit
+    navigateToOnBoarding: () -> Unit,
+    navigateToMain: () -> Unit,
+    viewModel: IntroViewModel = hiltViewModel()
 ) {
+    val showOnBoarding by viewModel.showOnBoarding.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MainColor02),
         contentAlignment = Alignment.Center
     ) {
-        SplashLogo { navigateToMain() }
+        SplashLogo {
+            if (showOnBoarding) navigateToOnBoarding() else navigateToMain()
+        }
     }
 }
 

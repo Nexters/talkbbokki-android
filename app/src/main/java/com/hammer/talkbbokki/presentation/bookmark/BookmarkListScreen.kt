@@ -39,7 +39,7 @@ import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.ui.dialog.BookmarkCancelDialog
 import com.hammer.talkbbokki.ui.theme.Black
 import com.hammer.talkbbokki.ui.theme.Gray04
-import com.hammer.talkbbokki.ui.theme.Gray06
+import com.hammer.talkbbokki.ui.theme.MainColor01
 import com.hammer.talkbbokki.ui.theme.MainColor02
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import com.hammer.talkbbokki.ui.theme.White
@@ -52,25 +52,30 @@ fun BookMarkRoute(
     viewModel: BookmarkViewModel = hiltViewModel()
 ) {
     val bookmarkList by viewModel.bookmarkList.collectAsState()
+    val showCancelDialog by viewModel.showCancelDialog.collectAsState()
     BookMarkScreen(
         bookmarkList,
+        showCancelDialog,
         onClickItem = { navigateToDetail(it) },
         removeBookmark = { viewModel.removeBookmark(it) },
-        onBackClick = { onBackClick() }
+        onBackClick = { onBackClick() },
+        onCloseDialog = { viewModel.closeDialog() }
     )
 }
 
 @Composable
 fun BookMarkScreen(
     bookmarks: List<TopicItem>,
+    showCancelDialog: Boolean,
     onClickItem: (TopicItem) -> Unit,
     removeBookmark: (Int) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onCloseDialog: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var selectItem by remember { mutableStateOf(-1) }
 
-    if (showDialog) {
+    if (showCancelDialog && showDialog) {
         BookmarkCancelDialog(
             textRes = R.string.bookmark_cancel_dialog_text,
             subTextRes = R.string.bookmark_cancel_dialog_subtext,
@@ -78,9 +83,13 @@ fun BookMarkScreen(
             agreeAction = {
                 removeBookmark(selectItem)
                 showDialog = false
+                onCloseDialog()
             },
             disagreeTextRes = R.string.bookmark_cancel_dialog_disagree,
-            disagreeAction = { showDialog = false }
+            disagreeAction = {
+                showDialog = false
+                onCloseDialog()
+            }
         )
     }
     Column(
@@ -196,7 +205,7 @@ fun BookmarkItem(
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_star_fill),
-                    tint = Gray06,
+                    tint = MainColor01,
                     contentDescription = null,
                     modifier = Modifier.clickable { onToggleBookmark(item.id) }
                 )

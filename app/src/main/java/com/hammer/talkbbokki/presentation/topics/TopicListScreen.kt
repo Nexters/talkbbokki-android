@@ -168,9 +168,10 @@ fun SelectBtn(
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
         onClick = {
-            if (todayViewCnt >= 10) {
+            /*if (todayViewCnt >= 10) {
                 // TODO 10회 초과 다이얼로그 노출
-            } else if (todayViewCnt >= 3) {
+            } else */
+            if (todayViewCnt >= 3) {
                 showRewardedAd(context) {
                     onCardClicked()
                 }
