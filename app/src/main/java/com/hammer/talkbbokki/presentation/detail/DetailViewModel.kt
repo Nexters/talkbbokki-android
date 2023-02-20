@@ -19,7 +19,13 @@ class DetailViewModel @Inject constructor(
     private val bookmarkRepository: BookmarkRepository,
     private val detailRepository: DetailRepository
 ) : ViewModel() {
-    val item: StateFlow<TopicItem> = savedStateHandle.getStateFlow("topic_test", TopicItem())
+    val item: StateFlow<TopicItem> = savedStateHandle.getStateFlow("topic_test", TopicItem(
+        id = savedStateHandle.getStateFlow("id", 0).value,
+        tag = savedStateHandle.getStateFlow("tag", "LOVE").value,
+        name = savedStateHandle.getStateFlow("topic", "대화 주제").value,
+        category = savedStateHandle.getStateFlow("level", "level1").value,
+        shareLink = savedStateHandle.getStateFlow("shareLink", "링크").value
+    ))
 
     private val _toastMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
     val toastMessage: StateFlow<Int> get() = _toastMessage.asStateFlow()
