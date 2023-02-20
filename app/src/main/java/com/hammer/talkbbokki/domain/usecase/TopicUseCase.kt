@@ -1,5 +1,6 @@
 package com.hammer.talkbbokki.domain.usecase
 
+import com.hammer.talkbbokki.data.local.ViewCardPrefData
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.repository.TopicRepository
 import javax.inject.Inject
@@ -21,7 +22,7 @@ class TopicUseCase @Inject constructor(
     fun setTodayViewCnt(id: Int): Flow<Int> =
         repository.setTodayViewCnt(id).flowOn(dispatcher)
 
-    fun getOpenedIndex(): Flow<Set<String>> = repository.getOpenedIndex()
+    fun getOpenedCards(): Flow<ViewCardPrefData> = repository.getOpenedCards()
     fun setOpenedIndex(isReset: Boolean = false, index: String): Flow<Set<String>> =
         repository.setOpenedIndex(isReset, index).flowOn(dispatcher)
 }

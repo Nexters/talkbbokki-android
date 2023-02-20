@@ -1,6 +1,7 @@
 package com.hammer.talkbbokki.data.repository
 
 import com.hammer.talkbbokki.data.local.DataStoreManager
+import com.hammer.talkbbokki.data.local.ViewCardPrefData
 import com.hammer.talkbbokki.data.remote.TalkbbokkiService
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.repository.TopicRepository
@@ -21,7 +22,7 @@ internal class TopicRepositoryImpl @Inject constructor(
         dataStore.updateViewCards(id)
     }
 
-    override fun getOpenedIndex(): Flow<Set<String>> = dataStore.openedIndex
+    override fun getOpenedCards(): Flow<ViewCardPrefData> = dataStore.viewCards
 
     override fun setOpenedIndex(isReset: Boolean, index: String): Flow<Set<String>> = flow {
         dataStore.setOpenedIndex(isReset, index)
