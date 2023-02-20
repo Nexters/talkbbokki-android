@@ -104,12 +104,14 @@ fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
             )
             .fillMaxWidth()
     ) {
-        Image(painter = painterResource(id = R.drawable.ic_close),
+        Image(
+            painter = painterResource(id = R.drawable.ic_close),
             contentDescription = null,
             modifier = Modifier
                 .align(Alignment.End)
                 .size(24.dp, 24.dp)
-                .clickable { onClickToMain() })
+                .clickable { onClickToMain() }
+        )
         Spacer(modifier = Modifier.height(24.dp))
         stringResource(id = TopicLevel.valueOf(topicLevel).title).split("\n")
             .forEachIndexed { index, s ->
@@ -171,7 +173,10 @@ fun TopicList(
 
 @Composable
 fun SelectBtn(
-    isOpened: Boolean = false, todayViewCnt: Int, onCardClicked: () -> Unit, modifier: Modifier
+    isOpened: Boolean = false,
+    todayViewCnt: Int,
+    onCardClicked: () -> Unit,
+    modifier: Modifier
 ) {
     val context = LocalContext.current
     val openable by remember { mutableStateOf(false) }
@@ -222,46 +227,51 @@ fun CardItem(
 ) {
     val pageOffsetWithSign = definiteIndex - currentOffset
     val pageOffset = pageOffsetWithSign.absoluteValue
-    Box(modifier = Modifier
-        .width(dimensionResource(id = R.dimen.card_width))
-        .aspectRatio(0.65f)
-        .background(Color.Transparent)
-        .zIndex(5f - pageOffset)
-        .graphicsLayer {
-            // 중간으로 올수록 크게 보임
-            lerp(
-                start = 1f.dp, stop = 1.9.dp, fraction = 1f - pageOffset.coerceIn(0f, 1.3f)
-            ).let { scale ->
-                scaleX = scale.value
-                scaleY = scale.value
-            }
+    Box(
+        modifier = Modifier
+            .width(dimensionResource(id = R.dimen.card_width))
+            .aspectRatio(0.65f)
+            .background(Color.Transparent)
+            .zIndex(5f - pageOffset)
+            .graphicsLayer {
+                // 중간으로 올수록 크게 보임
+                lerp(
+                    start = 1f.dp,
+                    stop = 1.9.dp,
+                    fraction = 1f - pageOffset.coerceIn(0f, 1.3f)
+                ).let { scale ->
+                    scaleX = scale.value
+                    scaleY = scale.value
+                }
 
-            // 중간으로 올수록 0도에 가까워짐. (카드 사이 각도 15도씩 틀어짐)
-            lerp(
-                start = pageOffsetWithSign * 15f.dp, // -30, -15, 0, 15, 30 ...
-                stop = 0f.dp, fraction = 1f - pageOffset.coerceIn(0f, 1f)
-            ).value.let { angle ->
-                rotationZ = angle
-            }
+                // 중간으로 올수록 0도에 가까워짐. (카드 사이 각도 15도씩 틀어짐)
+                lerp(
+                    start = pageOffsetWithSign * 15f.dp, // -30, -15, 0, 15, 30 ...
+                    stop = 0f.dp,
+                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                ).value.let { angle ->
+                    rotationZ = angle
+                }
 
-            // 중간에서 멀어질수록 수직으로 내려가도록 조정.
-            lerp(
-                start = pageOffset * 50f.dp,
-                stop = 0f.dp,
-                fraction = 1f - pageOffset.coerceIn(0f, 1f)
-            ).value.let { yOffset ->
-                translationY = yOffset
-            }
+                // 중간에서 멀어질수록 수직으로 내려가도록 조정.
+                lerp(
+                    start = pageOffset * 50f.dp,
+                    stop = 0f.dp,
+                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                ).value.let { yOffset ->
+                    translationY = yOffset
+                }
 
-            // 카드가 겹치게 보이도록 중앙으로 모이도록 조정.
-            lerp(
-                start = pageOffsetWithSign * pageOffset * (50f * -1).dp,
-                stop = 0f.dp,
-                fraction = 1f - pageOffset.coerceIn(0f, 1f)
-            ).value.let { xOffset ->
-                translationX = xOffset
+                // 카드가 겹치게 보이도록 중앙으로 모이도록 조정.
+                lerp(
+                    start = pageOffsetWithSign * pageOffset * (50f * -1).dp,
+                    stop = 0f.dp,
+                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                ).value.let { xOffset ->
+                    translationX = xOffset
+                }
             }
-        }) {
+    ) {
         val cardImage: Painter = if (pageOffset > 1.5) {
             painterResource(id = R.drawable.bg_card_small)
         } else if (pageOffset > 0.5) {
@@ -271,7 +281,9 @@ fun CardItem(
         }
 
         Image(
-            painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize()
+            painter = cardImage,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
         )
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -291,7 +303,9 @@ fun CardItem(
             isCenter = pageOffset < 0.5
 
             AnimatedVisibility(
-                visible = isCenter, enter = fadeIn(), exit = fadeOut()
+                visible = isCenter,
+                enter = fadeIn(),
+                exit = fadeOut()
             ) {
                 Image(
                     painter = tagImage,
