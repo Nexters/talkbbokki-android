@@ -23,8 +23,7 @@ import com.hammer.talkbbokki.presentation.topics.topicListGraph
 fun TalkbbokkiNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-//    startDestination: String = IntroDestination.route
-    startDestination: String = TopicListDestination.route
+    startDestination: String = MainDestination.route
 ) {
     NavHost(
         navController = navController,
@@ -58,6 +57,9 @@ fun TalkbbokkiNavHost(
         topicListGraph(
             navigateToDetail = { id ->
                 navController.navigate(DetailDestination.route + "/$id")
+            },
+            navigateToMain = {
+                navController.popBackStack()
             }
         )
         detailGraph(

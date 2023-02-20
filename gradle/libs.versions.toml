@@ -57,6 +57,7 @@ compose-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-comp
 
 compose-coil = { module = "io.coil-kt:coil-compose", version.ref = "compose-coil" }
 compose-lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "compose-lottie" }
+compose-navigation-animation = {module = "com.google.accompanist:accompanist-navigation-animation", version = "0.16.0"}
 
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist-pager" }
 accompanist-pager-indicator = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist-pager" }

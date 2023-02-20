@@ -4,9 +4,9 @@ import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.data.remote.TalkbbokkiService
 import com.hammer.talkbbokki.domain.model.CategoryLevel
 import com.hammer.talkbbokki.domain.repository.CategoryLevelRepository
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
 internal class CategoryLevelRepositoryImpl @Inject constructor(
     private val service: TalkbbokkiService

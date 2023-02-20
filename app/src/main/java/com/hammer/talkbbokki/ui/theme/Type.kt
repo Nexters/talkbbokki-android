@@ -95,5 +95,11 @@ class TalkbbokkiTypography {
             fontSize = 14.sp,
             lineHeight = 14.sp
         )
+        val test: TextStyle = TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 8.sp,
+            lineHeight = 8.sp
+        )
     }
 }
