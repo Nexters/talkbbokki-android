@@ -32,6 +32,8 @@ import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
+val level = "LEVEL1"
+
 @Composable
 fun DetailRoute(
     modifier: Modifier = Modifier,
@@ -42,7 +44,6 @@ fun DetailRoute(
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     println("level:$level id:$id, topic:$topic")
-
     val toastMessage by viewModel.toastMessage.collectAsState()
     val item by viewModel.item.collectAsState()
     DetailScreen(
