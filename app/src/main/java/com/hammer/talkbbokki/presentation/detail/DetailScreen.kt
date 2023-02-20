@@ -41,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.main.CategoryLevelDummy
+import com.hammer.talkbbokki.presentation.shareLink
 import com.hammer.talkbbokki.presentation.shareScreenShot
 import com.hammer.talkbbokki.ui.theme.Gray03
 import com.hammer.talkbbokki.ui.theme.Gray04
@@ -274,7 +275,9 @@ fun BackCardFace(
                     .background(Gray03)
             )
             ShareBottom(
-                onClickShareLink = {},
+                onClickShareLink = {
+                    shareLink(context, "https://talkbbokki.me/share?topic=14&rule=3")
+                },
                 onClickScreenShot = {
                     shareScreenShot(context)
                 }

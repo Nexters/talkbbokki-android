@@ -38,3 +38,14 @@ fun shareScreenShot(context: Context) {
         )
     )
 }
+
+fun shareLink(context: Context, shareLink: String) {
+    val activity = context.findActivity()
+    activity ?: return
+
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, shareLink)
+    }
+    activity.startActivity(Intent.createChooser(intent, shareLink))
+}
