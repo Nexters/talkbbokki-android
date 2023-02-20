@@ -41,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.main.CategoryLevelDummy
+import com.hammer.talkbbokki.presentation.shareScreenShot
 import com.hammer.talkbbokki.ui.theme.Gray03
 import com.hammer.talkbbokki.ui.theme.Gray04
 import com.hammer.talkbbokki.ui.theme.Gray05
@@ -241,6 +242,7 @@ fun BackCardFace(
     item: TopicItem,
     onClickBookmark: (Boolean) -> Unit
 ) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -271,7 +273,12 @@ fun BackCardFace(
                     .height(1.dp)
                     .background(Gray03)
             )
-            ShareBottom()
+            ShareBottom(
+                onClickShareLink = {},
+                onClickScreenShot = {
+                    shareScreenShot(context)
+                }
+            )
         }
     }
 }
@@ -360,13 +367,16 @@ fun Starter() {
 }
 
 @Composable
-fun ShareBottom() {
+fun ShareBottom(
+    onClickShareLink: () -> Unit,
+    onClickScreenShot: () -> Unit
+) {
     Row(modifier = Modifier.height(62.dp)) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .weight(1f)
-                .clickable { }
+                .clickable { onClickShareLink() }
         ) {
             Image(
                 modifier = Modifier
@@ -386,7 +396,7 @@ fun ShareBottom() {
             modifier = Modifier
                 .fillMaxSize()
                 .weight(1f)
-                .clickable { }
+                .clickable { onClickScreenShot() }
         ) {
             Image(
                 modifier = Modifier
