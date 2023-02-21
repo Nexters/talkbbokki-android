@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.data.entity.TalkOrderItem
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.shareLink
 import com.hammer.talkbbokki.presentation.shareScreenShot
@@ -43,7 +44,7 @@ fun DetailRoute(
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val viewCntSuccess by viewModel.viewCntSuccess.collectAsState()
-    if (viewCntSuccess){
+    if (viewCntSuccess) {
         Toast.makeText(
             LocalContext.current,
             "viewCnt +1",
@@ -63,7 +64,7 @@ fun DetailRoute(
         },
         onClickStarter = {},
         updateViewCnt = { viewModel.postViewCnt(item.id) },
-        starter = starter ?: ""
+        starter = starter
     )
     if (toastMessage > 0) {
         Toast.makeText(LocalContext.current, stringResource(id = toastMessage), Toast.LENGTH_SHORT)
@@ -79,7 +80,7 @@ fun DetailScreen(
     onClickBookmark: (Boolean) -> Unit,
     onClickStarter: () -> Unit,
     updateViewCnt: () -> Unit,
-    starter: String
+    starter: TalkOrderItem
 ) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
 
@@ -126,7 +127,7 @@ fun DetailFlipCard(
     modifier: Modifier = Modifier,
     cardFace: CardFace,
     item: TopicItem,
-    starter: String,
+    starter: TalkOrderItem,
     onClickToList: () -> Unit,
     onClickBookmark: (Boolean) -> Unit,
     onClickStarter: () -> Unit,
@@ -237,7 +238,10 @@ fun FrontCardFace(item: TopicItem) {
 
 @Composable
 fun BackCardFace(
-    item: TopicItem, starter: String, onClickBookmark: (Boolean) -> Unit, updateViewCnt: () -> Unit,
+    item: TopicItem,
+    starter: TalkOrderItem,
+    onClickBookmark: (Boolean) -> Unit,
+    updateViewCnt: () -> Unit,
 ) {
     val context = LocalContext.current
     Box(
@@ -262,7 +266,7 @@ fun BackCardFace(
                     .height(1.dp)
                     .background(Gray03)
             )
-            Starter(starter)
+            Starter(starter.rule ?: "")
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -271,7 +275,7 @@ fun BackCardFace(
             )
             ShareBottom(onClickShareLink = {
                 updateViewCnt()
-                shareLink(context, item.shareLink)
+                shareLink(context, item.shareLink + "&rule=${starter.id}")
             }, onClickScreenShot = {
                 updateViewCnt()
                 shareScreenShot(context)

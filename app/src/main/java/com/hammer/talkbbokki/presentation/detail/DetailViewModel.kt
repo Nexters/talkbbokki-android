@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.data.entity.TalkOrderItem
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.repository.BookmarkRepository
 import com.hammer.talkbbokki.domain.repository.DetailRepository
@@ -40,7 +41,7 @@ class DetailViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = ""
+            initialValue = TalkOrderItem(id = null, rule = null)
         )
 
     fun addBookmark() {
