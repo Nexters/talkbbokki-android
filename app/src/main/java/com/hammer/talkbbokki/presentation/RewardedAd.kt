@@ -3,7 +3,6 @@ package com.hammer.talkbbokki.presentation
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
@@ -23,16 +22,11 @@ fun loadAd(context: Context) {
         object : RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 // 광고 로드 실패
-                Toast.makeText(context, "onAdFailedToLoad : ${adError.message}", Toast.LENGTH_SHORT)
-                    .show()
-                Log.d("AAAA", "onAdFailedToLoad : ${adError.message}")
                 rewardedAd = null
             }
 
             override fun onAdLoaded(ad: RewardedAd) {
                 // 광고 로드 성공
-                Toast.makeText(context, "onAdLoaded", Toast.LENGTH_SHORT).show()
-                Log.d("AAAA", "onAdLoaded")
                 rewardedAd = ad
             }
         }
