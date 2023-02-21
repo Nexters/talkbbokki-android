@@ -1,5 +1,6 @@
 package com.hammer.talkbbokki.presentation.detail
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -45,18 +47,25 @@ class DetailViewModel @Inject constructor(
             initialValue = _item
         )
 
-    private val _viewCntSuccess: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val viewCntSuccess: StateFlow<Boolean> get() = _viewCntSuccess.asStateFlow()
-
     private val _toastMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
     val toastMessage: StateFlow<Int> get() = _toastMessage.asStateFlow()
 
-    val talkOrder = detailRepository.getTalkOrder()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = TalkOrderItem(id = null, rule = null)
-        )
+    private val _talkOrder: MutableStateFlow<TalkOrderItem> = MutableStateFlow(TalkOrderItem())
+    val talkOrder: StateFlow<TalkOrderItem> get() = _talkOrder
+
+    init {
+        getTalkStarter()
+    }
+
+    fun getTalkStarter() {
+        viewModelScope.launch {
+            detailRepository.getTalkOrder()
+                .catch { }
+                .collect {
+                    _talkOrder.value = it
+                }
+        }
+    }
 
     fun addBookmark() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -85,9 +94,10 @@ class DetailViewModel @Inject constructor(
     fun postViewCnt(topicId: Int) {
         viewModelScope.launch {
             detailRepository.postViewCnt(topicId)
-                .collect {
-                    _viewCntSuccess.value = true
+                .catch {
+                    Log.d("DetailViewModel", "조회수 업데이트 실패!")
                 }
+                .collect()
         }
     }
 }

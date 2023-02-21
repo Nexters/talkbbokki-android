@@ -13,6 +13,12 @@ android {
         debug {
             storeFile rootProject.file("private/debug.keystore")
         }
+        release {
+            storeFile file('/Users/jiyoung/AndroidStudioProjects/talkbbokki-android/private/release.keystore')
+            storePassword 'talkbbokki'
+            keyAlias 'key0'
+            keyPassword 'talkbbokki'
+        }
     }
     namespace 'com.hammer.talkbbokki'
     compileSdk 33

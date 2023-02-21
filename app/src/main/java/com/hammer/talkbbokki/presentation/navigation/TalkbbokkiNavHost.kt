@@ -24,7 +24,7 @@ import java.util.*
 fun TalkbbokkiNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = MainDestination.route
+    startDestination: String = IntroDestination.route
 ) {
     NavHost(
         navController = navController,
