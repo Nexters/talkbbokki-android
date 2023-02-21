@@ -42,7 +42,7 @@ import kotlin.math.absoluteValue
 
 @Composable
 fun TopicListRoute(
-    onClickToDetail: (level: String, id: Int, tag: String, topic: String, ShareLink: String) -> Unit,
+    onClickToDetail: (level: String, item: TopicItem) -> Unit,
     onClickToMain: () -> Unit,
     viewModel: TopicListViewModel = hiltViewModel(),
     topicLevel: String
@@ -57,17 +57,14 @@ fun TopicListRoute(
 
 @Composable
 fun TopicListScreen(
-    onClickToDetail: (level: String, id: Int, topic: String, tag: String, ShareLink: String) -> Unit,
+    onClickToDetail: (level: String, item: TopicItem) -> Unit,
     onClickToMain: () -> Unit,
     topicLevel: String,
     viewModel: TopicListViewModel
 ) {
-    var selectedIdx by remember { mutableStateOf(0) }
-    var selectedTag by remember { mutableStateOf("") }
-    var selectedTopic by remember { mutableStateOf("") }
-    var selectedShareLink by remember { mutableStateOf("") }
     val list by viewModel.topicList.collectAsState()
     val todayViewCnt by viewModel.todayViewCnt.collectAsState()
+    var selectedTopicItem by remember { mutableStateOf(TopicItem()) }
 
     Box(
         modifier = Modifier
@@ -77,27 +74,17 @@ fun TopicListScreen(
         TopicListHeader(onClickToMain, topicLevel)
         TopicList(
             cardList = list,
-            onFocusedCardChange = { idx, tag, topic, shareLink ->
-                selectedIdx = idx
-                selectedTag = tag
-                selectedTopic = topic
-                selectedShareLink = shareLink
-            },
-            viewModel,
+            onFocusedCardChange = { item -> selectedTopicItem = item },
             todayViewCnt
         )
         SelectBtn(
-            isOpened = (selectedIdx.toInt() % 2 == 0),
-            todayViewCnt = todayViewCnt,
+            isOpened = selectedTopicItem.isOpened,
+            viewCountOver = todayViewCnt >= 3,
             onCardClicked = {
-                viewModel.setTodayViewCnt(id = selectedIdx.toInt())
-                onClickToDetail(
-                    topicLevel,
-                    selectedIdx,
-                    selectedTag,
-                    selectedTopic,
-                    selectedShareLink
-                )
+                selectedTopicItem.let { item ->
+                    viewModel.setTodayViewCnt(id = item.id)
+                    onClickToDetail(topicLevel, item)
+                }
             },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
@@ -114,12 +101,14 @@ fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
             )
             .fillMaxWidth()
     ) {
-        Image(painter = painterResource(id = R.drawable.ic_close),
+        Image(
+            painter = painterResource(id = R.drawable.ic_close),
             contentDescription = null,
             modifier = Modifier
                 .align(Alignment.End)
                 .size(24.dp, 24.dp)
-                .clickable { onClickToMain() })
+                .clickable { onClickToMain() }
+        )
         Spacer(modifier = Modifier.height(24.dp))
         stringResource(id = TopicLevel.valueOf(topicLevel).title).split("\n")
             .forEachIndexed { index, s ->
@@ -136,8 +125,7 @@ fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
 @Composable
 fun TopicList(
     cardList: List<TopicItem>,
-    onFocusedCardChange: (idx: Int, tag: String, topic: String, shareLink: String) -> Unit,
-    viewModel: TopicListViewModel,
+    onFocusedCardChange: (item: TopicItem) -> Unit,
     todayViewCnt: Int
 ) {
     val listState = rememberLazyListState()
@@ -168,13 +156,9 @@ fun TopicList(
                 )
             ) {
                 itemsIndexed(cardList) { definiteIndex, item ->
-                    onFocusedCardChange(
-                        item.id,
-                        item.tag,
-                        item.name,
-                        item.shareLink
-                    )
-                    CardItem(definiteIndex, currentOffset, viewModel, item, todayViewCnt)
+                    CardItem(definiteIndex, currentOffset, item, todayViewCnt) {
+                        onFocusedCardChange(it)
+                    }
                 }
             }
         }
@@ -183,10 +167,12 @@ fun TopicList(
 
 @Composable
 fun SelectBtn(
-    isOpened: Boolean = false, todayViewCnt: Int, onCardClicked: () -> Unit, modifier: Modifier
+    isOpened: Boolean = false,
+    viewCountOver: Boolean = false,
+    onCardClicked: () -> Unit,
+    modifier: Modifier
 ) {
     val context = LocalContext.current
-    val openable by remember { mutableStateOf(false) }
 
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
@@ -194,7 +180,7 @@ fun SelectBtn(
             /*if (todayViewCnt >= 10) {
                 // TODO 10회 초과 다이얼로그 노출
             } else */
-            if (todayViewCnt >= 3) {
+            if (viewCountOver) {
                 showRewardedAd(context) {
                     onCardClicked()
                 }
@@ -213,7 +199,7 @@ fun SelectBtn(
         Text(
             text = if (isOpened) {
                 stringResource(R.string.list_re_pick_btn)
-            } else if (todayViewCnt >= 3) {
+            } else if (viewCountOver) {
                 stringResource(R.string.list_ad_pick_btn)
             } else {
                 stringResource(R.string.list_pick_btn)
@@ -228,52 +214,57 @@ fun SelectBtn(
 fun CardItem(
     definiteIndex: Int,
     currentOffset: Float,
-    viewModel: TopicListViewModel,
     item: TopicItem,
-    todayViewCnt: Int
+    todayViewCnt: Int,
+    currentItem: (TopicItem) -> Unit
 ) {
     val pageOffsetWithSign = definiteIndex - currentOffset
     val pageOffset = pageOffsetWithSign.absoluteValue
-    Box(modifier = Modifier
-        .width(dimensionResource(id = R.dimen.card_width))
-        .aspectRatio(0.65f)
-        .background(Color.Transparent)
-        .zIndex(5f - pageOffset)
-        .graphicsLayer {
-            // 중간으로 올수록 크게 보임
-            lerp(
-                start = 1f.dp, stop = 1.9.dp, fraction = 1f - pageOffset.coerceIn(0f, 1.3f)
-            ).let { scale ->
-                scaleX = scale.value
-                scaleY = scale.value
-            }
+    Box(
+        modifier = Modifier
+            .width(dimensionResource(id = R.dimen.card_width))
+            .aspectRatio(0.65f)
+            .background(Color.Transparent)
+            .zIndex(5f - pageOffset)
+            .graphicsLayer {
+                // 중간으로 올수록 크게 보임
+                lerp(
+                    start = 1f.dp,
+                    stop = 1.9.dp,
+                    fraction = 1f - pageOffset.coerceIn(0f, 1.3f)
+                ).let { scale ->
+                    scaleX = scale.value
+                    scaleY = scale.value
+                }
 
-            // 중간으로 올수록 0도에 가까워짐. (카드 사이 각도 15도씩 틀어짐)
-            lerp(
-                start = pageOffsetWithSign * 15f.dp, // -30, -15, 0, 15, 30 ...
-                stop = 0f.dp, fraction = 1f - pageOffset.coerceIn(0f, 1f)
-            ).value.let { angle ->
-                rotationZ = angle
-            }
+                // 중간으로 올수록 0도에 가까워짐. (카드 사이 각도 15도씩 틀어짐)
+                lerp(
+                    start = pageOffsetWithSign * 15f.dp, // -30, -15, 0, 15, 30 ...
+                    stop = 0f.dp,
+                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                ).value.let { angle ->
+                    rotationZ = angle
+                }
 
-            // 중간에서 멀어질수록 수직으로 내려가도록 조정.
-            lerp(
-                start = pageOffset * 50f.dp,
-                stop = 0f.dp,
-                fraction = 1f - pageOffset.coerceIn(0f, 1f)
-            ).value.let { yOffset ->
-                translationY = yOffset
-            }
+                // 중간에서 멀어질수록 수직으로 내려가도록 조정.
+                lerp(
+                    start = pageOffset * 50f.dp,
+                    stop = 0f.dp,
+                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                ).value.let { yOffset ->
+                    translationY = yOffset
+                }
 
-            // 카드가 겹치게 보이도록 중앙으로 모이도록 조정.
-            lerp(
-                start = pageOffsetWithSign * pageOffset * (50f * -1).dp,
-                stop = 0f.dp,
-                fraction = 1f - pageOffset.coerceIn(0f, 1f)
-            ).value.let { xOffset ->
-                translationX = xOffset
+                // 카드가 겹치게 보이도록 중앙으로 모이도록 조정.
+                lerp(
+                    start = pageOffsetWithSign * pageOffset * (50f * -1).dp,
+                    stop = 0f.dp,
+                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                ).value.let { xOffset ->
+                    translationX = xOffset
+                }
             }
-        }) {
+    ) {
         val cardImage: Painter = if (pageOffset > 1.5) {
             painterResource(id = R.drawable.bg_card_small)
         } else if (pageOffset > 0.5) {
@@ -283,8 +274,13 @@ fun CardItem(
         }
 
         Image(
-            painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize()
+            painter = cardImage,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
         )
+
+        var isCenter by remember { mutableStateOf(true) }
+        isCenter = pageOffset < 0.5
 
         Box(modifier = Modifier.fillMaxSize()) {
             val tag = item.tag
@@ -299,11 +295,11 @@ fun CardItem(
                     painterResource(id = R.drawable.ic_tag_if)
                 }
             }
-            var isCenter by remember { mutableStateOf(true) }
-            isCenter = pageOffset < 0.5
 
             AnimatedVisibility(
-                visible = isCenter, enter = fadeIn(), exit = fadeOut()
+                visible = isCenter,
+                enter = fadeIn(),
+                exit = fadeOut()
             ) {
                 Image(
                     painter = tagImage,
@@ -315,14 +311,23 @@ fun CardItem(
             }
         }
 
-        if (pageOffset <= 0.5 && todayViewCnt >= 3) {
-            ShowLogic(Modifier.align(Alignment.TopCenter), definiteIndex % 2 == 0)
+        if (isCenter) {
+            ShowLogic(
+                modifier = Modifier.align(Alignment.TopCenter),
+                isOpened = item.isOpened,
+                viewCountOver = todayViewCnt >= 3
+            )
+            currentItem(item)
         }
     }
 }
 
 @Composable
-fun ShowLogic(modifier: Modifier = Modifier, isOpened: Boolean = false) {
+fun ShowLogic(
+    modifier: Modifier = Modifier,
+    isOpened: Boolean = false,
+    viewCountOver: Boolean = false
+) {
     Box(
         modifier = modifier.size(dimensionResource(id = R.dimen.card_tooltip_width), 40.dp)
     ) {
@@ -334,7 +339,7 @@ fun ShowLogic(modifier: Modifier = Modifier, isOpened: Boolean = false) {
                 style = TalkbbokkiTypography.test,
                 color = Color.White
             )
-        } else {
+        } else if (viewCountOver) {
             Box(
                 modifier = Modifier
                     .align(Alignment.TopCenter)

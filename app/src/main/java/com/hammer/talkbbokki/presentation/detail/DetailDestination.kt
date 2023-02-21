@@ -21,11 +21,11 @@ fun NavGraphBuilder.detailGraph(
             navArgument("id") { type = NavType.IntType },
             navArgument("tag") { type = NavType.StringType },
             navArgument("topic") { type = NavType.StringType },
-            navArgument("shareLink") { type = NavType.StringType },
+            navArgument("shareLink") { type = NavType.StringType }
         )
     ) {
         DetailRoute(
-            onClickToList = navigateToTopicList,
+            onClickToList = navigateToTopicList
         )
     }
 }
