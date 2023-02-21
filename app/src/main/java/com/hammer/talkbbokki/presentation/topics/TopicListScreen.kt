@@ -180,13 +180,14 @@ fun SelectBtn(
             /*if (todayViewCnt >= 10) {
                 // TODO 10회 초과 다이얼로그 노출
             } else */
-            if (viewCountOver) {
-                showRewardedAd(context) {
-                    onCardClicked()
+            when {
+                isOpened -> onCardClicked()
+                viewCountOver -> {
+                    showRewardedAd(context) {
+                        onCardClicked()
+                    }
                 }
-            } else {
-                // 이미 열어본 카드 일 경우 처리
-                onCardClicked()
+                else -> onCardClicked()
             }
         },
         modifier = modifier
