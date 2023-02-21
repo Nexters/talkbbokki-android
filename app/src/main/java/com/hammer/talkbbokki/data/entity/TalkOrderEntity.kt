@@ -5,6 +5,6 @@ data class TalkOrderEntity(
 )
 
 data class TalkOrderItem(
-    val id: Int?,
-    val rule: String?
+    val id: Int? = null,
+    val rule: String? = null
 )
