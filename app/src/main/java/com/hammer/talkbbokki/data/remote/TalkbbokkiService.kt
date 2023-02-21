@@ -1,7 +1,7 @@
 package com.hammer.talkbbokki.data.remote
 
 import com.hammer.talkbbokki.data.entity.CategoryLevelListEntity
-import com.hammer.talkbbokki.data.entity.StarterEntity
+import com.hammer.talkbbokki.data.entity.TalkOrderEntity
 import com.hammer.talkbbokki.data.entity.TopicItemListEntity
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -24,6 +24,6 @@ internal interface TalkbbokkiService {
         @Field("text") topic: String
     )
 
-    @GET("/api/talk-order")
-    suspend fun getStarter(): StarterEntity
+    @GET("/api/talk-orders")
+    suspend fun getTalkOrder(): TalkOrderEntity
 }

@@ -57,8 +57,8 @@ fun TalkbbokkiNavHost(
             navigateToSuggestion = { navController.navigate(SuggestionDestination.route) }
         )
         topicListGraph(
-            navigateToDetail = { level, id, topic ->
-                navController.navigate(DetailDestination.route + "?level=${level}&id=${id}&topic=${topic}")
+            navigateToDetail = { level, id, tag, topic, shareLink ->
+                navController.navigate(DetailDestination.route + "?level=${level}&id=${id}&tag=${tag}&topic=${topic}&shareLink=${shareLink}")
             },
             navigateToMain = {
                 navController.popBackStack()

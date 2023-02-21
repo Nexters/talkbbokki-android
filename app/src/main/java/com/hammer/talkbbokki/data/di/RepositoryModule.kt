@@ -1,13 +1,11 @@
 package com.hammer.talkbbokki.data.di
 
+import com.hammer.talkbbokki.data.repository.*
 import com.hammer.talkbbokki.data.repository.BookmarkRepositoryImpl
 import com.hammer.talkbbokki.data.repository.CategoryLevelRepositoryImpl
 import com.hammer.talkbbokki.data.repository.SuggestionRepositoryImpl
 import com.hammer.talkbbokki.data.repository.TopicRepositoryImpl
-import com.hammer.talkbbokki.domain.repository.BookmarkRepository
-import com.hammer.talkbbokki.domain.repository.CategoryLevelRepository
-import com.hammer.talkbbokki.domain.repository.SuggestionRepository
-import com.hammer.talkbbokki.domain.repository.TopicRepository
+import com.hammer.talkbbokki.domain.repository.*
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -35,4 +33,9 @@ abstract class RepositoryModule {
     internal abstract fun bindsSuggestionRepository(
         repository: SuggestionRepositoryImpl
     ): SuggestionRepository
+
+    @Binds
+    internal abstract fun bindsDetailRepository(
+        repository: DetailRepositoryImpl
+    ): DetailRepository
 }

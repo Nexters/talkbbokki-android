@@ -42,7 +42,7 @@ import kotlin.math.absoluteValue
 
 @Composable
 fun TopicListRoute(
-    onClickToDetail: (level: String, id: Int, topic: String) -> Unit,
+    onClickToDetail: (level: String, id: Int, tag: String, topic: String, ShareLink: String) -> Unit,
     onClickToMain: () -> Unit,
     viewModel: TopicListViewModel = hiltViewModel(),
     topicLevel: String
@@ -57,13 +57,15 @@ fun TopicListRoute(
 
 @Composable
 fun TopicListScreen(
-    onClickToDetail: (level: String, id: Int, topic: String) -> Unit,
+    onClickToDetail: (level: String, id: Int, topic: String, tag: String, ShareLink: String) -> Unit,
     onClickToMain: () -> Unit,
     topicLevel: String,
     viewModel: TopicListViewModel
 ) {
     var selectedIdx by remember { mutableStateOf(0) }
+    var selectedTag by remember { mutableStateOf("") }
     var selectedTopic by remember { mutableStateOf("") }
+    var selectedShareLink by remember { mutableStateOf("") }
     val list by viewModel.topicList.collectAsState()
     val todayViewCnt by viewModel.todayViewCnt.collectAsState()
 
@@ -75,9 +77,11 @@ fun TopicListScreen(
         TopicListHeader(onClickToMain, topicLevel)
         TopicList(
             cardList = list,
-            onFocusedCardChange = { idx, topic ->
-                selectedTopic = topic
+            onFocusedCardChange = { idx, tag, topic, shareLink ->
                 selectedIdx = idx
+                selectedTag = tag
+                selectedTopic = topic
+                selectedShareLink = shareLink
             },
             viewModel,
             todayViewCnt
@@ -87,7 +91,13 @@ fun TopicListScreen(
             todayViewCnt = todayViewCnt,
             onCardClicked = {
                 viewModel.setTodayViewCnt(id = selectedIdx.toInt())
-                onClickToDetail(topicLevel, selectedIdx, selectedTopic)
+                onClickToDetail(
+                    topicLevel,
+                    selectedIdx,
+                    selectedTag,
+                    selectedTopic,
+                    selectedShareLink
+                )
             },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
@@ -126,7 +136,7 @@ fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
 @Composable
 fun TopicList(
     cardList: List<TopicItem>,
-    onFocusedCardChange: (idx: Int, topic: String) -> Unit,
+    onFocusedCardChange: (idx: Int, tag: String, topic: String, shareLink: String) -> Unit,
     viewModel: TopicListViewModel,
     todayViewCnt: Int
 ) {
@@ -160,7 +170,9 @@ fun TopicList(
                 itemsIndexed(cardList) { definiteIndex, item ->
                     onFocusedCardChange(
                         item.id,
-                        item.name
+                        item.tag,
+                        item.name,
+                        item.shareLink
                     )
                     CardItem(definiteIndex, currentOffset, viewModel, item, todayViewCnt)
                 }

@@ -1,5 +1,6 @@
 package com.hammer.talkbbokki.presentation.detail
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animate
@@ -19,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
@@ -34,23 +36,25 @@ import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
-val level = "LEVEL1"
-
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun DetailRoute(
-    modifier: Modifier = Modifier,
     onClickToList: () -> Unit,
-    level: String,
-    id: Int,
-    topic: String,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
-    println("level:$level id:$id, topic:$topic")
     val toastMessage by viewModel.toastMessage.collectAsState()
     val item by viewModel.item.collectAsState()
-    DetailScreen(onClickToList = onClickToList, item = item, onClickBookmark = {
-        if (it) viewModel.addBookmark() else viewModel.removeBookmark()
-    })
+    val starter by viewModel.talkOrder.collectAsState()
+
+    DetailScreen(
+        onClickToList = onClickToList,
+        item = item,
+        onClickBookmark = {
+            if (it) viewModel.addBookmark() else viewModel.removeBookmark()
+        },
+        onClickStarter = {},
+        starter = starter ?: ""
+    )
     if (toastMessage > 0) {
         Toast.makeText(LocalContext.current, stringResource(id = toastMessage), Toast.LENGTH_SHORT)
             .show()
@@ -62,19 +66,27 @@ fun DetailScreen(
     modifier: Modifier = Modifier,
     onClickToList: () -> Unit,
     item: TopicItem,
-    onClickBookmark: (Boolean) -> Unit
+    onClickBookmark: (Boolean) -> Unit,
+    onClickStarter: () -> Unit,
+    starter: String
 ) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(TopicLevel.valueOf(level).backgroundColor)
+            .background(TopicLevel.valueOf(item.category.uppercase()).backgroundColor)
     ) {
         DetailHeader(cardFace = cardFace, onBackClick = { cardFace = CardFace.BACK })
         Box(modifier = modifier.fillMaxSize()) {
             DetailFlipCard(
-                Modifier.align(Alignment.Center), cardFace, item, onClickToList, onClickBookmark
+                Modifier.align(Alignment.Center),
+                cardFace,
+                item,
+                starter,
+                onClickToList,
+                onClickBookmark,
+                onClickStarter
             )
         }
     }
@@ -102,8 +114,10 @@ fun DetailFlipCard(
     modifier: Modifier = Modifier,
     cardFace: CardFace,
     item: TopicItem,
+    starter: String,
     onClickToList: () -> Unit,
-    onClickBookmark: (Boolean) -> Unit
+    onClickBookmark: (Boolean) -> Unit,
+    onClickStarter: () -> Unit
 ) {
     var scale by remember { mutableStateOf(1f) }
     var rotation by remember { mutableStateOf(1f) }
@@ -115,12 +129,12 @@ fun DetailFlipCard(
             .graphicsLayer(
                 scaleX = scale, scaleY = scale, cameraDistance = 12f
             )
-            .background(TopicLevel.valueOf(level).backgroundColor),
+            .background(TopicLevel.valueOf(item.category.uppercase()).backgroundColor),
         front = {
-            FrontCardFace(item.id)
+            FrontCardFace(item)
         },
         back = {
-            BackCardFace(item, onClickBookmark)
+            BackCardFace(item, starter, onClickBookmark)
         })
 
     if (cardFace == CardFace.FRONT) {
@@ -172,21 +186,31 @@ fun DetailFlipCard(
 }
 
 @Composable
-fun FrontCardFace(id: Int) {
+fun FrontCardFace(item: TopicItem) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(TopicLevel.valueOf(level).backgroundColor),
+            .background(TopicLevel.valueOf(item.category.toUpperCase()).backgroundColor),
         contentAlignment = Alignment.Center
     ) {
         val cardImage = painterResource(id = R.drawable.bg_card_large)
-        val category = painterResource(id = R.drawable.ic_tag_love)
+        val tag = when (item.tag) {
+            "LOVE" -> {
+                painterResource(id = R.drawable.ic_tag_love)
+            }
+            "DAILY" -> {
+                painterResource(id = R.drawable.ic_tag_daily)
+            }
+            else -> {
+                painterResource(id = R.drawable.ic_tag_if)
+            }
+        }
 
         Image(
             painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize()
         )
         Image(
-            painter = category,
+            painter = tag,
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
@@ -200,7 +224,7 @@ fun FrontCardFace(id: Int) {
 
 @Composable
 fun BackCardFace(
-    item: TopicItem, onClickBookmark: (Boolean) -> Unit
+    item: TopicItem, starter: String, onClickBookmark: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
     Box(
@@ -225,21 +249,18 @@ fun BackCardFace(
                     .height(1.dp)
                     .background(Gray03)
             )
-            Starter()
+            Starter(starter)
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp)
                     .background(Gray03)
             )
-            ShareBottom(
-                onClickShareLink = {
-                    shareLink(context, "https://talkbbokki.me/share?topic=14&rule=3")
-                },
-                onClickScreenShot = {
-                    shareScreenShot(context)
-                }
-            )
+            ShareBottom(onClickShareLink = {
+                shareLink(context, item.shareLink)
+            }, onClickScreenShot = {
+                shareScreenShot(context)
+            })
         }
     }
 }
@@ -256,7 +277,8 @@ fun Topic(
             Text(
                 modifier = Modifier.align(Alignment.CenterStart),
                 text = stringResource(R.string.detail_topic),
-                color = Gray05
+                color = Gray05,
+                style = TalkbbokkiTypography.card_title
             )
             Icon(
                 modifier = Modifier
@@ -266,9 +288,11 @@ fun Topic(
                     .clickable {
                         toggleBookmark = !toggleBookmark
                         onClickBookmark(toggleBookmark)
-                    }, painter = painterResource(
+                    },
+                painter = painterResource(
                     id = if (toggleBookmark) R.drawable.ic_star_fill else R.drawable.ic_star_empty
-                ), tint = if (toggleBookmark) MainColor01 else Gray04, contentDescription = null
+                ),
+                tint = if (toggleBookmark) MainColor01 else Gray04, contentDescription = null
             )
         }
         Spacer(
@@ -277,14 +301,14 @@ fun Topic(
                 .fillMaxWidth()
         )
         Text(
-            text = "천사처럼 자고 있던 내 연인, 슬며시 다가가 머리를 쓰다듬는데 나도 몰랐던 가발이 벗겨졌다. 모르는척 다시 씌워준다 vs 왜 날 속였냐고 따진다.",
+            text = item.name,
             style = TalkbbokkiTypography.b2_bold
         )
     }
 }
 
 @Composable
-fun Starter() {
+fun Starter(starter: String) {
     Column(
         modifier = Modifier
             .height(114.dp)
@@ -292,7 +316,11 @@ fun Starter() {
     ) {
         Row(modifier = Modifier.height(24.dp)) {
             Text(
-                text = stringResource(R.string.detail_starter), color = Gray05
+                modifier = Modifier.align(Alignment.CenterVertically),
+                text = stringResource(R.string.detail_starter),
+                color = Gray05,
+                style = TalkbbokkiTypography.card_title,
+                textAlign = TextAlign.Center,
             )
             Spacer(
                 modifier = Modifier
@@ -303,7 +331,11 @@ fun Starter() {
                 modifier = Modifier
                     .size(18.dp)
                     .padding(2.dp)
-                    .clickable { },
+                    .clickable {
+
+                    }
+                    .align(Alignment.CenterVertically)
+                ,
                 painter = painterResource(id = R.drawable.ic_refresh),
                 tint = Gray05,
                 contentDescription = null
@@ -315,23 +347,20 @@ fun Starter() {
                 .fillMaxWidth()
         )
         Text(
-            text = "1인 1닭 가능할 것 같은 사람", style = TalkbbokkiTypography.b2_bold
+            text = starter, style = TalkbbokkiTypography.b2_bold
         )
     }
 }
 
 @Composable
 fun ShareBottom(
-    onClickShareLink: () -> Unit,
-    onClickScreenShot: () -> Unit
+    onClickShareLink: () -> Unit, onClickScreenShot: () -> Unit
 ) {
     Row(modifier = Modifier.height(62.dp)) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-                .clickable { onClickShareLink() }
-        ) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .weight(1f)
+            .clickable { onClickShareLink() }) {
             Image(
                 modifier = Modifier
                     .size(24.dp)
@@ -346,12 +375,10 @@ fun ShareBottom(
                 .width(1.dp)
                 .background(Gray03)
         )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-                .clickable { onClickScreenShot() }
-        ) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .weight(1f)
+            .clickable { onClickScreenShot() }) {
             Image(
                 modifier = Modifier
                     .size(24.dp)
