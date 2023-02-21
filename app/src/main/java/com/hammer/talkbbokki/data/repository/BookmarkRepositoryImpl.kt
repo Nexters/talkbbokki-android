@@ -16,6 +16,10 @@ internal class BookmarkRepositoryImpl @Inject constructor(
         list.map { entity -> entity.toModel(isBookmark = true) }
     }
 
+    override fun findItem(id: Int): Flow<TopicItem?> = dao.findBookmarkItem(id).map {
+        it.firstOrNull()?.toModel(isBookmark = true)
+    }
+
     override fun removeBookmark(id: Int) = flow { emit(dao.removeBookmark(id)) }
 
     override fun addBookmark(item: TopicItem) = flow {

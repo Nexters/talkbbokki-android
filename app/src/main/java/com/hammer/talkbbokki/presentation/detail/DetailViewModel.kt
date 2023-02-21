@@ -10,7 +10,13 @@ import com.hammer.talkbbokki.domain.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -19,16 +25,24 @@ class DetailViewModel @Inject constructor(
     private val bookmarkRepository: BookmarkRepository,
     private val detailRepository: DetailRepository
 ) : ViewModel() {
-    val item: StateFlow<TopicItem> = savedStateHandle.getStateFlow(
-        "topic_test",
-        TopicItem(
-            id = savedStateHandle.getStateFlow("id", 0).value,
-            tag = savedStateHandle.getStateFlow("tag", "LOVE").value,
-            name = savedStateHandle.getStateFlow("topic", "대화 주제").value,
-            category = savedStateHandle.getStateFlow("level", "level1").value,
-            shareLink = savedStateHandle.getStateFlow("shareLink", "링크").value
-        )
+    private val _item = TopicItem(
+        id = savedStateHandle.getStateFlow("id", 0).value,
+        tag = savedStateHandle.getStateFlow("tag", "LOVE").value,
+        name = savedStateHandle.getStateFlow("topic", "대화 주제").value,
+        category = savedStateHandle.getStateFlow("level", "level1").value,
+        shareLink = savedStateHandle.getStateFlow("shareLink", "링크").value
     )
+
+    val item: StateFlow<TopicItem> = bookmarkRepository
+        .findItem(savedStateHandle.get<Int>("id") ?: 0)
+        .map {
+            it ?: _item
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = _item
+        )
 
     private val _toastMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
     val toastMessage: StateFlow<Int> get() = _toastMessage.asStateFlow()
