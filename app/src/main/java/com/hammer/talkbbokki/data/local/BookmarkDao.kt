@@ -11,6 +11,9 @@ internal interface BookmarkDao {
     @Query("SELECT * FROM TopicItemEntity ORDER BY timeStamp ASC")
     fun getAllBookMark(): Flow<List<TopicItemEntity>>
 
+    @Query("SELECT * FROM TopicItemEntity WHERE id = :id")
+    fun findBookmarkItem(id: Int): Flow<List<TopicItemEntity>>
+
     @Insert
     fun addBookmark(item: TopicItemEntity)
 
