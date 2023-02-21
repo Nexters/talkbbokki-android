@@ -26,4 +26,9 @@ internal interface TalkbbokkiService {
 
     @GET("/api/talk-orders")
     suspend fun getTalkOrder(): TalkOrderEntity
+
+    @POST("/api/topics/{topicId}/view-count")
+    suspend fun postViewCnt(
+        @Path("topicId") topicId: Int
+    )
 }

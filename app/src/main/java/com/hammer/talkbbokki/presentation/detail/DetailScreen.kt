@@ -42,6 +42,15 @@ fun DetailRoute(
     onClickToList: () -> Unit,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
+    val viewCntSuccess by viewModel.viewCntSuccess.collectAsState()
+    if (viewCntSuccess){
+        Toast.makeText(
+            LocalContext.current,
+            "viewCnt +1",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
     val toastMessage by viewModel.toastMessage.collectAsState()
     val item by viewModel.item.collectAsState()
     val starter by viewModel.talkOrder.collectAsState()
@@ -53,6 +62,7 @@ fun DetailRoute(
             if (it) viewModel.addBookmark() else viewModel.removeBookmark()
         },
         onClickStarter = {},
+        updateViewCnt = { viewModel.postViewCnt(item.id) },
         starter = starter ?: ""
     )
     if (toastMessage > 0) {
@@ -68,6 +78,7 @@ fun DetailScreen(
     item: TopicItem,
     onClickBookmark: (Boolean) -> Unit,
     onClickStarter: () -> Unit,
+    updateViewCnt: () -> Unit,
     starter: String
 ) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
@@ -86,7 +97,8 @@ fun DetailScreen(
                 starter,
                 onClickToList,
                 onClickBookmark,
-                onClickStarter
+                onClickStarter,
+                updateViewCnt
             )
         }
     }
@@ -117,7 +129,8 @@ fun DetailFlipCard(
     starter: String,
     onClickToList: () -> Unit,
     onClickBookmark: (Boolean) -> Unit,
-    onClickStarter: () -> Unit
+    onClickStarter: () -> Unit,
+    updateViewCnt: () -> Unit,
 ) {
     var scale by remember { mutableStateOf(1f) }
     var rotation by remember { mutableStateOf(1f) }
@@ -134,7 +147,7 @@ fun DetailFlipCard(
             FrontCardFace(item)
         },
         back = {
-            BackCardFace(item, starter, onClickBookmark)
+            BackCardFace(item, starter, onClickBookmark, updateViewCnt)
         })
 
     if (cardFace == CardFace.FRONT) {
@@ -224,7 +237,7 @@ fun FrontCardFace(item: TopicItem) {
 
 @Composable
 fun BackCardFace(
-    item: TopicItem, starter: String, onClickBookmark: (Boolean) -> Unit
+    item: TopicItem, starter: String, onClickBookmark: (Boolean) -> Unit, updateViewCnt: () -> Unit,
 ) {
     val context = LocalContext.current
     Box(
@@ -257,8 +270,10 @@ fun BackCardFace(
                     .background(Gray03)
             )
             ShareBottom(onClickShareLink = {
+                updateViewCnt()
                 shareLink(context, item.shareLink)
             }, onClickScreenShot = {
+                updateViewCnt()
                 shareScreenShot(context)
             })
         }
@@ -334,8 +349,7 @@ fun Starter(starter: String) {
                     .clickable {
 
                     }
-                    .align(Alignment.CenterVertically)
-                ,
+                    .align(Alignment.CenterVertically),
                 painter = painterResource(id = R.drawable.ic_refresh),
                 tint = Gray05,
                 contentDescription = null

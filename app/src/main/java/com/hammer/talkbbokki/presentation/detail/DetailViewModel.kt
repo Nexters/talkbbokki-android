@@ -30,6 +30,9 @@ class DetailViewModel @Inject constructor(
         )
     )
 
+    private val _viewCntSuccess: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val viewCntSuccess: StateFlow<Boolean> get() = _viewCntSuccess.asStateFlow()
+
     private val _toastMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
     val toastMessage: StateFlow<Int> get() = _toastMessage.asStateFlow()
 
@@ -60,6 +63,15 @@ class DetailViewModel @Inject constructor(
                 }
                 .collect {
                     _toastMessage.value = R.string.detail_card_bookmark_cancel
+                }
+        }
+    }
+
+    fun postViewCnt(topicId: Int) {
+        viewModelScope.launch {
+            detailRepository.postViewCnt(topicId)
+                .collect {
+                    _viewCntSuccess.value = true
                 }
         }
     }

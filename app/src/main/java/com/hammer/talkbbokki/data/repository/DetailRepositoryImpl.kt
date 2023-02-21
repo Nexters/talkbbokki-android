@@ -11,4 +11,8 @@ internal class DetailRepositoryImpl @Inject constructor(
     override fun getTalkOrder() = flow {
         emit(service.getTalkOrder().result.rule)
     }
+
+    override fun postViewCnt(topicId: Int) = flow {
+        emit(service.postViewCnt(topicId))
+    }
 }
