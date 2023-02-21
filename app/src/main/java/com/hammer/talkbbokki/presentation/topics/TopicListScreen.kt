@@ -42,7 +42,7 @@ import kotlin.math.absoluteValue
 
 @Composable
 fun TopicListRoute(
-    onClickToDetail: (level: String, id: Int, topic: String) -> Unit,
+    onClickToDetail: (level: String, item: TopicItem) -> Unit,
     onClickToMain: () -> Unit,
     viewModel: TopicListViewModel = hiltViewModel(),
     topicLevel: String
@@ -57,7 +57,7 @@ fun TopicListRoute(
 
 @Composable
 fun TopicListScreen(
-    onClickToDetail: (level: String, id: Int, topic: String) -> Unit,
+    onClickToDetail: (level: String, item: TopicItem) -> Unit,
     onClickToMain: () -> Unit,
     topicLevel: String,
     viewModel: TopicListViewModel
@@ -83,7 +83,7 @@ fun TopicListScreen(
             onCardClicked = {
                 selectedTopicItem.let { item ->
                     viewModel.setTodayViewCnt(id = item.id)
-                    onClickToDetail(topicLevel, item.id, item.name)
+                    onClickToDetail(topicLevel, item)
                 }
             },
             modifier = Modifier.align(Alignment.BottomCenter)

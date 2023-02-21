@@ -101,5 +101,11 @@ class TalkbbokkiTypography {
             fontSize = 8.sp,
             lineHeight = 8.sp
         )
+        val card_title: TextStyle = TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 12.sp,
+            lineHeight = 12.sp
+        )
     }
 }

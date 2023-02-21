@@ -1,10 +1,10 @@
 package com.hammer.talkbbokki.data.entity
 
-data class StarterEntity(
-    val result: List<StarterItem>
+data class TalkOrderEntity(
+    val result: TalkOrderItem
 )
 
-data class StarterItem(
+data class TalkOrderItem(
     val id: Int?,
     val rule: String?
 )
