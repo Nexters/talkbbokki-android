@@ -9,6 +9,10 @@ internal class DetailRepositoryImpl @Inject constructor(
     private val service: TalkbbokkiService
 ) : DetailRepository {
     override fun getTalkOrder() = flow {
-        emit(service.getTalkOrder().result.rule)
+        emit(service.getTalkOrder().result)
+    }
+
+    override fun postViewCnt(topicId: Int) = flow {
+        emit(service.postViewCnt(topicId))
     }
 }

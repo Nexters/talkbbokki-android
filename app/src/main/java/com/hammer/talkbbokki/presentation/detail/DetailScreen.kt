@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.data.entity.TalkOrderItem
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.shareLink
 import com.hammer.talkbbokki.presentation.shareScreenShot
@@ -42,6 +43,15 @@ fun DetailRoute(
     onClickToList: () -> Unit,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
+    val viewCntSuccess by viewModel.viewCntSuccess.collectAsState()
+    if (viewCntSuccess) {
+        Toast.makeText(
+            LocalContext.current,
+            "viewCnt +1",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
     val toastMessage by viewModel.toastMessage.collectAsState()
     val item by viewModel.item.collectAsState()
     val starter by viewModel.talkOrder.collectAsState()
@@ -53,7 +63,8 @@ fun DetailRoute(
             if (it) viewModel.addBookmark() else viewModel.removeBookmark()
         },
         onClickStarter = {},
-        starter = starter ?: ""
+        updateViewCnt = { viewModel.postViewCnt(item.id) },
+        starter = starter
     )
     if (toastMessage > 0) {
         Toast.makeText(LocalContext.current, stringResource(id = toastMessage), Toast.LENGTH_SHORT)
@@ -68,7 +79,8 @@ fun DetailScreen(
     item: TopicItem,
     onClickBookmark: (Boolean) -> Unit,
     onClickStarter: () -> Unit,
-    starter: String
+    updateViewCnt: () -> Unit,
+    starter: TalkOrderItem
 ) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
 
@@ -86,7 +98,8 @@ fun DetailScreen(
                 starter,
                 onClickToList,
                 onClickBookmark,
-                onClickStarter
+                onClickStarter,
+                updateViewCnt
             )
         }
     }
@@ -114,10 +127,11 @@ fun DetailFlipCard(
     modifier: Modifier = Modifier,
     cardFace: CardFace,
     item: TopicItem,
-    starter: String,
+    starter: TalkOrderItem,
     onClickToList: () -> Unit,
     onClickBookmark: (Boolean) -> Unit,
-    onClickStarter: () -> Unit
+    onClickStarter: () -> Unit,
+    updateViewCnt: () -> Unit,
 ) {
     var scale by remember { mutableStateOf(1f) }
     var rotation by remember { mutableStateOf(1f) }
@@ -134,7 +148,7 @@ fun DetailFlipCard(
             FrontCardFace(item)
         },
         back = {
-            BackCardFace(item, starter, onClickBookmark)
+            BackCardFace(item, starter, onClickBookmark, updateViewCnt)
         })
 
     if (cardFace == CardFace.FRONT) {
@@ -224,7 +238,10 @@ fun FrontCardFace(item: TopicItem) {
 
 @Composable
 fun BackCardFace(
-    item: TopicItem, starter: String, onClickBookmark: (Boolean) -> Unit
+    item: TopicItem,
+    starter: TalkOrderItem,
+    onClickBookmark: (Boolean) -> Unit,
+    updateViewCnt: () -> Unit,
 ) {
     val context = LocalContext.current
     Box(
@@ -249,7 +266,7 @@ fun BackCardFace(
                     .height(1.dp)
                     .background(Gray03)
             )
-            Starter(starter)
+            Starter(starter.rule ?: "")
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -257,8 +274,10 @@ fun BackCardFace(
                     .background(Gray03)
             )
             ShareBottom(onClickShareLink = {
-                shareLink(context, item.shareLink)
+                updateViewCnt()
+                shareLink(context, item.shareLink + "&rule=${starter.id}")
             }, onClickScreenShot = {
+                updateViewCnt()
                 shareScreenShot(context)
             })
         }
@@ -334,8 +353,7 @@ fun Starter(starter: String) {
                     .clickable {
 
                     }
-                    .align(Alignment.CenterVertically)
-                ,
+                    .align(Alignment.CenterVertically),
                 painter = painterResource(id = R.drawable.ic_refresh),
                 tint = Gray05,
                 contentDescription = null

@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.data.entity.TalkOrderItem
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.repository.BookmarkRepository
 import com.hammer.talkbbokki.domain.repository.DetailRepository
@@ -30,6 +31,9 @@ class DetailViewModel @Inject constructor(
         )
     )
 
+    private val _viewCntSuccess: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val viewCntSuccess: StateFlow<Boolean> get() = _viewCntSuccess.asStateFlow()
+
     private val _toastMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
     val toastMessage: StateFlow<Int> get() = _toastMessage.asStateFlow()
 
@@ -37,7 +41,7 @@ class DetailViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = ""
+            initialValue = TalkOrderItem(id = null, rule = null)
         )
 
     fun addBookmark() {
@@ -60,6 +64,15 @@ class DetailViewModel @Inject constructor(
                 }
                 .collect {
                     _toastMessage.value = R.string.detail_card_bookmark_cancel
+                }
+        }
+    }
+
+    fun postViewCnt(topicId: Int) {
+        viewModelScope.launch {
+            detailRepository.postViewCnt(topicId)
+                .collect {
+                    _viewCntSuccess.value = true
                 }
         }
     }
