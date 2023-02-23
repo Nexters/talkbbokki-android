@@ -123,6 +123,8 @@ dependencies {
     implementation(libs.bundles.accompanist)
 
     implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.core)
     implementation(libs.google.admob)
 
     testImplementation(libs.junit)
