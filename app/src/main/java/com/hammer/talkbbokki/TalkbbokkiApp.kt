@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.provider.Settings
 import android.util.Log
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
@@ -33,6 +34,15 @@ class TalkbbokkiApp : Application() {
 
                 val token = task.result
                 Log.d(TAG, "FCM token : $token")
+                Log.d(
+                    TAG,
+                    "SSAID : ${
+                        Settings.Secure.getString(
+                            applicationContext.contentResolver,
+                            Settings.Secure.ANDROID_ID
+                        )
+                    }"
+                )
             }
         )
     }
