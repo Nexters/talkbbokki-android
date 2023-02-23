@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">톡뽀끼</string>
 
+    <string name="menu_setting_push">알림 설정</string>
+
     <string name="admob_app_id">ca-app-pub-6775338233067833~3697888039</string>
     <string name="admob_ads_id">ca-app-pub-6775338233067833/5087809569</string>
 
