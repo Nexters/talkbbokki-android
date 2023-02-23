@@ -1,10 +1,6 @@
 name: Android CI test build
 
 on:
-  push:
-    branches:
-      - "feature/**"
-      - "develop"
   pull_request:
     branches:
       - "feature/**"

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="vertical_padding">16dp</dimen>
+    <dimen name="horizontal_padding">20dp</dimen>
+    <dimen name="card_width">130dp</dimen>
+    <dimen name="card_tooltip_width">140dp</dimen>
+    <dimen name="selected_card_width">280dp</dimen>
+    <dimen name="card_height">220dp</dimen>
+</resources>

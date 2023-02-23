@@ -2,9 +2,24 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     alias(libs.plugins.ktlint.gradle)
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
+    id 'com.google.gms.google-services'
+    id 'kotlin-parcelize'
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile rootProject.file("private/debug.keystore")
+        }
+        release {
+            storeFile rootProject.file("private/release.keystore")
+            storePassword 'talkbbokki'
+            keyAlias 'key0'
+            keyPassword 'talkbbokki'
+        }
+    }
     namespace 'com.hammer.talkbbokki'
     compileSdk 33
 
@@ -19,10 +34,16 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        buildConfigField "boolean", "IS_PRODUCTION", "false"
     }
 
     buildTypes {
+        debug {
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
         release {
+            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -31,6 +52,27 @@ android {
             signingConfig signingConfigs.debug
             matchingFallbacks = ['release']
             debuggable false
+        }
+    }
+    flavorDimensions "deploy"
+    productFlavors {
+        prod {
+            dimension "deploy"
+            buildConfigField "boolean", "IS_PRODUCTION", "true"
+        }
+        dev {
+            dimension "deploy"
+            applicationId defaultConfig.applicationId + ".dev"
+            signingConfig signingConfigs.debug
+            versionName(defaultConfig.versionName + " dev")
+        }
+    }
+    sourceSets {
+        main {
+            res.srcDirs = ['src/main/res']
+        }
+        dev {
+            res.srcDirs = ['src/dev/res']
         }
     }
     compileOptions {
@@ -55,6 +97,9 @@ android {
         abortOnError false
         checkReleaseBuilds false
     }
+    kapt {
+        correctErrorTypes true
+    }
 }
 
 dependencies {
@@ -62,7 +107,25 @@ dependencies {
     implementation(libs.androidx.lifecycle)
     implementation(libs.androidx.activity.compose)
     implementation(libs.bundles.compose)
-    testImplementation (libs.junit)
+    implementation(libs.dagger.hilt)
+    kapt(libs.dagger.hilt.compiler)
+    implementation(libs.bundles.network)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.compose.coil)
+    implementation(libs.compose.hilt.navigation.compose)
+    implementation(libs.compose.navigation.animation)
+    implementation(libs.androidx.datasource.preference)
+    implementation(libs.room.database)
+    kapt(libs.room.compiler)
+    implementation(libs.room.ktx)
+    implementation(libs.compose.lottie)
+    implementation(libs.bundles.accompanist)
+
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.google.admob)
+
+    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext)
     androidTestImplementation(libs.androidx.test.espresso)
     androidTestImplementation(libs.androidx.compose.test)

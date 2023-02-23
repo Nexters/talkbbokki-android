@@ -2,10 +2,16 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 
     dependencies {
         classpath(libs.android.gradle)
         classpath(libs.kotlin.plugin)
+        classpath(libs.google.services)
     }
+}
+
+plugins {
+    alias(libs.plugins.hilt) apply false
 }
