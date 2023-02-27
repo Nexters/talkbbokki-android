@@ -37,6 +37,18 @@ class MessagingService : FirebaseMessagingService() {
         sendNotification(title, body)
     }
 
+    /**
+     * {
+     "message": {
+     "token": "디바이스 푸시 토큰",
+     "data": {
+     "title": "알림 타이틀",
+     "text": "알림 내용"
+     }
+     }
+     }
+     *
+     * */
     private fun sendNotification(title: String?, text: String?) {
         title ?: return
         text ?: return
