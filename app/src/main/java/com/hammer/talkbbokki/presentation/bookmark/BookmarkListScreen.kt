@@ -119,7 +119,11 @@ fun BookMarkScreen(
                         onClickItem = { item -> onClickItem(item) },
                         onToggleBookmark = { id ->
                             selectItem = id
-                            showDialog = !showDialog
+                            if (showCancelDialog) {
+                                showDialog = !showDialog
+                            } else {
+                                removeBookmark(id)
+                            }
                         }
                     )
                 }
