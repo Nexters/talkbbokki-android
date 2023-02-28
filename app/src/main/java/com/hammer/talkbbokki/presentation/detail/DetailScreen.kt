@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.data.entity.TalkOrderItem
@@ -29,12 +30,9 @@ import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.shareLink
 import com.hammer.talkbbokki.presentation.shareScreenShot
 import com.hammer.talkbbokki.presentation.topics.TopicLevel
-import com.hammer.talkbbokki.ui.theme.Gray03
-import com.hammer.talkbbokki.ui.theme.Gray04
-import com.hammer.talkbbokki.ui.theme.Gray05
-import com.hammer.talkbbokki.ui.theme.MainColor01
-import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
+import com.hammer.talkbbokki.ui.theme.*
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -47,6 +45,32 @@ fun DetailRoute(
     val item by viewModel.item.collectAsState()
     val starter by viewModel.talkOrder.collectAsState()
 
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        Dialog(onDismissRequest = {}) {
+            Box(modifier = Modifier
+                .size(170.dp, 180.dp)
+                .padding(top = 30.dp)
+                .clickable { showDialog = false }) {
+                Image(
+                    painter = painterResource(id = R.drawable.image_smile_face),
+                    contentDescription = null,
+                    alignment = Alignment.Center,
+                )
+                Text(
+                    text = stringResource(R.string.detail_image_share_complete),
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    style = TalkbbokkiTypography.b1_bold,
+                    color = Color.White
+                )
+            }
+        }
+        LaunchedEffect(Unit){
+            delay(3000)
+            showDialog = false
+        }
+    }
+
     DetailScreen(
         onClickToList = onClickToList,
         item = item,
@@ -55,6 +79,7 @@ fun DetailRoute(
         },
         onClickStarter = { viewModel.getTalkStarter() },
         updateViewCnt = { viewModel.postViewCnt(item.id) },
+        onClickShowDialog = { showDialog = true },
         starter = starter
     )
     if (toastMessage > 0) {
@@ -71,6 +96,7 @@ fun DetailScreen(
     onClickBookmark: (Boolean) -> Unit,
     onClickStarter: () -> Unit,
     updateViewCnt: () -> Unit,
+    onClickShowDialog: () -> Unit,
     starter: TalkOrderItem
 ) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
@@ -90,7 +116,8 @@ fun DetailScreen(
                 onClickToList,
                 onClickBookmark,
                 onClickStarter,
-                updateViewCnt
+                updateViewCnt,
+                onClickShowDialog
             )
         }
     }
@@ -122,7 +149,8 @@ fun DetailFlipCard(
     onClickToList: () -> Unit,
     onClickBookmark: (Boolean) -> Unit,
     onClickStarter: () -> Unit,
-    updateViewCnt: () -> Unit
+    updateViewCnt: () -> Unit,
+    onClickShowDialog: () -> Unit
 ) {
     var scale by remember { mutableStateOf(1f) }
     var rotation by remember { mutableStateOf(1f) }
@@ -142,9 +170,14 @@ fun DetailFlipCard(
             FrontCardFace(item)
         },
         back = {
-            BackCardFace(item, starter, onClickBookmark, updateViewCnt) {
-                onClickStarter()
-            }
+            BackCardFace(
+                item,
+                starter,
+                onClickBookmark,
+                updateViewCnt,
+                onClickStarter,
+                onClickShowDialog
+            )
         }
     )
 
@@ -253,7 +286,8 @@ fun BackCardFace(
     starter: TalkOrderItem,
     onClickBookmark: (Boolean) -> Unit,
     updateViewCnt: () -> Unit,
-    onClickStarter: () -> Unit
+    onClickStarter: () -> Unit,
+    onClickShowDialog: () -> Unit,
 ) {
     val context = LocalContext.current
     Box(
@@ -292,6 +326,7 @@ fun BackCardFace(
                 updateViewCnt()
                 shareLink(context, item.shareLink + "&rule=${starter.id}")
             }, onClickScreenShot = {
+                onClickShowDialog()
                 updateViewCnt()
                 shareScreenShot(context)
             })
