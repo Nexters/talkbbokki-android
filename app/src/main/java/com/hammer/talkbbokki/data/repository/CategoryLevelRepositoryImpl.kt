@@ -1,6 +1,7 @@
 package com.hammer.talkbbokki.data.repository
 
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.data.local.cache.CategoryLevelCache
 import com.hammer.talkbbokki.data.remote.TalkbbokkiService
 import com.hammer.talkbbokki.domain.model.CategoryLevel
 import com.hammer.talkbbokki.domain.repository.CategoryLevelRepository
@@ -10,7 +11,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 internal class CategoryLevelRepositoryImpl @Inject constructor(
-    private val service: TalkbbokkiService
+    private val service: TalkbbokkiService,
+    private val cache: CategoryLevelCache
 ) : CategoryLevelRepository {
 
     private val localCategory = listOf<CategoryLevel>(
@@ -45,7 +47,18 @@ internal class CategoryLevelRepositoryImpl @Inject constructor(
     )
 
     override fun getCategoryLevel(): Flow<List<CategoryLevel>> = flow {
-        emit(localCategory)
-        emit(service.getCategoryLevel().result.map { it.toModel() })
-    }.catch { emit(localCategory) }
+        if (cache.isCacheExist()) {
+            emit(cache.getCacheData())
+        } else {
+            val newData = service.getCategoryLevel().result.map { it.toModel() }
+            cache.update(newData)
+            emit(newData)
+        }
+    }.catch {
+        if (cache.isCacheExist()) {
+            emit(cache.getCacheData())
+        } else {
+            emit(localCategory)
+        }
+    }
 }
