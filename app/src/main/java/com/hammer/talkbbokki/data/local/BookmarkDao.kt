@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface BookmarkDao {
-    @Query("SELECT * FROM TopicItemEntity ORDER BY timeStamp ASC")
+    @Query("SELECT * FROM TopicItemEntity ORDER BY timeStamp DESC")
     fun getAllBookMark(): Flow<List<TopicItemEntity>>
 
     @Query("SELECT * FROM TopicItemEntity WHERE id = :id")
