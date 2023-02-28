@@ -4,9 +4,10 @@ import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.data.remote.TalkbbokkiService
 import com.hammer.talkbbokki.domain.model.CategoryLevel
 import com.hammer.talkbbokki.domain.repository.CategoryLevelRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 
 internal class CategoryLevelRepositoryImpl @Inject constructor(
     private val service: TalkbbokkiService
@@ -44,9 +45,7 @@ internal class CategoryLevelRepositoryImpl @Inject constructor(
     )
 
     override fun getCategoryLevel(): Flow<List<CategoryLevel>> = flow {
-        emit(
-            localCategory
-//            service.getCategoryLevel().result.map { it.toModel() }
-        )
-    }
+        emit(localCategory)
+        emit(service.getCategoryLevel().result.map { it.toModel() })
+    }.catch { emit(localCategory) }
 }
