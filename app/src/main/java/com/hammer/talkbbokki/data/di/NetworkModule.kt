@@ -1,17 +1,20 @@
 package com.hammer.talkbbokki.data.di
 
+import com.facebook.flipper.android.AndroidFlipperClient
+import com.facebook.flipper.plugins.network.FlipperOkhttpInterceptor
+import com.facebook.flipper.plugins.network.NetworkFlipperPlugin
 import com.google.gson.GsonBuilder
 import com.hammer.talkbbokki.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -30,6 +33,11 @@ object NetworkModule {
                         level = HttpLoggingInterceptor.Level.BODY
                     }
                 )
+                AndroidFlipperClient.getInstanceIfInitialized()?.let { flipperClient ->
+                    (flipperClient.getPlugin<NetworkFlipperPlugin>(NetworkFlipperPlugin.ID))?.let {
+                        addNetworkInterceptor(FlipperOkhttpInterceptor(it))
+                    }
+                }
             }
         }.build()
     }
