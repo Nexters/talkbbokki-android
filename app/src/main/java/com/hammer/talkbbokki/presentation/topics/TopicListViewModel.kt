@@ -6,9 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.usecase.TopicUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.zip
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class TopicListViewModel @Inject constructor(
@@ -22,7 +27,7 @@ class TopicListViewModel @Inject constructor(
             topicItems.forEach { topic ->
                 newList.add(topic.copy(isOpened = viewCards.viewCards.contains(topic.id)))
             }
-            newList
+            newList.shuffled()
         }
         .catch { }
         .stateIn(
