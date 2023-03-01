@@ -14,7 +14,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -61,7 +60,7 @@ fun DetailRoute(
                     text = stringResource(R.string.detail_image_share_complete),
                     modifier = Modifier.align(Alignment.BottomCenter),
                     style = TalkbbokkiTypography.b1_bold,
-                    color = Color.White
+                    color = White
                 )
             }
         }
@@ -311,7 +310,7 @@ fun BackCardFace(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f)
-                    .background(Color.White)
+                    .background(White)
             )
             Spacer(
                 modifier = Modifier
@@ -385,7 +384,8 @@ fun Topic(
         )
         Text(
             text = item.name,
-            style = TalkbbokkiTypography.b1_bold
+            style = TalkbbokkiTypography.b1_bold,
+            color = Black
         )
     }
 }
@@ -430,7 +430,8 @@ fun Starter(starter: String, onClickStarter: () -> Unit) {
         )
         Text(
             text = starter,
-            style = TalkbbokkiTypography.b1_bold
+            style = TalkbbokkiTypography.b1_bold,
+            color = Black
         )
     }
 }

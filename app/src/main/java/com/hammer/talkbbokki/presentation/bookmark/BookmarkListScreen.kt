@@ -2,16 +2,7 @@ package com.hammer.talkbbokki.presentation.bookmark
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -21,15 +12,9 @@ import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,12 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.ui.dialog.BookmarkCancelDialog
-import com.hammer.talkbbokki.ui.theme.Black
-import com.hammer.talkbbokki.ui.theme.Gray04
-import com.hammer.talkbbokki.ui.theme.MainColor01
-import com.hammer.talkbbokki.ui.theme.MainColor02
-import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
-import com.hammer.talkbbokki.ui.theme.White
+import com.hammer.talkbbokki.ui.theme.*
 
 @Composable
 fun BookMarkRoute(
@@ -148,7 +128,7 @@ fun BookmarkTopAppBar(
         Icon(
             painter = painterResource(id = R.drawable.ic_arrow_left),
             contentDescription = null,
-            tint = Color.White,
+            tint = White,
             modifier = Modifier.clickable {
                 onClickBack()
             }
@@ -194,7 +174,7 @@ fun BookmarkItem(
             modifier = Modifier
                 .width(154.dp)
                 .height(233.dp)
-                .background(Color.White)
+                .background(White)
                 .padding(16.dp)
         ) {
             Row(
@@ -234,12 +214,12 @@ fun BookmarkEmpty() {
         Icon(
             painter = painterResource(id = R.drawable.icon_empty_balloon),
             contentDescription = null,
-            tint = Color.White
+            tint = White
         )
         Spacer(modifier = Modifier.height(35.dp))
         Text(
             text = stringResource(id = R.string.bookmark_empty_list),
-            color = Color.White
+            color = White
         )
         Spacer(modifier = Modifier.height(166.dp))
     }

@@ -34,12 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.ui.button.ButtonType
 import com.hammer.talkbbokki.ui.button.CommonLargeButton
-import com.hammer.talkbbokki.ui.theme.Gray04
-import com.hammer.talkbbokki.ui.theme.Gray06
-import com.hammer.talkbbokki.ui.theme.MainColor01
-import com.hammer.talkbbokki.ui.theme.MainColor02
-import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
-import com.hammer.talkbbokki.ui.theme.White
+import com.hammer.talkbbokki.ui.theme.*
 
 @Composable
 fun SuggestionRoute(
@@ -177,11 +172,11 @@ fun SuggestionTextField(
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.textFieldColors(
                 textColor = White,
-                disabledTextColor = Color.Transparent,
+                disabledTextColor = Transparent,
                 backgroundColor = Gray06,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Transparent,
+                unfocusedIndicatorColor = Transparent,
+                disabledIndicatorColor = Transparent,
                 cursorColor = MainColor01
             )
         )
