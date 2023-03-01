@@ -10,6 +10,13 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 internal interface TalkbbokkiService {
+    @FormUrlEncoded
+    @POST("/api/users")
+    suspend fun saveDeviceToken(
+        @Field("uuid") ssaid: String,
+        @Field("pushToken") deviceToken: String
+    )
+
     @GET("/api/categories")
     suspend fun getCategoryLevel(): CategoryLevelListEntity
 
