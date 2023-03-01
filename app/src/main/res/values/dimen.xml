@@ -5,5 +5,6 @@
     <dimen name="card_width">130dp</dimen>
     <dimen name="card_tooltip_width">140dp</dimen>
     <dimen name="selected_card_width">280dp</dimen>
+    <dimen name="scale_up_card_width">330dp</dimen>
     <dimen name="card_height">220dp</dimen>
 </resources>

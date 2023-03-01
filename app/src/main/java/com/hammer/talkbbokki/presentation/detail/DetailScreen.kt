@@ -65,7 +65,7 @@ fun DetailRoute(
                 )
             }
         }
-        LaunchedEffect(Unit){
+        LaunchedEffect(Unit) {
             delay(1500)
             showDialog = false
         }
@@ -158,8 +158,8 @@ fun DetailFlipCard(
     FlipCard(
         rotation = rotation,
         modifier = modifier
-            .width(dimensionResource(id = R.dimen.selected_card_width))
-            .aspectRatio(0.7f)
+            .width(dimensionResource(id = R.dimen.scale_up_card_width))
+            .aspectRatio(0.71f)
             .graphicsLayer(
                 scaleX = scale,
                 scaleY = scale,
@@ -186,8 +186,8 @@ fun DetailFlipCard(
             coroutineScope {
                 launch {
                     animate(
-                        initialValue = 1f,
-                        targetValue = 1.3f,
+                        initialValue = 0.7f,
+                        targetValue = 1.0f,
                         animationSpec = tween(
                             durationMillis = 1000,
                             easing = FastOutSlowInEasing
@@ -225,8 +225,8 @@ fun DetailFlipCard(
                     }
 
                     animate(
-                        initialValue = 1.3f,
-                        targetValue = 1f,
+                        initialValue = 1f,
+                        targetValue = 0.7f,
                         animationSpec = tween(
                             durationMillis = 1000,
                             easing = FastOutSlowInEasing
@@ -298,12 +298,15 @@ fun BackCardFace(
 
         Image(painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize())
         Column(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 15.dp)
+            modifier = Modifier.padding(start = 5.dp, end = 5.dp, top = 2.dp, bottom = 8.dp)
         ) {
+            Spacer(
+                modifier = Modifier.height(2.dp)
+            )
             Topic(item, onClickBookmark)
             Spacer(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxHeight()
                     .weight(1f)
                     .background(Color.White)
             )
@@ -311,6 +314,7 @@ fun BackCardFace(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp)
+                    .padding(horizontal = 5.dp)
                     .background(Gray03)
             )
             Starter(starter.rule ?: "") {
@@ -320,6 +324,7 @@ fun BackCardFace(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp)
+                    .padding(horizontal = 5.dp)
                     .background(Gray03)
             )
             ShareBottom(onClickShareLink = {
@@ -327,10 +332,13 @@ fun BackCardFace(
                 shareLink(context, item.shareLink + "&rule=${starter.id}")
             }, onClickScreenShot = {
                 updateViewCnt()
-                shareScreenShot(context){
+                shareScreenShot(context) {
                     onClickShowDialog()
                 }
             })
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
         }
     }
 }
@@ -349,13 +357,13 @@ fun Topic(
                 modifier = Modifier.align(Alignment.CenterStart),
                 text = stringResource(R.string.detail_topic),
                 color = Gray05,
-                style = TalkbbokkiTypography.card_title
+                style = TalkbbokkiTypography.b2_regular
             )
             Icon(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .size(24.dp)
-                    .padding(2.dp)
+                    .padding(1.dp)
                     .clickable {
                         toggleBookmark = !toggleBookmark
                         onClickBookmark(toggleBookmark)
@@ -374,7 +382,7 @@ fun Topic(
         )
         Text(
             text = item.name,
-            style = TalkbbokkiTypography.b2_bold
+            style = TalkbbokkiTypography.b1_bold
         )
     }
 }
@@ -383,7 +391,7 @@ fun Topic(
 fun Starter(starter: String, onClickStarter: () -> Unit) {
     Column(
         modifier = Modifier
-            .height(114.dp)
+            .height(134.dp)
             .padding(24.dp)
     ) {
         Row(modifier = Modifier.height(24.dp)) {
@@ -391,7 +399,7 @@ fun Starter(starter: String, onClickStarter: () -> Unit) {
                 modifier = Modifier.align(Alignment.CenterVertically),
                 text = stringResource(R.string.detail_starter),
                 color = Gray05,
-                style = TalkbbokkiTypography.card_title,
+                style = TalkbbokkiTypography.b2_regular,
                 textAlign = TextAlign.Center
             )
             Spacer(
@@ -402,7 +410,7 @@ fun Starter(starter: String, onClickStarter: () -> Unit) {
             Icon(
                 modifier = Modifier
                     .size(18.dp)
-                    .padding(2.dp)
+                    .padding(1.dp)
                     .clickable {
                         onClickStarter()
                     }
@@ -419,7 +427,7 @@ fun Starter(starter: String, onClickStarter: () -> Unit) {
         )
         Text(
             text = starter,
-            style = TalkbbokkiTypography.b2_bold
+            style = TalkbbokkiTypography.b1_bold
         )
     }
 }
@@ -429,7 +437,7 @@ fun ShareBottom(
     onClickShareLink: () -> Unit,
     onClickScreenShot: () -> Unit
 ) {
-    Row(modifier = Modifier.height(62.dp)) {
+    Row(modifier = Modifier.height(64.dp)) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -439,6 +447,7 @@ fun ShareBottom(
             Image(
                 modifier = Modifier
                     .size(24.dp)
+                    .padding(1.dp)
                     .align(Alignment.Center),
                 painter = painterResource(id = R.drawable.ic_share),
                 contentDescription = null
@@ -459,6 +468,7 @@ fun ShareBottom(
             Image(
                 modifier = Modifier
                     .size(24.dp)
+                    .padding(1.dp)
                     .align(Alignment.Center),
                 painter = painterResource(id = R.drawable.ic_download),
                 contentDescription = null
