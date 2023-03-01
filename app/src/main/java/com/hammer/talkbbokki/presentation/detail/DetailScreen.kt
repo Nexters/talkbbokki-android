@@ -66,7 +66,7 @@ fun DetailRoute(
             }
         }
         LaunchedEffect(Unit){
-            delay(2000)
+            delay(1500)
             showDialog = false
         }
     }

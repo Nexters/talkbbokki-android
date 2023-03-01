@@ -54,6 +54,6 @@
     <string name="detail_card_bookmark_success">즐겨찾기 등록 완료!</string>
     <string name="detail_card_bookmark_cancel">즐겨찾기 등록 취소!</string>
     <string name="detail_card_bookmark_fail">즐겨찾기 에러 발생!</string>
-    <string name="detail_image_share_complete">이미지 저장 완료</string>
+    <string name="detail_image_share_complete">이미지 저장 완료!</string>
 
 </resources>
