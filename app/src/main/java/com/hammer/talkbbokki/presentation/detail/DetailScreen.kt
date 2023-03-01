@@ -158,7 +158,7 @@ fun DetailFlipCard(
     FlipCard(
         rotation = rotation,
         modifier = modifier
-            .width(dimensionResource(id = R.dimen.selected_card_width))
+            .width(dimensionResource(id = R.dimen.scale_up_card_width))
             .aspectRatio(0.7f)
             .graphicsLayer(
                 scaleX = scale,
@@ -186,8 +186,8 @@ fun DetailFlipCard(
             coroutineScope {
                 launch {
                     animate(
-                        initialValue = 1f,
-                        targetValue = 1.3f,
+                        initialValue = 0.7f,
+                        targetValue = 1.0f,
                         animationSpec = tween(
                             durationMillis = 1000,
                             easing = FastOutSlowInEasing
@@ -225,8 +225,8 @@ fun DetailFlipCard(
                     }
 
                     animate(
-                        initialValue = 1.3f,
-                        targetValue = 1f,
+                        initialValue = 1f,
+                        targetValue = 0.7f,
                         animationSpec = tween(
                             durationMillis = 1000,
                             easing = FastOutSlowInEasing
@@ -349,13 +349,13 @@ fun Topic(
                 modifier = Modifier.align(Alignment.CenterStart),
                 text = stringResource(R.string.detail_topic),
                 color = Gray05,
-                style = TalkbbokkiTypography.card_title
+                style = TalkbbokkiTypography.b2_regular
             )
             Icon(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .size(24.dp)
-                    .padding(2.dp)
+                    .padding(1.dp)
                     .clickable {
                         toggleBookmark = !toggleBookmark
                         onClickBookmark(toggleBookmark)
@@ -374,7 +374,7 @@ fun Topic(
         )
         Text(
             text = item.name,
-            style = TalkbbokkiTypography.b2_bold
+            style = TalkbbokkiTypography.b1_bold
         )
     }
 }
@@ -391,7 +391,7 @@ fun Starter(starter: String, onClickStarter: () -> Unit) {
                 modifier = Modifier.align(Alignment.CenterVertically),
                 text = stringResource(R.string.detail_starter),
                 color = Gray05,
-                style = TalkbbokkiTypography.card_title,
+                style = TalkbbokkiTypography.b2_regular,
                 textAlign = TextAlign.Center
             )
             Spacer(
@@ -402,7 +402,7 @@ fun Starter(starter: String, onClickStarter: () -> Unit) {
             Icon(
                 modifier = Modifier
                     .size(18.dp)
-                    .padding(2.dp)
+                    .padding(1.dp)
                     .clickable {
                         onClickStarter()
                     }
@@ -419,7 +419,7 @@ fun Starter(starter: String, onClickStarter: () -> Unit) {
         )
         Text(
             text = starter,
-            style = TalkbbokkiTypography.b2_bold
+            style = TalkbbokkiTypography.b1_bold
         )
     }
 }
@@ -429,7 +429,7 @@ fun ShareBottom(
     onClickShareLink: () -> Unit,
     onClickScreenShot: () -> Unit
 ) {
-    Row(modifier = Modifier.height(62.dp)) {
+    Row(modifier = Modifier.height(64.dp)) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -439,6 +439,7 @@ fun ShareBottom(
             Image(
                 modifier = Modifier
                     .size(24.dp)
+                    .padding(1.dp)
                     .align(Alignment.Center),
                 painter = painterResource(id = R.drawable.ic_share),
                 contentDescription = null
