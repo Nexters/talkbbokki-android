@@ -1,5 +1,6 @@
 package com.hammer.talkbbokki.presentation.topics
 
+import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,7 +21,9 @@ class TopicListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val topicUseCase: TopicUseCase
 ) : ViewModel() {
-    private val selectedLevel = savedStateHandle.get<String>("level") ?: "level1"
+    val selectedLevel = savedStateHandle.get<String>("level") ?: "level1"
+    val selectedLevelTitle = savedStateHandle.get<String>("title") ?: ""
+
     val topicList: StateFlow<List<TopicItem>> = topicUseCase.invoke(selectedLevel)
         .zip(topicUseCase.getOpenedCards()) { topicItems, viewCards ->
             val newList = mutableListOf<TopicItem>()

@@ -17,16 +17,15 @@ fun NavGraphBuilder.topicListGraph(
     navigateToMain: () -> Unit
 ) {
     composable(
-        route = TopicListDestination.route + "/{level}",
-        arguments = listOf(navArgument("level") { type = NavType.StringType })
+        route = TopicListDestination.route + "?level={level}&title={title}",
+        arguments = listOf(
+            navArgument("level") { type = NavType.StringType },
+            navArgument("title") { type = NavType.StringType }
+        )
     ) {
-        val arguments = requireNotNull(it.arguments)
-        val level = requireNotNull(arguments.getString("level"))
-
         TopicListRoute(
             onClickToDetail = navigateToDetail,
             onClickToMain = navigateToMain,
-            topicLevel = level
         )
     }
 }

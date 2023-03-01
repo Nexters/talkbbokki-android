@@ -10,6 +10,7 @@ val Teal200 = Color(0xFF03DAC5)
 val Category01 = Color(0xFF9C5FFF)
 val Category02 = Color(0xFF1EAC90)
 val Category03 = Color(0xFFFBB21E)
+val CategoryEvent = Color(0xFF2B80FF)
 
 val MainColor01 = Color(0xFFFF7490)
 val MainColor02 = Color(0xFF1A1A1A)
