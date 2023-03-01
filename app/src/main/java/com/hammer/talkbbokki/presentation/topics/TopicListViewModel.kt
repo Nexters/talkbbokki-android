@@ -21,7 +21,7 @@ class TopicListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val topicUseCase: TopicUseCase
 ) : ViewModel() {
-    val selectedLevel = savedStateHandle.get<String>("level")?.toUpperCase() ?: "LEVEL1"
+    val selectedLevel = savedStateHandle.get<String>("level") ?: "LEVEL1"
     val selectedLevelTitle = savedStateHandle.get<String>("title") ?: ""
 
     val topicList: StateFlow<List<TopicItem>> = topicUseCase.invoke(selectedLevel)
