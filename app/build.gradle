@@ -122,6 +122,11 @@ dependencies {
     implementation(libs.compose.lottie)
     implementation(libs.bundles.accompanist)
 
+    debugImplementation(libs.flipper)
+    debugImplementation(libs.soloader)
+    debugImplementation(libs.flipper.network)
+    releaseImplementation(libs.flipper.noop)
+
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.core)

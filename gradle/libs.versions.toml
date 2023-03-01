@@ -31,6 +31,9 @@ firebase-messaging = "23.0.0"
 firebase-core = "20.1.0"
 google-admob = "21.5.0"
 
+flipper = "0.182.0"
+soloader = "0.10.4"
+
 [libraries]
 google-services = { module = "com.google.gms:google-services", version.ref = "google-services" }
 kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -73,6 +76,11 @@ network-okhttp = { module = "com.squareup.okhttp3:logging-interceptor", version 
 room-database = { module = "androidx.room:room-runtime", version.ref = "room-database" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-database" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-database" }
+
+flipper = { module = "com.facebook.flipper:flipper", version.ref = "flipper" }
+soloader = { module = "com.facebook.soloader:soloader", version.ref = "soloader" }
+flipper_noop = { module = "com.facebook.flipper:flipper-noop", version.ref = "flipper" }
+flipper_network = { module = "com.facebook.flipper:flipper-network-plugin", version.ref = "flipper" }
 
 androidx-compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
 androidx-compose-test = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
