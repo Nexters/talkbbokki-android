@@ -292,8 +292,11 @@ fun CardItem(
                 "DAILY" -> {
                     painterResource(id = R.drawable.ic_tag_daily)
                 }
-                else -> {
+                "IF" -> {
                     painterResource(id = R.drawable.ic_tag_if)
+                }
+                else -> {
+                    painterResource(id = R.drawable.ic_tag_event)
                 }
             }
 
