@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import com.hammer.talkbbokki.domain.model.TopicItem
+import java.util.*
 
 internal data class TopicItemListEntity(
     val result: List<TopicItemEntity>
@@ -26,7 +27,7 @@ internal data class TopicItemEntity(
         viewCount = viewCount ?: 0,
         category = category ?: "",
         shareLink = shareLink ?: "",
-        tag = tag ?: "",
+        tag = tag?.uppercase(Locale.getDefault()) ?: "",
         isBookmark = isBookmark
     )
 }
@@ -40,4 +41,3 @@ internal fun TopicItem.toEntity(timeStamp: Long? = null) = TopicItemEntity(
     tag = tag,
     timeStamp = timeStamp
 )
-
