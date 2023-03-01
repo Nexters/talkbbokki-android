@@ -47,14 +47,16 @@ fun DetailRoute(
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
         Dialog(onDismissRequest = {}) {
-            Box(modifier = Modifier
-                .size(170.dp, 180.dp)
-                .padding(top = 30.dp)
-                .clickable { showDialog = false }) {
+            Box(
+                modifier = Modifier
+                    .size(170.dp, 180.dp)
+                    .padding(top = 30.dp)
+                    .clickable { showDialog = false }
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.image_smile_face),
                     contentDescription = null,
-                    alignment = Alignment.Center,
+                    alignment = Alignment.Center
                 )
                 Text(
                     text = stringResource(R.string.detail_image_share_complete),
@@ -134,6 +136,7 @@ fun DetailHeader(cardFace: CardFace, onBackClick: () -> Unit) {
                 .size(24.dp)
                 .clickable { onBackClick() },
             painter = painterResource(id = R.drawable.ic_arrow_left),
+            tint = Black,
             contentDescription = null
         )
     }
@@ -289,7 +292,7 @@ fun BackCardFace(
     onClickBookmark: (Boolean) -> Unit,
     updateViewCnt: () -> Unit,
     onClickStarter: () -> Unit,
-    onClickShowDialog: () -> Unit,
+    onClickShowDialog: () -> Unit
 ) {
     val context = LocalContext.current
     Box(

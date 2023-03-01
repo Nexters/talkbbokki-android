@@ -1,6 +1,5 @@
 package com.hammer.talkbbokki.presentation.topics
 
-import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,7 +29,7 @@ class TopicListViewModel @Inject constructor(
             topicItems.forEach { topic ->
                 newList.add(topic.copy(isOpened = viewCards.viewCards.contains(topic.id)))
             }
-            newList.shuffled()
+            newList
         }
         .catch { }
         .stateIn(
