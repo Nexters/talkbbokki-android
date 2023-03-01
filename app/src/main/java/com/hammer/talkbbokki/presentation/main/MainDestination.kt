@@ -10,7 +10,7 @@ object MainDestination : TalkbbokkiNavigationDestination {
 }
 
 fun NavGraphBuilder.mainGraph(
-    navigateToList: (level: String) -> Unit,
+    navigateToList: (level: String, title: String) -> Unit,
     navigateToBookmark: () -> Unit,
     navigateToSuggestion: () -> Unit
 ) {

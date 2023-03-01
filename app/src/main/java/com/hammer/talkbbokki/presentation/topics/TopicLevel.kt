@@ -25,9 +25,9 @@ enum class TopicLevel(
         title = R.string.main_level3_title,
         backgroundColor = Category03
     ),
-    LEVEL4(
+    EVENT(
         level = "event",
         title = R.string.main_level4_title,
-        backgroundColor = Gray06
+        backgroundColor = CategoryEvent
     )
 }
