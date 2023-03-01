@@ -396,11 +396,9 @@ fun Topic(
 @Composable
 fun Starter(starter: String, onClickStarter: () -> Unit) {
     Column(
-        modifier = Modifier
-            .height(134.dp)
-            .padding(24.dp)
+        modifier = Modifier.padding(24.dp)
     ) {
-        Row(modifier = Modifier.height(24.dp)) {
+        Row(modifier = Modifier.height(22.dp)) {
             Text(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 text = stringResource(R.string.detail_starter),
@@ -434,7 +432,8 @@ fun Starter(starter: String, onClickStarter: () -> Unit) {
         Text(
             text = starter,
             style = TalkbbokkiTypography.b1_bold,
-            color = Black
+            color = Black,
+            modifier = Modifier.defaultMinSize(minHeight = 56.dp)
         )
     }
 }
