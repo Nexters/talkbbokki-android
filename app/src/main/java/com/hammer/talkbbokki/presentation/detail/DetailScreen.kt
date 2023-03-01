@@ -374,7 +374,8 @@ fun Topic(
         )
         Text(
             text = item.name,
-            style = TalkbbokkiTypography.b2_bold
+            style = TalkbbokkiTypography.b2_bold,
+            color = Color.Black
         )
     }
 }
@@ -419,7 +420,8 @@ fun Starter(starter: String, onClickStarter: () -> Unit) {
         )
         Text(
             text = starter,
-            style = TalkbbokkiTypography.b2_bold
+            style = TalkbbokkiTypography.b2_bold,
+            color = Color.Black
         )
     }
 }
