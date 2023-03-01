@@ -45,12 +45,14 @@ fun TopicListRoute(
     onClickToDetail: (level: String, item: TopicItem) -> Unit,
     onClickToMain: () -> Unit,
     viewModel: TopicListViewModel = hiltViewModel(),
-    topicLevel: String
-) {
+    topicLevel: String,
+    topicTitle: String,
+    ) {
     TopicListScreen(
         onClickToDetail = onClickToDetail,
         onClickToMain = onClickToMain,
         topicLevel = topicLevel.toUpperCase(),
+        topicTitle = topicTitle,
         viewModel = viewModel
     )
 }
@@ -60,6 +62,7 @@ fun TopicListScreen(
     onClickToDetail: (level: String, item: TopicItem) -> Unit,
     onClickToMain: () -> Unit,
     topicLevel: String,
+    topicTitle: String,
     viewModel: TopicListViewModel
 ) {
     val list by viewModel.topicList.collectAsState()
@@ -71,7 +74,7 @@ fun TopicListScreen(
             .fillMaxSize()
             .background(TopicLevel.valueOf(topicLevel).backgroundColor)
     ) {
-        TopicListHeader(onClickToMain, topicLevel)
+        TopicListHeader(onClickToMain, topicTitle)
         TopicList(
             cardList = list,
             onFocusedCardChange = { item -> selectedTopicItem = item },
@@ -92,7 +95,7 @@ fun TopicListScreen(
 }
 
 @Composable
-fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
+fun TopicListHeader(onClickToMain: () -> Unit, topicTitle: String) {
     Column(
         modifier = Modifier
             .padding(
@@ -110,10 +113,10 @@ fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
                 .clickable { onClickToMain() }
         )
         Spacer(modifier = Modifier.height(24.dp))
-        stringResource(id = TopicLevel.valueOf(topicLevel).title).split("\n")
+        topicTitle.split("**")
             .forEachIndexed { index, s ->
                 Text(
-                    text = if (index == 0) s else s,
+                    text = if (index == 0) s else "$s 라면",
                     style = TalkbbokkiTypography.h2_bold,
                     color = if (index == 0) Color.Black else Color(0x80000000)
                 )
