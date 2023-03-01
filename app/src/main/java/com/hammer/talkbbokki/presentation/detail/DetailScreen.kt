@@ -65,7 +65,7 @@ fun DetailRoute(
                 )
             }
         }
-        LaunchedEffect(Unit){
+        LaunchedEffect(Unit) {
             delay(1500)
             showDialog = false
         }
@@ -159,7 +159,7 @@ fun DetailFlipCard(
         rotation = rotation,
         modifier = modifier
             .width(dimensionResource(id = R.dimen.scale_up_card_width))
-            .aspectRatio(0.7f)
+            .aspectRatio(0.71f)
             .graphicsLayer(
                 scaleX = scale,
                 scaleY = scale,
@@ -298,12 +298,15 @@ fun BackCardFace(
 
         Image(painter = cardImage, contentDescription = null, modifier = Modifier.fillMaxSize())
         Column(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 15.dp)
+            modifier = Modifier.padding(start = 5.dp, end = 5.dp, top = 2.dp, bottom = 8.dp)
         ) {
+            Spacer(
+                modifier = Modifier.height(2.dp)
+            )
             Topic(item, onClickBookmark)
             Spacer(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxHeight()
                     .weight(1f)
                     .background(Color.White)
             )
@@ -311,6 +314,7 @@ fun BackCardFace(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp)
+                    .padding(horizontal = 5.dp)
                     .background(Gray03)
             )
             Starter(starter.rule ?: "") {
@@ -320,6 +324,7 @@ fun BackCardFace(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp)
+                    .padding(horizontal = 5.dp)
                     .background(Gray03)
             )
             ShareBottom(onClickShareLink = {
@@ -327,10 +332,13 @@ fun BackCardFace(
                 shareLink(context, item.shareLink + "&rule=${starter.id}")
             }, onClickScreenShot = {
                 updateViewCnt()
-                shareScreenShot(context){
+                shareScreenShot(context) {
                     onClickShowDialog()
                 }
             })
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
         }
     }
 }
@@ -383,7 +391,7 @@ fun Topic(
 fun Starter(starter: String, onClickStarter: () -> Unit) {
     Column(
         modifier = Modifier
-            .height(114.dp)
+            .height(134.dp)
             .padding(24.dp)
     ) {
         Row(modifier = Modifier.height(24.dp)) {
@@ -460,6 +468,7 @@ fun ShareBottom(
             Image(
                 modifier = Modifier
                     .size(24.dp)
+                    .padding(1.dp)
                     .align(Alignment.Center),
                 painter = painterResource(id = R.drawable.ic_download),
                 contentDescription = null
