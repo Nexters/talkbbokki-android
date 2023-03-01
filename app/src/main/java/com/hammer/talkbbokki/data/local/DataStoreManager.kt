@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.hammer.talkbbokki.data.local.PreferenceKeys.APP_VISIT_DATE
 import com.hammer.talkbbokki.data.local.PreferenceKeys.BOOKMARK_CANCEL_DIALOG
+import com.hammer.talkbbokki.data.local.PreferenceKeys.DEVICE_TOKEN
 import com.hammer.talkbbokki.data.local.PreferenceKeys.SHOW_ON_BOARDING
 import com.hammer.talkbbokki.data.local.PreferenceKeys.VIEW_CARD_LIST
 import com.hammer.talkbbokki.data.local.PreferenceKeys.VIEW_COUNT
@@ -27,11 +29,22 @@ object PreferenceKeys {
     val VIEW_INDEX = stringSetPreferencesKey("viewIndex")
     val VIEW_CARD_LIST = stringSetPreferencesKey("viewCard")
     val APP_VISIT_DATE = intPreferencesKey("visitDate")
+    val DEVICE_TOKEN = stringPreferencesKey("device_token")
 }
 
 class DataStoreManager @Inject constructor(@ApplicationContext appContext: Context) {
 
     private val settingsDataStore = appContext.dataStore
+
+    val appDeviceToken: Flow<String> = settingsDataStore.data.map { pref ->
+        pref[DEVICE_TOKEN] ?: ""
+    }
+
+    suspend fun updateDeviceToken(token: String) {
+        settingsDataStore.edit { pref ->
+            pref[DEVICE_TOKEN] = token
+        }
+    }
 
     val viewCnt: Flow<Int> = settingsDataStore.data.map { preferences ->
         val viewCards = preferences[VIEW_CARD_LIST] ?: emptySet()

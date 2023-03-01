@@ -1,10 +1,6 @@
 package com.hammer.talkbbokki.data.di
 
 import com.hammer.talkbbokki.data.repository.*
-import com.hammer.talkbbokki.data.repository.BookmarkRepositoryImpl
-import com.hammer.talkbbokki.data.repository.CategoryLevelRepositoryImpl
-import com.hammer.talkbbokki.data.repository.SuggestionRepositoryImpl
-import com.hammer.talkbbokki.data.repository.TopicRepositoryImpl
 import com.hammer.talkbbokki.domain.repository.*
 import dagger.Binds
 import dagger.Module
@@ -38,4 +34,9 @@ abstract class RepositoryModule {
     internal abstract fun bindsDetailRepository(
         repository: DetailRepositoryImpl
     ): DetailRepository
+
+    @Binds
+    internal abstract fun bindsPushRepository(
+        repository: PushRepositoryImpl
+    ): PushRepository
 }

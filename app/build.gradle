@@ -128,6 +128,8 @@ dependencies {
     releaseImplementation(libs.flipper.noop)
 
     implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.core)
     implementation(libs.google.admob)
 
     testImplementation(libs.junit)
