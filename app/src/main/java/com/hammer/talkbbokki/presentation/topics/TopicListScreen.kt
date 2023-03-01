@@ -35,9 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.showRewardedAd
-import com.hammer.talkbbokki.ui.theme.Gray07
-import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
-import com.hammer.talkbbokki.ui.theme.White
+import com.hammer.talkbbokki.ui.theme.*
 import kotlin.math.absoluteValue
 
 @Composable
@@ -115,7 +113,7 @@ fun TopicListHeader(onClickToMain: () -> Unit, topicLevel: String) {
                 Text(
                     text = if (index == 0) s else s,
                     style = TalkbbokkiTypography.h2_bold,
-                    color = if (index == 0) Color.Black else Color(0x80000000)
+                    color = if (index == 0) Black else Color(0x80000000)
                 )
             }
     }
@@ -175,7 +173,7 @@ fun SelectBtn(
     val context = LocalContext.current
 
     Button(
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Black),
         onClick = {
             /*if (todayViewCnt >= 10) {
                 // TODO 10회 초과 다이얼로그 노출
@@ -206,7 +204,7 @@ fun SelectBtn(
                 stringResource(R.string.list_pick_btn)
             },
             style = TalkbbokkiTypography.button_large,
-            color = Color.White
+            color = White
         )
     }
 }
@@ -225,7 +223,7 @@ fun CardItem(
         modifier = Modifier
             .width(dimensionResource(id = R.dimen.card_width))
             .aspectRatio(0.65f)
-            .background(Color.Transparent)
+            .background(Transparent)
             .zIndex(5f - pageOffset)
             .graphicsLayer {
                 // 중간으로 올수록 크게 보임
@@ -338,7 +336,7 @@ fun ShowLogic(
                 text = stringResource(R.string.list_opened_card),
 //                style = TalkbbokkiTypography.b2_bold,
                 style = TalkbbokkiTypography.test,
-                color = Color.White
+                color = White
             )
         } else if (viewCountOver) {
             Box(
