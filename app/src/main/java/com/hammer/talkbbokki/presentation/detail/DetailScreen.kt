@@ -66,7 +66,7 @@ fun DetailRoute(
             }
         }
         LaunchedEffect(Unit){
-            delay(3000)
+            delay(2000)
             showDialog = false
         }
     }
@@ -326,9 +326,10 @@ fun BackCardFace(
                 updateViewCnt()
                 shareLink(context, item.shareLink + "&rule=${starter.id}")
             }, onClickScreenShot = {
-                onClickShowDialog()
                 updateViewCnt()
-                shareScreenShot(context)
+                shareScreenShot(context){
+                    onClickShowDialog()
+                }
             })
         }
     }
