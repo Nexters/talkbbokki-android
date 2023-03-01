@@ -26,9 +26,11 @@ retrofit = "2.9.0"
 room-database = "2.4.2"
 
 google-services = "4.3.15"
+firebase-crashlytics-gradle = "2.9.2"
 firebase-analytics = "21.2.0"
 firebase-messaging = "23.0.0"
 firebase-core = "20.1.0"
+firebase-crashlytics = "18.3.3"
 google-admob = "21.5.0"
 
 flipper = "0.182.0"
@@ -36,6 +38,7 @@ soloader = "0.10.4"
 
 [libraries]
 google-services = { module = "com.google.gms:google-services", version.ref = "google-services" }
+firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebase-crashlytics-gradle" }
 kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 dagger-hilt = { module = "com.google.dagger:hilt-android", version.ref = "dagger-hilt" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger-hilt" }
@@ -58,6 +61,8 @@ androidx-compose-foundation = { module = "androidx.compose.foundation:foundation
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebase-analytics" }
 firebase-core = { module = "com.google.firebase:firebase-core", version.ref = "firebase-core" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx", version.ref = "firebase-messaging" }
+firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx", version.ref = "firebase-crashlytics" }
+
 google-admob = { module = "com.google.android.gms:play-services-ads-lite", version.ref = "google-admob" }
 
 compose-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
