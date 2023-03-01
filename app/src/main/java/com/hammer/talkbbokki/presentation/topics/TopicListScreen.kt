@@ -45,14 +45,10 @@ fun TopicListRoute(
     onClickToDetail: (level: String, item: TopicItem) -> Unit,
     onClickToMain: () -> Unit,
     viewModel: TopicListViewModel = hiltViewModel(),
-    topicLevel: String,
-    topicTitle: String,
     ) {
     TopicListScreen(
         onClickToDetail = onClickToDetail,
         onClickToMain = onClickToMain,
-        topicLevel = topicLevel.toUpperCase(),
-        topicTitle = topicTitle,
         viewModel = viewModel
     )
 }
@@ -61,20 +57,21 @@ fun TopicListRoute(
 fun TopicListScreen(
     onClickToDetail: (level: String, item: TopicItem) -> Unit,
     onClickToMain: () -> Unit,
-    topicLevel: String,
-    topicTitle: String,
     viewModel: TopicListViewModel
 ) {
     val list by viewModel.topicList.collectAsState()
     val todayViewCnt by viewModel.todayViewCnt.collectAsState()
     var selectedTopicItem by remember { mutableStateOf(TopicItem()) }
 
+    val level by remember { mutableStateOf(viewModel.selectedLevel) }
+    val title by remember { mutableStateOf(viewModel.selectedLevelTitle) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(TopicLevel.valueOf(topicLevel).backgroundColor)
+            .background(TopicLevel.valueOf(level).backgroundColor)
     ) {
-        TopicListHeader(onClickToMain, topicTitle)
+        TopicListHeader(onClickToMain, title)
         TopicList(
             cardList = list,
             onFocusedCardChange = { item -> selectedTopicItem = item },
@@ -86,7 +83,7 @@ fun TopicListScreen(
             onCardClicked = {
                 selectedTopicItem.let { item ->
                     viewModel.setTodayViewCnt(id = item.id)
-                    onClickToDetail(topicLevel, item)
+                    onClickToDetail(level, item)
                 }
             },
             modifier = Modifier.align(Alignment.BottomCenter)

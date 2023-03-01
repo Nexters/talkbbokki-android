@@ -23,15 +23,9 @@ fun NavGraphBuilder.topicListGraph(
             navArgument("title") { type = NavType.StringType }
         )
     ) {
-        val arguments = requireNotNull(it.arguments)
-        val level = requireNotNull(arguments.getString("level"))
-        val title = requireNotNull(arguments.getString("title"))
-
         TopicListRoute(
             onClickToDetail = navigateToDetail,
             onClickToMain = navigateToMain,
-            topicLevel = level,
-            topicTitle = title
         )
     }
 }
