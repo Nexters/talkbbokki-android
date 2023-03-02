@@ -1,7 +1,6 @@
 package com.hammer.talkbbokki
 
 import android.app.Application
-
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -25,7 +24,7 @@ class TalkbbokkiApp : Application() {
         super.onCreate()
         MobileAds.initialize(this)
         initNotificationChannels()
-        
+
         SoLoader.init(this, false)
         if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
             AndroidFlipperClient.getInstance(this).apply {
@@ -54,6 +53,6 @@ class TalkbbokkiApp : Application() {
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManager.createNotificationChannel(channel)
-       }
-   }
+        }
+    }
 }
