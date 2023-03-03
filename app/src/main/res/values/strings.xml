@@ -46,7 +46,7 @@
     <string name="suggestion_go_home_button">홈으로</string>
 
     <string name="list_opened_card">이미 열어본 카드에요</string>
-    <string name="list_more_card">4개 부터는 광고를\n보면 뽑을 수 있어요</string>
+    <string name="list_more_card">광고를 보면\n뽑을 수 있어요</string>
     <string name="list_ad_pick_btn">광고 보고 카드 뽑기</string>
     <string name="list_pick_btn">이 카드 뽑기</string>
     <string name="list_re_pick_btn">이 카드 다시 뽑기</string>

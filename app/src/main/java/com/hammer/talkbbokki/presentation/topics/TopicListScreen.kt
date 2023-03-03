@@ -27,7 +27,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.times
@@ -43,8 +42,8 @@ import kotlin.math.absoluteValue
 fun TopicListRoute(
     onClickToDetail: (level: String, item: TopicItem) -> Unit,
     onClickToMain: () -> Unit,
-    viewModel: TopicListViewModel = hiltViewModel(),
-    ) {
+    viewModel: TopicListViewModel = hiltViewModel()
+) {
     TopicListScreen(
         onClickToDetail = onClickToDetail,
         onClickToMain = onClickToMain,
@@ -60,6 +59,7 @@ fun TopicListScreen(
 ) {
     val list by viewModel.topicList.collectAsState()
     val todayViewCnt by viewModel.todayViewCnt.collectAsState()
+    val viewCountOver = (todayViewCnt > 0) && (todayViewCnt % 4 == 0)
     var selectedTopicItem by remember { mutableStateOf(TopicItem()) }
 
     val level by remember { mutableStateOf(viewModel.selectedLevel.toUpperCase()) }
@@ -74,11 +74,11 @@ fun TopicListScreen(
         TopicList(
             cardList = list,
             onFocusedCardChange = { item -> selectedTopicItem = item },
-            todayViewCnt
+            viewCountOver = viewCountOver
         )
         SelectBtn(
             isOpened = selectedTopicItem.isOpened,
-            viewCountOver = todayViewCnt >= 3,
+            viewCountOver = viewCountOver,
             onCardClicked = {
                 selectedTopicItem.let { item ->
                     viewModel.setTodayViewCnt(id = item.id)
@@ -125,7 +125,7 @@ fun TopicListHeader(onClickToMain: () -> Unit, topicTitle: String) {
 fun TopicList(
     cardList: List<TopicItem>,
     onFocusedCardChange: (item: TopicItem) -> Unit,
-    todayViewCnt: Int
+    viewCountOver: Boolean
 ) {
     val listState = rememberLazyListState()
     val itemWidth =
@@ -155,7 +155,7 @@ fun TopicList(
                 )
             ) {
                 itemsIndexed(cardList) { definiteIndex, item ->
-                    CardItem(definiteIndex, currentOffset, item, todayViewCnt) {
+                    CardItem(definiteIndex, currentOffset, item, viewCountOver) {
                         onFocusedCardChange(it)
                     }
                 }
@@ -215,7 +215,7 @@ fun CardItem(
     definiteIndex: Int,
     currentOffset: Float,
     item: TopicItem,
-    todayViewCnt: Int,
+    viewCountOver: Boolean,
     currentItem: (TopicItem) -> Unit
 ) {
     val pageOffsetWithSign = definiteIndex - currentOffset
@@ -318,7 +318,7 @@ fun CardItem(
             ShowLogic(
                 modifier = Modifier.align(Alignment.TopCenter),
                 isOpened = item.isOpened,
-                viewCountOver = todayViewCnt >= 3
+                viewCountOver = viewCountOver
             )
             currentItem(item)
         }
