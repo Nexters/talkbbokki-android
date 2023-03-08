@@ -41,7 +41,7 @@
 
 | level1 | level2 | level3 |
 | :---------------: | :---------------: | :---------------: |
-| <img src="" align="center" width="300px"/> | <img src="" align="center" width="300px"/> | <img src="" align="center" width="300px"/> |
+| <img src="https://github.com/Nexters/talkbbokki-android/blob/develop/docs/sample_level_1.webm" align="center" width="300px"/> | <img src="https://github.com/Nexters/talkbbokki-android/blob/develop/docs/sample_level_2.webm" align="center" width="300px"/> | <img src="https://github.com/Nexters/talkbbokki-android/blob/develop/docs/sample_level_3.webm" align="center" width="300px"/> |
 
 </div>
 
