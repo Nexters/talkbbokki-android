@@ -38,10 +38,9 @@
 > ### 대화주제 카드뽑기
 
 <div align="center">
+  
+<img src="https://user-images.githubusercontent.com/7722921/223750955-bab6e5e4-5246-4051-b249-eb6c8709548a.gif" align="center" width="300px"/> 
 
-| level1 | level2 | level3 |
-| :---------------: | :---------------: | :---------------: |
-| <img src="https://github.com/Nexters/talkbbokki-android/blob/develop/docs/sample_level_1.webm" align="center" width="300px"/> | <img src="https://github.com/Nexters/talkbbokki-android/blob/develop/docs/sample_level_2.webm" align="center" width="300px"/> | <img src="https://github.com/Nexters/talkbbokki-android/blob/develop/docs/sample_level_3.webm" align="center" width="300px"/> |
 
 </div>
 
