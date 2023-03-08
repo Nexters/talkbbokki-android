@@ -39,7 +39,7 @@
 
 <div align="center">
   
-<img src="https://user-images.githubusercontent.com/7722921/223750955-bab6e5e4-5246-4051-b249-eb6c8709548a.gif" align="center" width="300px"/> 
+<img src="https://user-images.githubusercontent.com/7722921/223750955-bab6e5e4-5246-4051-b249-eb6c8709548a.gif" width="300px"/> 
 
 
 </div>
@@ -48,12 +48,15 @@
 
 <div align="center">
 
+<img src="https://user-images.githubusercontent.com/7722921/223753262-b4f8e590-59ed-4359-a17f-73400be9ef59.gif" width="300px"/> 
 
 </div>
 
 > ### 공유하기
 
 <div align="center">
+
+<img src="https://user-images.githubusercontent.com/7722921/223754095-b9bafbce-79c1-4602-be2f-01cb8b13f33a.gif" width="300px"/> 
 
 
 </div>
