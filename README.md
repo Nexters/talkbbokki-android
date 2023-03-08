@@ -1,6 +1,6 @@
-<h1 align="center">톡뽀끼</h1>
+<h1>톡뽀끼</h1>
 
-<p align="center">
+<p>
   <a href="https://kotlinlang.org"><img alt="Kotlin Version" src="https://img.shields.io/badge/Kotlin-1.6.10-blueviolet.svg?style=flat"/></a>
   <a href="https://developer.android.com/studio/releases/gradle-plugin"><img alt="AGP" src="https://img.shields.io/badge/AGP-7.4.0-blue?style=flat"/></a>
   <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
@@ -35,41 +35,28 @@
 
 ## Features
 
+
 > ### 대화주제 카드뽑기
+><div>
+><img src="https://user-images.githubusercontent.com/7722921/223750955-bab6e5e4-5246-4051-b249-eb6c8709548a.gif" width="300px"/> 
+></div>
 
-<div align="center">
-  
-<img src="https://user-images.githubusercontent.com/7722921/223750955-bab6e5e4-5246-4051-b249-eb6c8709548a.gif" width="300px"/> 
-
-
-</div>
 
 > ### 북마크
+><div>
+><img src="https://user-images.githubusercontent.com/7722921/223753262-b4f8e590-59ed-4359-a17f-73400be9ef59.gif" width="300px"/> 
+></div>
 
-<div align="center">
-
-<img src="https://user-images.githubusercontent.com/7722921/223753262-b4f8e590-59ed-4359-a17f-73400be9ef59.gif" width="300px"/> 
-
-</div>
 
 > ### 공유하기
-
-<div align="center">
-
-<img src="https://user-images.githubusercontent.com/7722921/223754095-b9bafbce-79c1-4602-be2f-01cb8b13f33a.gif" width="300px"/> 
-
-
-</div>
+><div>
+><img src="https://user-images.githubusercontent.com/7722921/223754095-b9bafbce-79c1-4602-be2f-01cb8b13f33a.gif" width="300px"/> 
+></div>
 
 
 ## Architecture
 
 MVVM architecture and the Repository pattern.
-
-<p align = 'center'>
-<img width = '600' src = 'https://user-images.githubusercontent.com/39554623/184456867-195f5989-dc9a-4dea-8f35-41e1f11145ff.png'>
-</p>
-
 
 ## License
 
