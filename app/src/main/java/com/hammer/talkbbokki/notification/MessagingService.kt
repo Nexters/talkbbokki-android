@@ -1,9 +1,12 @@
 package com.hammer.talkbbokki.notification
 
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -50,20 +53,30 @@ class MessagingService : FirebaseMessagingService() {
      *
      * */
     private fun sendNotification(title: String?, text: String?) {
-        title ?: return
-        text ?: return
-
-        val intent = Intent(this, MainActivity::class.java).apply {
+        val intent = Intent(applicationContext, MainActivity::class.java).apply {
+            putExtras(
+                Bundle().apply {
+                    putString(MainActivity.LAUNCH_FROM_DATA, MainActivity.FROM_PUSH)
+                    putString(MainActivity.NOTIFICATION_INFO, title)
+                }
+            )
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP and Intent.FLAG_ACTIVITY_NEW_TASK
         }
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = PendingIntent.getActivity(
+            applicationContext,
+            System.currentTimeMillis().toInt(),
+            intent,
+            FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
         val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setAutoCancel(true)
             .setContentText(text)
             .setContentTitle(title)
             .setContentIntent(pendingIntent)
-            .setSmallIcon(R.drawable.ic_launcher_round)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(getColor(R.color.main_color))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setDefaults(Notification.DEFAULT_VIBRATE)
 
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).apply {
             notify(0, notificationBuilder.build())

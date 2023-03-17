@@ -1,7 +1,6 @@
 package com.hammer.talkbbokki
 
 import android.app.Application
-
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -25,7 +24,7 @@ class TalkbbokkiApp : Application() {
         super.onCreate()
         MobileAds.initialize(this)
         initNotificationChannels()
-        
+
         SoLoader.init(this, false)
         if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
             AndroidFlipperClient.getInstance(this).apply {
@@ -46,14 +45,15 @@ class TalkbbokkiApp : Application() {
     private fun initNotificationChannels() {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-        notificationManager ?: return
-        if (notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID) == null) {
+
+        if (notificationManager?.getNotificationChannel(NOTIFICATION_CHANNEL_ID) == null) {
             val channel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
                 getString(R.string.menu_setting_push),
                 NotificationManager.IMPORTANCE_DEFAULT
             )
-            notificationManager.createNotificationChannel(channel)
-       }
-   }
+            channel.enableVibration(true)
+            notificationManager?.createNotificationChannel(channel)
+        }
+    }
 }

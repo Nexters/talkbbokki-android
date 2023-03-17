@@ -15,6 +15,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.hammer.talkbbokki.analytics.AnalyticsConst
+import com.hammer.talkbbokki.analytics.logEvent
 import com.hammer.talkbbokki.presentation.navigation.TalkbbokkiNavHost
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +29,22 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadAd(this)
+
+        val launchFrom = if (intent.data != null) {
+            AnalyticsConst.Param.LAUNCH_FROM_DYNAMIC_LINK
+        } else if (intent.extras?.getString(LAUNCH_FROM_DATA) != null) {
+            AnalyticsConst.Param.LAUNCH_FROM_PUSH
+        } else {
+            null
+        }
+
+        logEvent(
+            AnalyticsConst.Event.APP_LAUNCH,
+            hashMapOf(
+                AnalyticsConst.Key.FROM to launchFrom,
+                AnalyticsConst.Key.NOTIFICATION_INFO to intent.extras?.getString(NOTIFICATION_INFO)
+            )
+        )
 
         setContent {
             val navController = rememberNavController()
@@ -69,5 +87,11 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         removeAd()
         super.onDestroy()
+    }
+
+    companion object {
+        const val LAUNCH_FROM_DATA = "LAUNCH_FROM_DATA"
+        const val FROM_PUSH = "FROM_PUSH"
+        const val NOTIFICATION_INFO = "NOTIFICATION_INFO"
     }
 }
