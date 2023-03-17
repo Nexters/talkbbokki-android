@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.analytics.AnalyticsConst
+import com.hammer.talkbbokki.analytics.logEvent
 import com.hammer.talkbbokki.data.entity.TalkOrderItem
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.shareLink
@@ -77,6 +79,13 @@ fun DetailRoute(
         item = item,
         onClickBookmark = {
             if (it) viewModel.addBookmark() else viewModel.removeBookmark()
+            logEvent(
+                AnalyticsConst.Event.CLICK_CARD_BOOKMARK,
+                hashMapOf(
+                    AnalyticsConst.Key.TOPIC_ID to item.id.toString(),
+                    AnalyticsConst.Key.TOGGLE to it.toString()
+                )
+            )
         },
         onClickStarter = { viewModel.getTalkStarter() },
         updateViewCnt = { viewModel.postViewCnt(item.id) },
@@ -335,11 +344,19 @@ fun BackCardFace(
             ShareBottom(onClickShareLink = {
                 updateViewCnt()
                 shareLink(context, item.shareLink + "&rule=${starter.id}")
+                logEvent(
+                    AnalyticsConst.Event.CLICK_CARD_SHARE,
+                    hashMapOf(AnalyticsConst.Key.TOPIC_ID to item.id.toString())
+                )
             }, onClickScreenShot = {
                 updateViewCnt()
                 shareScreenShot(context) {
                     onClickShowDialog()
                 }
+                logEvent(
+                    AnalyticsConst.Event.CLICK_CARD_DOWNLOAD,
+                    hashMapOf(AnalyticsConst.Key.TOPIC_ID to item.id.toString())
+                )
             })
             Spacer(
                 modifier = Modifier.height(8.dp)

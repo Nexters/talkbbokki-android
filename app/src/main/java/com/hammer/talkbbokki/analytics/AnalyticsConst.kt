@@ -13,9 +13,11 @@ object AnalyticsConst {
     object Key {
         const val FROM = "from"
         const val NOTIFICATION_INFO = "noti_info"
-        const val CATEGORY = "category"
+        const val CATEGORY_ID = "category_id"
+        const val CATEGORY_TITLE = "category_title"
         const val IS_ACTIVE = "is_active"
         const val TOPIC_ID = "topic_id"
+        const val TOGGLE = "toggle"
     }
 
     object Param {

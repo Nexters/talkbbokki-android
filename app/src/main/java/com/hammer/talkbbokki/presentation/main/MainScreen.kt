@@ -43,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.analytics.AnalyticsConst
+import com.hammer.talkbbokki.analytics.logEvent
 import com.hammer.talkbbokki.domain.model.CategoryLevel
 import com.hammer.talkbbokki.ui.dialog.CommonDialog
 import com.hammer.talkbbokki.ui.theme.Gray04
@@ -64,7 +66,10 @@ fun MainRoute(
     val categoryLevel by viewModel.categoryLevel.collectAsState()
     MainScreen(
         categoryLevel = categoryLevel,
-        onClickBookmarkMenu = { onClickBookmarkMenu() },
+        onClickBookmarkMenu = {
+            onClickBookmarkMenu()
+            logEvent(AnalyticsConst.Event.CLICK_BOOKMARK_MENU)
+        },
         onClickLevel = onClickLevel,
         onClickSuggestion = { onClickSuggestion() }
     )
@@ -167,7 +172,19 @@ fun LevelItem(
             modifier = Modifier.fillMaxSize(),
             shape = RoundedCornerShape(8.dp),
             onClick = {
-                if (level.isActive) onClickLevel(level.id, (level.title).replace("\n","**")) else showDialog()
+                logEvent(
+                    AnalyticsConst.Event.CLICK_CATEGORY,
+                    hashMapOf(
+                        AnalyticsConst.Key.IS_ACTIVE to "${level.isActive}",
+                        AnalyticsConst.Key.CATEGORY_ID to level.id,
+                        AnalyticsConst.Key.CATEGORY_TITLE to level.title
+                    )
+                )
+                if (level.isActive) {
+                    onClickLevel(level.id, (level.title).replace("\n", "**"))
+                } else {
+                    showDialog()
+                }
             }
         ) {
             Column(
