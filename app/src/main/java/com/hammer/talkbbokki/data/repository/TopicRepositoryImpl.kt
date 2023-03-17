@@ -20,7 +20,9 @@ internal class TopicRepositoryImpl @Inject constructor(
         if (cache.isExistData(level)) {
             emit(cache.getTopicList(level))
         } else {
-            val newData = service.getTopicList(level)?.result?.map { it.toModel() }.orEmpty()
+            val newData = service.getTopicList(level)?.result?.map {
+                it.toModel()
+            }.orEmpty().shuffled()
             cache.update(newData)
             emit(newData)
         }
