@@ -28,7 +28,7 @@ android {
         applicationId "com.hammer.talkbbokki"
         minSdk 26
         targetSdk 33
-        versionCode 3
+        versionCode 4
         versionName "1.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -124,10 +124,9 @@ dependencies {
     implementation(libs.compose.lottie)
     implementation(libs.bundles.accompanist)
 
-    debugImplementation(libs.flipper)
-    debugImplementation(libs.soloader)
-    debugImplementation(libs.flipper.network)
-    releaseImplementation(libs.flipper.noop)
+    implementation(libs.flipper)
+    implementation(libs.soloader)
+    implementation(libs.flipper.network)
 
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.crashlytics.ktx)

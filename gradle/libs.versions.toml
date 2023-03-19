@@ -84,7 +84,6 @@ room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-database" }
 
 flipper = { module = "com.facebook.flipper:flipper", version.ref = "flipper" }
 soloader = { module = "com.facebook.soloader:soloader", version.ref = "soloader" }
-flipper_noop = { module = "com.facebook.flipper:flipper-noop", version.ref = "flipper" }
 flipper_network = { module = "com.facebook.flipper:flipper-network-plugin", version.ref = "flipper" }
 
 androidx-compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }

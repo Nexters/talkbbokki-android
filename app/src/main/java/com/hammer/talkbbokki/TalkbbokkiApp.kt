@@ -25,8 +25,8 @@ class TalkbbokkiApp : Application() {
         MobileAds.initialize(this)
         initNotificationChannels()
 
-        SoLoader.init(this, false)
         if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
+            SoLoader.init(this, false)
             AndroidFlipperClient.getInstance(this).apply {
                 addPlugin(
                     InspectorFlipperPlugin(
