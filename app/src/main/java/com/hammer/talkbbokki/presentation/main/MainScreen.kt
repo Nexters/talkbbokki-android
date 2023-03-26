@@ -59,7 +59,7 @@ import com.hammer.talkbbokki.ui.util.toHexColor
 fun MainRoute(
     modifier: Modifier = Modifier,
     onClickBookmarkMenu: () -> Unit,
-    onClickLevel: (String, String) -> Unit,
+    onClickLevel: (String, String, String) -> Unit,
     onClickSuggestion: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
@@ -79,7 +79,7 @@ fun MainRoute(
 fun MainScreen(
     categoryLevel: List<CategoryLevel>,
     onClickBookmarkMenu: () -> Unit,
-    onClickLevel: (String, String) -> Unit,
+    onClickLevel: (String, String, String) -> Unit,
     onClickSuggestion: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
@@ -164,7 +164,7 @@ fun MainHeader(
 @Composable
 fun LevelItem(
     level: CategoryLevel,
-    onClickLevel: (String, String) -> Unit,
+    onClickLevel: (String, String, String) -> Unit,
     showDialog: () -> Unit
 ) {
     Box(modifier = Modifier.aspectRatio(1f)) {
@@ -181,7 +181,11 @@ fun LevelItem(
                     )
                 )
                 if (level.isActive) {
-                    onClickLevel(level.id, (level.title).replace("\n", "**"))
+                    onClickLevel(
+                        level.id,
+                        (level.title).replace("\n", "**"),
+                        level.bgColor.replace("#", "")
+                    )
                 } else {
                     showDialog()
                 }

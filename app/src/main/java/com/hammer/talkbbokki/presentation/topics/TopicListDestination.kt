@@ -17,15 +17,16 @@ fun NavGraphBuilder.topicListGraph(
     navigateToMain: () -> Unit
 ) {
     composable(
-        route = TopicListDestination.route + "?level={level}&title={title}",
+        route = TopicListDestination.route + "?level={level}&title={title}&bgColor={bgColor}",
         arguments = listOf(
             navArgument("level") { type = NavType.StringType },
-            navArgument("title") { type = NavType.StringType }
+            navArgument("title") { type = NavType.StringType },
+            navArgument("bgColor") { type = NavType.StringType }
         )
     ) {
         TopicListRoute(
             onClickToDetail = navigateToDetail,
-            onClickToMain = navigateToMain,
+            onClickToMain = navigateToMain
         )
     }
 }
