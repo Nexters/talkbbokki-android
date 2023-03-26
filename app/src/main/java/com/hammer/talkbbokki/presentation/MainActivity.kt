@@ -31,17 +31,16 @@ class MainActivity : ComponentActivity() {
         loadAd(this)
 
         val launchFrom = if (intent.data != null) {
-            AnalyticsConst.Param.LAUNCH_FROM_DYNAMIC_LINK
+            AnalyticsConst.Event.APP_LAUNCH_FROM_LINK
         } else if (intent.extras?.getString(LAUNCH_FROM_DATA) != null) {
-            AnalyticsConst.Param.LAUNCH_FROM_PUSH
+            AnalyticsConst.Event.APP_LAUNCH_FROM_PUSH
         } else {
-            null
+            AnalyticsConst.Event.APP_LAUNCH
         }
 
         logEvent(
-            AnalyticsConst.Event.APP_LAUNCH,
+            launchFrom,
             hashMapOf(
-                AnalyticsConst.Key.FROM to launchFrom,
                 AnalyticsConst.Key.NOTIFICATION_INFO to intent.extras?.getString(NOTIFICATION_INFO)
             )
         )
