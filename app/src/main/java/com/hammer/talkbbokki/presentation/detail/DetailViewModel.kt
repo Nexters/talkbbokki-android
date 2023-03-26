@@ -14,6 +14,7 @@ import com.hammer.talkbbokki.domain.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -61,6 +62,10 @@ class DetailViewModel @Inject constructor(
             hashMapOf(AnalyticsConst.Key.TOPIC_ID to _item.id.toString())
         )
         getTalkStarter()
+        viewModelScope.launch {
+            delay(5000L)
+            postViewCnt(_item.id)
+        }
     }
 
     fun getTalkStarter() {

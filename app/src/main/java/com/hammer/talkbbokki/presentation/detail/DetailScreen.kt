@@ -46,6 +46,7 @@ fun DetailRoute(
     val item by viewModel.item.collectAsState()
     val starter by viewModel.talkOrder.collectAsState()
 
+    var showToast by remember(toastMessage) { mutableStateOf(toastMessage > 0) }
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
         Dialog(onDismissRequest = {}) {
@@ -68,7 +69,7 @@ fun DetailRoute(
                 )
             }
         }
-        LaunchedEffect(Unit) {
+        LaunchedEffect(showDialog) {
             delay(1500)
             showDialog = false
         }
@@ -92,9 +93,10 @@ fun DetailRoute(
         onClickShowDialog = { showDialog = true },
         starter = starter
     )
-    if (toastMessage > 0) {
+    if (showToast) {
         Toast.makeText(LocalContext.current, stringResource(id = toastMessage), Toast.LENGTH_SHORT)
             .show()
+        showToast = false
     }
 }
 
