@@ -54,6 +54,7 @@ import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import com.hammer.talkbbokki.ui.theme.White
 import com.hammer.talkbbokki.ui.theme.suggestionButtonColor
 import com.hammer.talkbbokki.ui.util.toHexColor
+import java.util.*
 
 @Composable
 fun MainRoute(
@@ -173,10 +174,9 @@ fun LevelItem(
             shape = RoundedCornerShape(8.dp),
             onClick = {
                 logEvent(
-                    AnalyticsConst.Event.CLICK_CATEGORY,
+                    AnalyticsConst.Event.CLICK_CATEGORY +
+                        "_${level.id.lowercase(Locale.getDefault())}",
                     hashMapOf(
-                        AnalyticsConst.Key.IS_ACTIVE to "${level.isActive}",
-                        AnalyticsConst.Key.CATEGORY_ID to level.id,
                         AnalyticsConst.Key.CATEGORY_TITLE to level.title
                     )
                 )
