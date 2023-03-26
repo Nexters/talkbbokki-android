@@ -30,8 +30,8 @@ import com.hammer.talkbbokki.data.entity.TalkOrderItem
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.shareLink
 import com.hammer.talkbbokki.presentation.shareScreenShot
-import com.hammer.talkbbokki.presentation.topics.TopicLevel
 import com.hammer.talkbbokki.ui.theme.*
+import com.hammer.talkbbokki.ui.util.toHexColor
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -114,7 +114,7 @@ fun DetailScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(TopicLevel.valueOf(item.category.uppercase()).backgroundColor)
+            .background(item.bgColor.toHexColor())
     ) {
         DetailHeader(cardFace = cardFace, onBackClick = { cardFace = CardFace.BACK })
         Box(modifier = modifier.fillMaxSize()) {
@@ -176,7 +176,7 @@ fun DetailFlipCard(
                 scaleY = scale,
                 cameraDistance = 12f
             )
-            .background(TopicLevel.valueOf(item.category.uppercase()).backgroundColor),
+            .background(item.bgColor.toHexColor()),
         front = {
             FrontCardFace(item)
         },
@@ -257,7 +257,7 @@ fun FrontCardFace(item: TopicItem) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(TopicLevel.valueOf(item.category.toUpperCase()).backgroundColor),
+            .background(item.bgColor.toHexColor()),
         contentAlignment = Alignment.Center
     ) {
         val cardImage = painterResource(id = R.drawable.bg_card_large)

@@ -36,6 +36,7 @@ import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.presentation.showRewardedAd
 import com.hammer.talkbbokki.ui.theme.*
+import com.hammer.talkbbokki.ui.util.toHexColor
 import kotlin.math.absoluteValue
 
 @Composable
@@ -59,7 +60,7 @@ fun TopicListScreen(
 ) {
     val list by viewModel.topicList.collectAsState()
     val todayViewCnt by viewModel.todayViewCnt.collectAsState()
-    val viewCountOver = (todayViewCnt > 0) && (todayViewCnt % 4 == 0)
+    val viewCountOver = (todayViewCnt > 0) && (todayViewCnt % 3 == 0)
     var selectedTopicItem by remember { mutableStateOf(TopicItem()) }
 
     val level by remember { mutableStateOf(viewModel.selectedLevel.toUpperCase()) }
@@ -68,7 +69,7 @@ fun TopicListScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(TopicLevel.valueOf(level).backgroundColor)
+            .background(viewModel.selectedBgColor.toHexColor())
     ) {
         TopicListHeader(onClickToMain, title)
         TopicList(

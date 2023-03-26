@@ -22,12 +22,19 @@ class TopicListViewModel @Inject constructor(
 ) : ViewModel() {
     val selectedLevel = savedStateHandle.get<String>("level") ?: "level1"
     val selectedLevelTitle = savedStateHandle.get<String>("title") ?: ""
+    val selectedBgColor = savedStateHandle.get<String>("bgColor")
+        ?: TopicLevel.valueOf(selectedLevel.uppercase()).backgroundColor
 
     val topicList: StateFlow<List<TopicItem>> = topicUseCase.invoke(selectedLevel)
         .zip(topicUseCase.getOpenedCards()) { topicItems, viewCards ->
             val newList = mutableListOf<TopicItem>()
             topicItems.forEach { topic ->
-                newList.add(topic.copy(isOpened = viewCards.viewCards.contains(topic.id)))
+                newList.add(
+                    topic.copy(
+                        bgColor = selectedBgColor,
+                        isOpened = viewCards.viewCards.contains(topic.id)
+                    )
+                )
             }
             newList
         }
