@@ -5,6 +5,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.analytics.AnalyticsConst
+import com.hammer.talkbbokki.analytics.logEvent
 import com.hammer.talkbbokki.data.entity.TalkOrderItem
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.repository.BookmarkRepository
@@ -54,6 +56,10 @@ class DetailViewModel @Inject constructor(
     val talkOrder: StateFlow<TalkOrderItem> get() = _talkOrder
 
     init {
+        logEvent(
+            AnalyticsConst.Event.SCREEN_CARD_DETAIL,
+            hashMapOf(AnalyticsConst.Key.TOPIC_ID to _item.id.toString())
+        )
         getTalkStarter()
     }
 
