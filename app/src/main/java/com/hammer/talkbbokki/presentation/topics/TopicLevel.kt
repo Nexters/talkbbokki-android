@@ -1,33 +1,31 @@
 package com.hammer.talkbbokki.presentation.topics
 
 import androidx.annotation.StringRes
-import androidx.compose.ui.graphics.Color
 import com.hammer.talkbbokki.R
-import com.hammer.talkbbokki.ui.theme.*
 
 enum class TopicLevel(
     val level: String,
     @StringRes val title: Int,
-    val backgroundColor: Color = White
+    val backgroundColor: String = "FFFFFF"
 ) {
     LEVEL1(
         level = "level1",
         title = R.string.main_level1_title,
-        backgroundColor = Category01
+        backgroundColor = "9C5FFF"
     ),
     LEVEL2(
         level = "level2",
         title = R.string.main_level2_title,
-        backgroundColor = Category02
+        backgroundColor = "1EAC90"
     ),
     LEVEL3(
         level = "level3",
         title = R.string.main_level3_title,
-        backgroundColor = Category03
+        backgroundColor = "FBB21E"
     ),
     EVENT(
         level = "event",
         title = R.string.main_level4_title,
-        backgroundColor = CategoryEvent
+        backgroundColor = "FF7490"
     )
 }

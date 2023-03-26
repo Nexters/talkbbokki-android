@@ -51,8 +51,10 @@ fun TalkbbokkiNavHost(
             }
         )
         mainGraph(
-            navigateToList = { level, title ->
-                navController.navigate(TopicListDestination.route + "?level=$level&title=$title")
+            navigateToList = { level, title, bgColor ->
+                navController.navigate(
+                    TopicListDestination.route + "?level=$level&title=$title&bgColor=$bgColor"
+                )
             },
             navigateToBookmark = { navController.navigate(BookmarkDestination.route) },
             navigateToSuggestion = { navController.navigate(SuggestionDestination.route) }
@@ -61,7 +63,7 @@ fun TalkbbokkiNavHost(
             navigateToDetail = { level, item ->
                 navController.navigate(
                     DetailDestination.route +
-                            "?level=$level&id=${item.id}&tag=${item.tag}&topic=${item.name}&shareLink=${item.shareLink}"
+                            "?level=$level&id=${item.id}&tag=${item.tag}&topic=${item.name}&shareLink=${item.shareLink}&bgColor=${item.bgColor}"
                 )
             },
             navigateToMain = {
@@ -77,7 +79,7 @@ fun TalkbbokkiNavHost(
             navigateToDetail = { item ->
                 navController.navigate(
                     DetailDestination.route +
-                            "?level=${item.category.uppercase(Locale.getDefault())}&id=${item.id}&tag=${item.tag}&topic=${item.name}&shareLink=${item.shareLink}"
+                            "?level=${item.category.uppercase(Locale.getDefault())}&id=${item.id}&tag=${item.tag}&topic=${item.name}&shareLink=${item.shareLink}&bgColor=${item.bgColor}"
                 )
             },
             onBackClick = { navController.popBackStack() }

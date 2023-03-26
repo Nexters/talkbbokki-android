@@ -11,6 +11,7 @@ import com.hammer.talkbbokki.data.entity.TalkOrderItem
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.repository.BookmarkRepository
 import com.hammer.talkbbokki.domain.repository.DetailRepository
+import com.hammer.talkbbokki.presentation.topics.TopicLevel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -31,12 +32,15 @@ class DetailViewModel @Inject constructor(
     private val bookmarkRepository: BookmarkRepository,
     private val detailRepository: DetailRepository
 ) : ViewModel() {
+    private val _category = savedStateHandle.get<String>("level") ?: "level1"
     private val _item = TopicItem(
-        id = savedStateHandle.getStateFlow("id", 0).value,
-        tag = savedStateHandle.getStateFlow("tag", "LOVE").value,
-        name = savedStateHandle.getStateFlow("topic", "대화 주제").value,
-        category = savedStateHandle.getStateFlow("level", "level1").value,
-        shareLink = savedStateHandle.getStateFlow("shareLink", "링크").value
+        id = savedStateHandle.get<Int>("id") ?: 0,
+        tag = savedStateHandle.get<String>("tag") ?: "LOVE",
+        name = savedStateHandle.get<String>("topic") ?: "대화 주제",
+        category = _category,
+        shareLink = savedStateHandle.get<String>("shareLink") ?: "",
+        bgColor = savedStateHandle.get<String>("bgColor")
+            ?: TopicLevel.valueOf(_category.uppercase()).backgroundColor
     )
 
     val item: StateFlow<TopicItem> = bookmarkRepository
