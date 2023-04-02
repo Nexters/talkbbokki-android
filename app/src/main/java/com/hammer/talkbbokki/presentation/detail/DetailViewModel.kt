@@ -33,20 +33,23 @@ class DetailViewModel @Inject constructor(
     private val detailRepository: DetailRepository
 ) : ViewModel() {
     private val _category = savedStateHandle.get<String>("level") ?: "level1"
+    private val _bgColor = savedStateHandle.get<String>("bgColor")
+        ?: TopicLevel.valueOf(_category.uppercase()).backgroundColor
     private val _item = TopicItem(
         id = savedStateHandle.get<Int>("id") ?: 0,
         tag = savedStateHandle.get<String>("tag") ?: "LOVE",
         name = savedStateHandle.get<String>("topic") ?: "대화 주제",
         category = _category,
         shareLink = savedStateHandle.get<String>("shareLink") ?: "",
-        bgColor = savedStateHandle.get<String>("bgColor")
-            ?: TopicLevel.valueOf(_category.uppercase()).backgroundColor
+        bgColor = _bgColor
     )
 
     val item: StateFlow<TopicItem> = bookmarkRepository
         .findItem(savedStateHandle.get<Int>("id") ?: 0)
         .map {
-            it ?: _item
+            (it ?: _item).copy(
+                bgColor = _bgColor
+            )
         }
         .stateIn(
             scope = viewModelScope,
