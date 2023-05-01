@@ -1,5 +1,8 @@
 package com.hammer.talkbbokki.presentation.main
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -63,29 +66,40 @@ fun MainRoute(
     onClickBookmarkMenu: () -> Unit,
     onClickLevel: (String, String, String) -> Unit,
     onClickSuggestion: () -> Unit,
-    onClickBack: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val categoryLevel by viewModel.categoryLevel.collectAsState()
     val showSettingNickname by viewModel.showNicknameDialog.collectAsState()
     val textState by viewModel.verifyMessage.collectAsState()
-    Box {
-        MainScreen(
-            categoryLevel = categoryLevel,
-            onClickBookmarkMenu = {
-                onClickBookmarkMenu()
-                logEvent(AnalyticsConst.Event.CLICK_BOOKMARK_MENU)
-            },
-            onClickLevel = onClickLevel,
-            onClickSuggestion = { onClickSuggestion() }
-        )
+    Box(
+        modifier = modifier.fillMaxSize().background(MainBackgroundColor)
+    ) {
+        if (!showSettingNickname) {
+            MainScreen(
+                categoryLevel = categoryLevel,
+                onClickBookmarkMenu = {
+                    onClickBookmarkMenu()
+                    logEvent(AnalyticsConst.Event.CLICK_BOOKMARK_MENU)
+                },
+                onClickLevel = onClickLevel,
+                onClickSuggestion = { onClickSuggestion() }
+            )
+        }
 
-        if (showSettingNickname) {
+        AnimatedVisibility(
+            visible = showSettingNickname,
+            enter = slideInVertically(
+                initialOffsetY = { fullHeight -> fullHeight }
+            ),
+            exit = slideOutVertically(
+                targetOffsetY = { fullHeight -> fullHeight }
+            )
+        ) {
             NicknameSettingScreen(
                 textState = textState,
                 checkNickname = viewModel::checkNickname,
                 onClickSend = viewModel::saveUserNickname,
-                onBackClick = onClickBack
+                onBackClick = viewModel::closeNicknamePage
             )
         }
     }
@@ -139,7 +153,8 @@ fun MainHeader(
             .fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(top = 24.dp),
             horizontalAlignment = Alignment.End
         ) {
@@ -154,7 +169,9 @@ fun MainHeader(
             Image(
                 painter = painterResource(id = R.drawable.image_main_graphic),
                 contentDescription = null,
-                modifier = Modifier.align(Alignment.BottomEnd).offset(x = 20.dp)
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(x = 20.dp)
             )
             Column(
                 modifier = Modifier.padding(top = 32.dp)
@@ -269,7 +286,9 @@ fun SuggestionButton(
             )
             Spacer(modifier = Modifier.width(2.dp))
             Icon(
-                modifier = Modifier.width(14.dp).height(14.dp),
+                modifier = Modifier
+                    .width(14.dp)
+                    .height(14.dp),
                 painter = painterResource(id = R.drawable.ic_arrow_next),
                 tint = White,
                 contentDescription = null

@@ -57,8 +57,7 @@ fun TalkbbokkiNavHost(
                 )
             },
             navigateToBookmark = { navController.navigate(BookmarkDestination.route) },
-            navigateToSuggestion = { navController.navigate(SuggestionDestination.route) },
-            onBackClick = { navController.popBackStack() }
+            navigateToSuggestion = { navController.navigate(SuggestionDestination.route) }
         )
         topicListGraph(
             navigateToDetail = { level, item ->

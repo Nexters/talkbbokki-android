@@ -9,6 +9,7 @@ import com.hammer.talkbbokki.domain.usecase.CategoryLevelUseCase
 import com.hammer.talkbbokki.ui.util.validateNickname
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -43,6 +44,7 @@ class MainViewModel @Inject constructor(
 
     private fun getUserNickname() {
         viewModelScope.launch {
+            delay(1_000)
             userInfoRepository.getUserNickname()
                 .catch {
                     _showNicknameDialog.update { true }
@@ -93,6 +95,10 @@ class MainViewModel @Inject constructor(
                     _showNicknameDialog.update { false }
                 }
         }
+    }
+
+    fun closeNicknamePage() {
+        _showNicknameDialog.update { false }
     }
 
     companion object {
