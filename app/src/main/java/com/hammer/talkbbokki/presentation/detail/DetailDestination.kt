@@ -16,15 +16,8 @@ fun NavGraphBuilder.detailGraph(
 ) {
     composable(
         route = DetailDestination.route + "?topic={topic}",
-        // "?level={level}&id={id}&tag={tag}&topic={topic}&shareLink={shareLink}&bgColor={bgColor}",
         arguments = listOf(
             navArgument("topic") { type = TopicType }
-//            navArgument("topic") { type = TopicType() },
-//            navArgument("level") { type = NavType.StringType }
-//            navArgument("id") { type = NavType.IntType },
-//            navArgument("tag") { type = NavType.StringType },
-//            navArgument("topic") { type = NavType.StringType },
-//            navArgument("shareLink") { type = NavType.StringType },
         )
     ) {
         DetailRoute(

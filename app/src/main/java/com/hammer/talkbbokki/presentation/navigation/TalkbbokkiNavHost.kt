@@ -18,7 +18,6 @@ import com.hammer.talkbbokki.presentation.suggestion.SuggestionDestination
 import com.hammer.talkbbokki.presentation.suggestion.suggestionGraph
 import com.hammer.talkbbokki.presentation.topics.TopicListDestination
 import com.hammer.talkbbokki.presentation.topics.topicListGraph
-import java.util.*
 
 @Composable
 fun TalkbbokkiNavHost(
@@ -61,10 +60,7 @@ fun TalkbbokkiNavHost(
         )
         topicListGraph(
             navigateToDetail = { item ->
-                navController.navigate(
-                    DetailDestination.route + "?topic=$item"
-//                            "?level=$level&id=${item.id}&tag=${item.tag}&topic=${item.name}&shareLink=${item.shareLink}&bgColor=${item.bgColor}"
-                )
+                navController.navigate(DetailDestination.route + "?topic=$item")
             },
             navigateToMain = {
                 navController.popBackStack()
@@ -77,10 +73,7 @@ fun TalkbbokkiNavHost(
         )
         bookmarkGraph(
             navigateToDetail = { item ->
-                navController.navigate(
-                    DetailDestination.route +
-                        "?level=${item.category.uppercase(Locale.getDefault())}&id=${item.id}&tag=${item.tag}&topic=${item.name}&shareLink=${item.shareLink}&bgColor=${item.bgColor}"
-                )
+                navController.navigate(DetailDestination.route + "?topic=$item")
             },
             onBackClick = { navController.popBackStack() }
         )
