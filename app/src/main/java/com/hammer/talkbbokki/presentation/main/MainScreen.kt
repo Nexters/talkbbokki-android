@@ -46,6 +46,7 @@ import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.analytics.AnalyticsConst
 import com.hammer.talkbbokki.analytics.logEvent
 import com.hammer.talkbbokki.domain.model.CategoryLevel
+import com.hammer.talkbbokki.presentation.setting.nickname.NicknameSettingScreen
 import com.hammer.talkbbokki.ui.dialog.CommonDialog
 import com.hammer.talkbbokki.ui.theme.Gray04
 import com.hammer.talkbbokki.ui.theme.Gray07
@@ -65,15 +66,28 @@ fun MainRoute(
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val categoryLevel by viewModel.categoryLevel.collectAsState()
-    MainScreen(
-        categoryLevel = categoryLevel,
-        onClickBookmarkMenu = {
-            onClickBookmarkMenu()
-            logEvent(AnalyticsConst.Event.CLICK_BOOKMARK_MENU)
-        },
-        onClickLevel = onClickLevel,
-        onClickSuggestion = { onClickSuggestion() }
-    )
+    val showSettingNickname by viewModel.showNicknameDialog.collectAsState()
+    val textState by viewModel.verifyMessage.collectAsState()
+    Box {
+        MainScreen(
+            categoryLevel = categoryLevel,
+            onClickBookmarkMenu = {
+                onClickBookmarkMenu()
+                logEvent(AnalyticsConst.Event.CLICK_BOOKMARK_MENU)
+            },
+            onClickLevel = onClickLevel,
+            onClickSuggestion = { onClickSuggestion() }
+        )
+
+        if (showSettingNickname) {
+            NicknameSettingScreen(
+                textState = textState,
+                checkNickname = viewModel::checkNickname,
+                onClickSend = viewModel::saveUserNickname
+            ) {
+            }
+        }
+    }
 }
 
 @Composable

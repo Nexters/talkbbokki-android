@@ -31,6 +31,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.ui.button.ButtonType
 import com.hammer.talkbbokki.ui.button.CommonLargeButton
+import com.hammer.talkbbokki.ui.theme.Error01
 import com.hammer.talkbbokki.ui.theme.Gray05
 import com.hammer.talkbbokki.ui.theme.Gray06
 import com.hammer.talkbbokki.ui.theme.MainColor01
@@ -42,6 +43,8 @@ import com.hammer.talkbbokki.ui.theme.White
 @Composable
 fun NicknameSettingScreen(
     modifier: Modifier = Modifier,
+    textState: Int,
+    checkNickname: (String) -> Unit,
     onClickSend: (String) -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -78,8 +81,11 @@ fun NicknameSettingScreen(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
+            verifyMessage = textState,
+            isError = textState != R.string.setting_nickname_usable,
             text = textField,
             textChange = {
+                checkNickname(it)
                 if (it.count() <= textLimitCount) textField = it
             }
         )
@@ -95,30 +101,6 @@ fun NicknameSettingScreen(
             if (textField.isNotEmpty()) onClickSend(textField)
         }
     }
-/*
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MainColor02)
-            .padding(top = 16.dp, start = 20.dp, end = 20.dp, bottom = 16.dp)
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            NicknameSettingHeader(
-                modifier = modifier,
-                onBackClick = onBackClick
-            )
-            NicknameSettingTextField(
-                text = textField,
-                textChange = {
-                    if (it.count() <= textLimitCount) textField = it
-                }
-            )
-        }
-
-        NicknameSettingButton(modifier.align(Alignment.BottomCenter)) {
-            if (textField.isNotEmpty()) onClickSend(textField)
-        }
-    }*/
 }
 
 @Composable
@@ -126,11 +108,13 @@ fun NicknameSettingHeader(
     modifier: Modifier,
     onBackClick: () -> Unit
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth().height(56.dp)
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp)
     ) {
         Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier.align(Alignment.Center),
             text = stringResource(id = R.string.setting_nickname_title),
             style = TalkbbokkiTypography.b2_bold,
             color = White
@@ -139,7 +123,9 @@ fun NicknameSettingHeader(
             painter = painterResource(id = R.drawable.ic_close),
             contentDescription = null,
             tint = White,
-            modifier = Modifier.align(Alignment.End).clickable { onBackClick() }
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable { onBackClick() }
         )
     }
 }
@@ -147,6 +133,8 @@ fun NicknameSettingHeader(
 @Composable
 fun NicknameSettingTextField(
     modifier: Modifier,
+    verifyMessage: Int,
+    isError: Boolean,
     text: String,
     textChange: (String) -> Unit
 ) {
@@ -184,7 +172,8 @@ fun NicknameSettingTextField(
                     unfocusedIndicatorColor = Transparent,
                     disabledIndicatorColor = Transparent,
                     cursorColor = MainColor01
-                )
+                ),
+                isError = isError
             )
             if (showHint) {
                 Text(
@@ -199,6 +188,16 @@ fun NicknameSettingTextField(
                     )
                 )
             }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (verifyMessage > 0) {
+            Text(
+                text = stringResource(id = verifyMessage),
+                style = TalkbbokkiTypography.caption,
+                color = Error01
+            )
         }
     }
 }

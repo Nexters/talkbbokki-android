@@ -11,3 +11,5 @@ fun HashMap<String, String?>?.toBundle(): Bundle {
     }
     return bundle
 }
+
+fun String.validateNickname(): Boolean = Regex("^[\\s가-힣a-zA-Z0-9]{2,20}$").matches(this)
