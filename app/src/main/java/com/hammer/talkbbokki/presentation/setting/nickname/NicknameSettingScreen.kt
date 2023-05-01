@@ -4,12 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
@@ -74,9 +76,9 @@ fun NicknameSettingScreen(
             },
             verifyMessage = textState,
             enableOutline = textState > 0,
-            text = textField,
+            text = textField.trim(),
             textChange = {
-                checkNickname(it)
+                checkNickname(it.trim())
                 textField = it
             }
         )
@@ -87,9 +89,9 @@ fun NicknameSettingScreen(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
-            isEnable = false
+            isEnable = textState == R.string.setting_nickname_usable
         ) {
-            if (textField.isNotEmpty()) onClickSend(textField)
+            onClickSend(textField)
         }
     }
 }
@@ -181,11 +183,19 @@ fun NicknameSettingTextField(
         Spacer(modifier = Modifier.height(8.dp))
 
         if (verifyMessage > 0) {
-            Text(
-                text = stringResource(id = verifyMessage),
-                style = TalkbbokkiTypography.caption,
-                color = messageColor
-            )
+            Row {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_caption),
+                    contentDescription = "",
+                    tint = messageColor
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = stringResource(id = verifyMessage),
+                    style = TalkbbokkiTypography.caption,
+                    color = messageColor
+                )
+            }
         }
     }
 }
