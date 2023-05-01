@@ -14,7 +14,7 @@ data class TopicItem(
     val category: String = "level1", // upperCase
     val shareLink: String = "",
     val tag: String = "", // upperCase
-    val bgColor: String = TopicLevel.getLevelColor(category.uppercase()),
+    val bgColor: String = TopicLevel.getLevelColor(category),
     val isBookmark: Boolean = false,
     val isOpened: Boolean = false
 ) : Parcelable {
