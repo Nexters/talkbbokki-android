@@ -12,6 +12,14 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 internal interface TalkbbokkiService {
+
+    @FormUrlEncoded
+    @POST("/api/users")
+    suspend fun saveDeviceToken(
+        @Field("uuid") ssaid: String,
+        @Field("pushToken") deviceToken: String
+    )
+
     @FormUrlEncoded
     @POST("/api/users")
     suspend fun saveDeviceToken(

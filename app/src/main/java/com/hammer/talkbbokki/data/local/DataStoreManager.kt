@@ -11,6 +11,7 @@ import com.hammer.talkbbokki.data.local.PreferenceKeys.APP_VISIT_DATE
 import com.hammer.talkbbokki.data.local.PreferenceKeys.BOOKMARK_CANCEL_DIALOG
 import com.hammer.talkbbokki.data.local.PreferenceKeys.DEVICE_TOKEN
 import com.hammer.talkbbokki.data.local.PreferenceKeys.SHOW_ON_BOARDING
+import com.hammer.talkbbokki.data.local.PreferenceKeys.USER_NICKNAME
 import com.hammer.talkbbokki.data.local.PreferenceKeys.VIEW_CARD_LIST
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -26,6 +27,7 @@ object PreferenceKeys {
     val VIEW_CARD_LIST = stringSetPreferencesKey("viewCard")
     val APP_VISIT_DATE = intPreferencesKey("visitDate")
     val DEVICE_TOKEN = stringPreferencesKey("device_token")
+    val USER_NICKNAME = stringPreferencesKey("nickname")
 }
 
 class DataStoreManager @Inject constructor(@ApplicationContext appContext: Context) {
@@ -39,6 +41,16 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
     suspend fun updateDeviceToken(token: String) {
         settingsDataStore.edit { pref ->
             pref[DEVICE_TOKEN] = token
+        }
+    }
+
+    val userNickname: Flow<String?> = settingsDataStore.data.map { pref ->
+        pref[USER_NICKNAME]
+    }
+
+    suspend fun updateNickname(nickname: String) {
+        settingsDataStore.edit { pref ->
+            pref[USER_NICKNAME] = nickname
         }
     }
 

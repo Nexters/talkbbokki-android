@@ -1,10 +1,11 @@
 package com.hammer.talkbbokki.domain.repository
 
-import com.hammer.talkbbokki.domain.model.UserInfoModel
 import kotlinx.coroutines.flow.Flow
 
 interface UserInfoRepository {
-    fun postUserInfo(id: String, pushToken: String, nickname: String): Flow<Unit>
-    fun getUserInfo(id: String): Flow<UserInfoModel>
+    fun postUserInfo(id: String, pushToken: String): Flow<Unit>
+    fun postUserNickname(nickname: String): Flow<Unit>
+    fun getUserDeviceToken(): Flow<String?>
+    fun getUserNickname(): Flow<String?>
     fun checkUserNickname(nickname: String): Flow<Unit>
 }
