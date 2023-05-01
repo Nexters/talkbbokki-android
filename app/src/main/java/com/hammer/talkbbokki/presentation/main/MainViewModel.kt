@@ -46,12 +46,13 @@ class MainViewModel @Inject constructor(
     fun checkNickname(nickname: String) {
         when {
             nickname.length < 2 -> _verifyMessage.value = R.string.setting_nickname_error_too_short
-            nickname.length > 10 -> _verifyMessage.value = R.string.setting_nickname_error_too_long
-            nickname.validateNickname() ->
+            nickname.length >= 10 -> _verifyMessage.value = R.string.setting_nickname_error_too_long
+            !nickname.validateNickname() ->
                 _verifyMessage.value =
                     R.string.setting_nickname_error_not_allow_char
             else -> {
-                isNicknameExist(nickname)
+                _verifyMessage.value = R.string.setting_nickname_usable
+//                isNicknameExist(nickname)
             }
         }
     }
