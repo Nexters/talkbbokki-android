@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.hammer.talkbbokki.data.local.BookmarkDao
 import com.hammer.talkbbokki.data.local.BookmarkDatabase
+import com.hammer.talkbbokki.data.local.UserInfoDao
+import com.hammer.talkbbokki.data.local.UserInfoDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,4 +27,15 @@ internal object LocalModule {
     @Singleton
     @Provides
     fun provideBookmarkDao(database: BookmarkDatabase): BookmarkDao = database.bookItemDao()
+
+    @Singleton
+    @Provides
+    fun provideUserInfoDatabase(
+        @ApplicationContext context: Context
+    ): UserInfoDatabase =
+        Room.databaseBuilder(context, UserInfoDatabase::class.java, "userinfo.db").build()
+
+    @Singleton
+    @Provides
+    fun provideUserInfoDao(database: UserInfoDatabase): UserInfoDao = database.userInfoDao()
 }
