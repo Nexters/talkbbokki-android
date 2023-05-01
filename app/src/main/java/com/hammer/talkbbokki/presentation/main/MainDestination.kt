@@ -12,13 +12,15 @@ object MainDestination : TalkbbokkiNavigationDestination {
 fun NavGraphBuilder.mainGraph(
     navigateToList: (level: String, title: String, bgColor: String) -> Unit,
     navigateToBookmark: () -> Unit,
-    navigateToSuggestion: () -> Unit
+    navigateToSuggestion: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     composable(route = MainDestination.route) {
         MainRoute(
             onClickLevel = navigateToList,
             onClickBookmarkMenu = navigateToBookmark,
-            onClickSuggestion = navigateToSuggestion
+            onClickSuggestion = navigateToSuggestion,
+            onClickBack = onBackClick
         )
     }
 }

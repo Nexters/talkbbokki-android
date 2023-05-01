@@ -63,6 +63,7 @@ fun MainRoute(
     onClickBookmarkMenu: () -> Unit,
     onClickLevel: (String, String, String) -> Unit,
     onClickSuggestion: () -> Unit,
+    onClickBack: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val categoryLevel by viewModel.categoryLevel.collectAsState()
@@ -83,9 +84,9 @@ fun MainRoute(
             NicknameSettingScreen(
                 textState = textState,
                 checkNickname = viewModel::checkNickname,
-                onClickSend = viewModel::saveUserNickname
-            ) {
-            }
+                onClickSend = viewModel::saveUserNickname,
+                onBackClick = onClickBack
+            )
         }
     }
 }

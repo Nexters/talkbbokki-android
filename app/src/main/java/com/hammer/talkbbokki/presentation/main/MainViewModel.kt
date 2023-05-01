@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
@@ -31,17 +31,27 @@ class MainViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
-    val showNicknameDialog: StateFlow<Boolean> =
-        userInfoRepository.getUserNickname().map { nickname ->
-            nickname == null
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = false
-        )
+    private val _showNicknameDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showNicknameDialog: StateFlow<Boolean> get() = _showNicknameDialog.asStateFlow()
 
     private val _verifyMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
     val verifyMessage: StateFlow<Int> get() = _verifyMessage.asStateFlow()
+
+    init {
+        getUserNickname()
+    }
+
+    private fun getUserNickname() {
+        viewModelScope.launch {
+            userInfoRepository.getUserNickname()
+                .catch {
+                    _showNicknameDialog.update { true }
+                }
+                .collect { nickname ->
+                    _showNicknameDialog.update { nickname == null }
+                }
+        }
+    }
 
     fun checkNickname(nickname: String) {
         when {
@@ -53,8 +63,7 @@ class MainViewModel @Inject constructor(
                 _verifyMessage.value =
                     R.string.setting_nickname_error_not_allow_char
             else -> {
-                _verifyMessage.value = R.string.setting_nickname_usable
-//                isNicknameExist(nickname)
+                isNicknameExist(nickname)
             }
         }
     }
@@ -81,6 +90,7 @@ class MainViewModel @Inject constructor(
             userInfoRepository.postUserNickname(nickname.trim())
                 .catch { }
                 .collect {
+                    _showNicknameDialog.update { false }
                 }
         }
     }
