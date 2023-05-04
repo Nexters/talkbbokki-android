@@ -6,6 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.hammer.talkbbokki.presentation.bookmark.BookmarkDestination
 import com.hammer.talkbbokki.presentation.bookmark.bookmarkGraph
+import com.hammer.talkbbokki.presentation.comment.CommentsDestination
+import com.hammer.talkbbokki.presentation.comment.commentsGraph
 import com.hammer.talkbbokki.presentation.detail.DetailDestination
 import com.hammer.talkbbokki.presentation.detail.detailGraph
 import com.hammer.talkbbokki.presentation.intro.IntroDestination
@@ -73,6 +75,9 @@ fun TalkbbokkiNavHost(
         detailGraph(
             navigateToTopicList = {
                 navController.popBackStack()
+            },
+            navigateToComments = {
+                navController.navigate(CommentsDestination.route)
             }
         )
         bookmarkGraph(
@@ -85,6 +90,9 @@ fun TalkbbokkiNavHost(
             onBackClick = { navController.popBackStack() }
         )
         suggestionGraph(
+            onBackClick = { navController.popBackStack() }
+        )
+        commentsGraph(
             onBackClick = { navController.popBackStack() }
         )
     }
