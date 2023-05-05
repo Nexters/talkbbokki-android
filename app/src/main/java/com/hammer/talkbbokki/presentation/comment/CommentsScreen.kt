@@ -1,92 +1,179 @@
 package com.hammer.talkbbokki.presentation.comment
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.ui.theme.*
 
 @Composable
 fun CommentsRoute(
-    onBackClick: () -> Unit,
-    viewModel: CommentsViewModel = hiltViewModel()
+    onBackClick: () -> Unit, viewModel: CommentsViewModel = hiltViewModel()
 ) {
-    CommentsScreen()
+    val comments = viewModel.getComments()
+    CommentsScreen(comments)
 }
 
 @Composable
-fun CommentsScreen() {
-    Column() {
-        CommentsHeader()
-        Comments()
-        CommentInputArea()
+fun CommentsScreen(comments: List<Comment>) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(MainBackgroundColor)
+    ) {
+        Column(Modifier.fillMaxSize().padding(bottom = 78.dp)) {
+            CommentsHeader()
+            CommentList(
+                comments
+            )
+        }
+        Box(Modifier.align(Alignment.BottomCenter)) {
+            CommentInputArea()
+        }
     }
 }
 
 @Composable
 fun CommentsHeader() {
+    val replyCount = 0
     Box(
         Modifier
             .height(56.dp)
             .fillMaxWidth()
     ) {
-        Button(onClick = { /*TODO*/ }) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_arrow_left),
-                contentDescription = null,
-                alignment = Alignment.Center
-            )
-        }
+        Icon(painter = painterResource(id = R.drawable.ic_arrow_left),
+            tint = White,
+            contentDescription = null,
+            modifier = Modifier
+                .clickable {
+                    // 뒤로가기
+                }
+                .align(Alignment.CenterStart)
+                .padding(start = 20.dp))
         Text(
-            text = "댓글()",
-            Modifier.align(Alignment.Center)
+            text = "댓글 ($replyCount)", Modifier.align(Alignment.Center), color = White
         )
     }
 }
 
 @Composable
-fun Comments() {
-
+fun CommentItem(
+    nickname: String, date: String, content: String, replyCount: Int, onDeleteClick: () -> Unit
+) {
+    Column(modifier = Modifier.padding(20.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(text = nickname, style = TalkbbokkiTypography.b3_bold, color = White)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = date, style = TalkbbokkiTypography.caption, color = Gray06)
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = content, style = TalkbbokkiTypography.b3_regular, color = White)
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(text = "답글($replyCount)", style = TalkbbokkiTypography.caption, color = Gray06)
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = "삭제하기",
+                modifier = Modifier.clickable { onDeleteClick() },
+                style = TalkbbokkiTypography.caption,
+                color = Gray06
+            )
+        }
+    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CommentList(comments: List<Comment>) {
+    LazyColumn {
+        itemsIndexed(comments) { idx, comment ->
+            CommentItem(
+                nickname = comment.nickname,
+                date = comment.date,
+                content = comment.content,
+                replyCount = comment.replyCount,
+                onDeleteClick = comment.onDeleteClick
+            )
+        }
+    }
+}
+
 @Composable
 fun CommentInputArea() {
     val commentText = remember { mutableStateOf("") }
-    Column(
-        modifier = Modifier.run {fillMaxWidth()
-                .background(Color.LightGray, RoundedCornerShape(8.dp))
-                .padding(8.dp)}
-    ) {
-        Text(
-            text = "이 대화 주제 어땠나요?",
-            style = MaterialTheme.typography.titleSmall,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(8.dp)
-        )
-        TextField(
-            value = commentText.value,
-            onValueChange = { commentText.value = it },
-            modifier = Modifier.padding(8.dp)
-        )
-        Button(
-            onClick = { /* 댓글 등록 로직 */ },
+    Column(modifier = Modifier.run {
+        fillMaxWidth()
+            .defaultMinSize(minHeight = 78.dp)
+            .background(MainBackgroundColor)
+            .padding(horizontal = 20.dp, vertical = 16.dp)
+    }) {
+        Row(
             modifier = Modifier
-                .align(Alignment.End)
-                .padding(8.dp)
+                .fillMaxWidth()
+                .background(Gray06, RoundedCornerShape(8.dp))
         ) {
-            Text(text = "등록")
+            TextField(
+                modifier = Modifier
+                    .weight(5f)
+                    .defaultMinSize(minHeight = 46.dp),
+                value = commentText.value,
+                onValueChange = {
+                    commentText.value = it
+                },
+                textStyle = TalkbbokkiTypography.b2_regular,
+                shape = RoundedCornerShape(8.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = White,
+                    disabledTextColor = Transparent,
+                    backgroundColor = Transparent,
+                    focusedIndicatorColor = Transparent,
+                    unfocusedIndicatorColor = Transparent,
+                    disabledIndicatorColor = Transparent,
+                    cursorColor = MainColor01
+                )
+            )
+            Box(
+                modifier = Modifier
+                    .clickable {
+                        // 댓글 작성
+                    }
+                    .align(Alignment.Bottom)
+                    .size(height = 48.dp, width = 52.dp)
+                    .padding(horizontal = 12.dp),
+            ) {
+                Text(
+                    "등록",
+                    style = TalkbbokkiTypography.b2_bold,
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .align(Alignment.Center),
+                    color = White,
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }
+
+data class Comment(
+    val nickname: String,
+    val date: String,
+    val content: String,
+    val replyCount: Int,
+    val onDeleteClick: () -> Unit
+)
