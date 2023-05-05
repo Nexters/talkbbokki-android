@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,18 +28,28 @@ fun CommentsRoute(
     onBackClick: () -> Unit, viewModel: CommentsViewModel = hiltViewModel()
 ) {
     val comments = viewModel.getComments()
-    CommentsScreen(comments)
+    CommentsScreen(
+        onBackClick,
+        comments
+    )
 }
 
 @Composable
-fun CommentsScreen(comments: List<Comment>) {
+fun CommentsScreen(
+    onBackClick: () -> Unit,
+    comments: List<Comment>
+) {
     Box(
         Modifier
             .fillMaxSize()
             .background(MainBackgroundColor)
     ) {
-        Column(Modifier.fillMaxSize().padding(bottom = 78.dp)) {
-            CommentsHeader()
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(bottom = 78.dp)
+        ) {
+            CommentsHeader(onBackClick)
             CommentList(
                 comments
             )
@@ -50,7 +61,9 @@ fun CommentsScreen(comments: List<Comment>) {
 }
 
 @Composable
-fun CommentsHeader() {
+fun CommentsHeader(
+    onBackClick: () -> Unit,
+) {
     val replyCount = 0
     Box(
         Modifier
@@ -62,7 +75,7 @@ fun CommentsHeader() {
             contentDescription = null,
             modifier = Modifier
                 .clickable {
-                    // 뒤로가기
+                    onBackClick()
                 }
                 .align(Alignment.CenterStart)
                 .padding(start = 20.dp))
@@ -76,24 +89,45 @@ fun CommentsHeader() {
 fun CommentItem(
     nickname: String, date: String, content: String, replyCount: Int, onDeleteClick: () -> Unit
 ) {
+    val isMine = false
     Column(modifier = Modifier.padding(20.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = nickname, style = TalkbbokkiTypography.b3_bold, color = White)
+            Text(
+                text = nickname, style = TalkbbokkiTypography.b3_bold,
+                color = if (isMine) MainColor01 else White
+            )
             Spacer(modifier = Modifier.width(8.dp))
             Text(text = date, style = TalkbbokkiTypography.caption, color = Gray06)
+        }
+        if (isMine) {
+            Icon(painter = painterResource(id = R.drawable.ic_close),
+                tint = White,
+                contentDescription = null,
+                modifier = Modifier
+                    .clickable {
+                        // 삭제하기
+                    }
+                    .align(Alignment.End))
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = content, style = TalkbbokkiTypography.b3_regular, color = White)
         Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "답글($replyCount)", style = TalkbbokkiTypography.caption, color = Gray06)
-            Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = "삭제하기",
-                modifier = Modifier.clickable { onDeleteClick() },
+                text = if (replyCount == 0) stringResource(R.string.recomment_button) else "답글($replyCount)",
                 style = TalkbbokkiTypography.caption,
-                color = Gray06
+                color = Gray06,
+                modifier = Modifier.clickable { onDeleteClick() },
             )
+            Spacer(modifier = Modifier.width(12.dp))
+            if (!isMine) {
+                Text(
+                    text = stringResource(R.string.report_comment_button),
+                    modifier = Modifier.clickable { onDeleteClick() },
+                    style = TalkbbokkiTypography.caption,
+                    color = Gray06
+                )
+            }
         }
     }
 }
@@ -157,7 +191,7 @@ fun CommentInputArea() {
                     .padding(horizontal = 12.dp),
             ) {
                 Text(
-                    "등록",
+                    stringResource(R.string.comment_send_button),
                     style = TalkbbokkiTypography.b2_bold,
                     modifier = Modifier
                         .wrapContentHeight()

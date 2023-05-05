@@ -58,4 +58,7 @@
     <string name="detail_card_bookmark_fail">즐겨찾기 에러 발생!</string>
     <string name="detail_image_share_complete">이미지 저장 완료!</string>
 
+    <string name="comment_send_button">등록</string>
+    <string name="recomment_button">답글 달기</string>
+    <string name="report_comment_button">신고하기</string>
 </resources>
