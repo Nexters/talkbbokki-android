@@ -1,13 +1,35 @@
 package com.hammer.talkbbokki.presentation.comment
 
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.hammer.talkbbokki.domain.repository.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CommentsViewModel @Inject constructor(
+    private val repository: CommentRepository
 ) : ViewModel() {
+
+    init {
+        viewModelScope.launch {
+            repository.getCommentList(7)
+                .collect{
+                    android.util.Log.e("@@@", it.toString() + "test")
+                }
+
+/*            repository.deleteComment(7)
+                .collect{
+                    android.util.Log.e("@@@", it.toString() + "test")
+                }
+
+            repository.postComment(7, com.hammer.talkbbokki.domain.model.Comment("", "", 0))
+                .collect{
+                    android.util.Log.e("@@@", it.toString() + "test")
+                }*/
+        }
+    }
 
     fun getComments(): List<Comment> {
         val comments = mutableListOf<Comment>()
