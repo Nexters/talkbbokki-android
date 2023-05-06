@@ -51,5 +51,11 @@ enum class OnBoardingInfo(
         subTitleRes = R.string.onboarding_subtitle_3,
         highlightRes = R.string.onboarding_title_highlight_3,
         imageRes = R.drawable.image_onboarding_03
+    ),
+    Board4(
+        titleRes = R.string.onboarding_title_4,
+        subTitleRes = R.string.onboarding_subtitle_4,
+        highlightRes = R.string.onboarding_title_highlight_4,
+        imageRes = R.drawable.image_onboarding_04
     )
 }

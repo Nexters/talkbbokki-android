@@ -12,9 +12,12 @@
     <string name="onboarding_title_highlight_2">STARTER</string>
     <string name="onboarding_title_3">뽑은 대화주제\n손쉽게 공유하세요!</string>
     <string name="onboarding_title_highlight_3">공유</string>
+    <string name="onboarding_title_4">댓글로 서로의 의견을\n들어보세요!</string>
+    <string name="onboarding_title_highlight_4">댓글</string>
     <string name="onboarding_subtitle_1">대화 주제 고민은 그만!</string>
     <string name="onboarding_subtitle_2">오늘은 누구부터 이야기 해볼까요?</string>
     <string name="onboarding_subtitle_3">온라인이든, 오프라인이든 상관없어요!</string>
+    <string name="onboarding_subtitle_4">주제에 대한 타인의 의견이 궁금하다면?</string>
     <string name="onboarding_button_next">다음</string>
     <string name="onboarding_button_start">시작할래요!</string>
 
