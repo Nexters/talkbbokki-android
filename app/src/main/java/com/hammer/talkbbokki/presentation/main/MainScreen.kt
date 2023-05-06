@@ -1,10 +1,15 @@
 package com.hammer.talkbbokki.presentation.main
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +28,7 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -35,9 +41,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,6 +61,7 @@ import com.hammer.talkbbokki.ui.dialog.CommonDialog
 import com.hammer.talkbbokki.ui.theme.Gray04
 import com.hammer.talkbbokki.ui.theme.Gray07
 import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
+import com.hammer.talkbbokki.ui.theme.MainColor02
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import com.hammer.talkbbokki.ui.theme.White
 import com.hammer.talkbbokki.ui.theme.suggestionButtonColor
@@ -65,19 +77,41 @@ fun MainRoute(
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val categoryLevel by viewModel.categoryLevel.collectAsState()
-    MainScreen(
-        categoryLevel = categoryLevel,
-        onClickBookmarkMenu = {
-            onClickBookmarkMenu()
-            logEvent(AnalyticsConst.Event.CLICK_BOOKMARK_MENU)
-        },
-        onClickLevel = onClickLevel,
-        onClickSuggestion = { onClickSuggestion() }
-    )
+    var showDrawerMenu by remember { mutableStateOf(false) }
+
+    Box {
+        MainScreen(
+            categoryLevel = categoryLevel,
+            onClickBookmarkMenu = {
+//                    onClickBookmarkMenu()
+//                    logEvent(AnalyticsConst.Event.CLICK_BOOKMARK_MENU)
+
+                showDrawerMenu = true
+            },
+            onClickLevel = onClickLevel,
+            onClickSuggestion = { onClickSuggestion() }
+        )
+        AnimatedVisibility(
+            visible = showDrawerMenu,
+            enter = slideInHorizontally(
+                initialOffsetX = { fullWidth -> fullWidth }
+            ),
+            exit = slideOutHorizontally(
+                targetOffsetX = { fullWidth -> fullWidth }
+            )
+        ) {
+            SlideMenuBar(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                showDrawerMenu = false
+            }
+        }
+    }
 }
 
 @Composable
 fun MainScreen(
+    modifier: Modifier = Modifier,
     categoryLevel: List<CategoryLevel>,
     onClickBookmarkMenu: () -> Unit,
     onClickLevel: (String, String, String) -> Unit,
@@ -93,7 +127,7 @@ fun MainScreen(
         )
     }
     LazyVerticalGrid(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MainBackgroundColor)
             .padding(start = 20.dp, end = 20.dp, bottom = 22.dp),
@@ -124,7 +158,8 @@ fun MainHeader(
             .fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(top = 24.dp),
             horizontalAlignment = Alignment.End
         ) {
@@ -219,6 +254,61 @@ fun LevelItem(
             contentScale = ContentScale.FillBounds,
             contentDescription = null
         )
+    }
+}
+
+@Composable
+fun SlideMenuBar(
+    modifier: Modifier = Modifier,
+    menuList: List<String> = emptyList(),
+    onClickMenuClose: () -> Unit
+) {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+
+    Box {
+        Scrim(
+            open = true,
+            onClose = { onClickMenuClose() },
+            color = MainColor02.copy(alpha = 0f)
+        )
+
+        Column(
+            modifier = modifier
+                .padding(start = screenWidth * 0.35f)
+                .background(MainColor02)
+                .clickable(enabled = false) {}
+        ) {
+            Text("Text in Bodycontext")
+            Button(onClick = { onClickMenuClose() }) {
+                Text("Click to open")
+            }
+        }
+    }
+}
+
+@Composable
+private fun Scrim(
+    open: Boolean,
+    onClose: () -> Unit,
+    color: Color
+) {
+    val dismissDrawer = if (open) {
+        Modifier
+            .pointerInput(onClose) { detectTapGestures { onClose() } }
+            .semantics(mergeDescendants = true) {
+                onClick { onClose(); true }
+            }
+    } else {
+        Modifier
+    }
+
+    Canvas(
+        Modifier
+            .fillMaxSize()
+            .then(dismissDrawer)
+    ) {
+        drawRect(color)
     }
 }
 
