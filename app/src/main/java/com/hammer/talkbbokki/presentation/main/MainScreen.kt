@@ -28,8 +28,8 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -50,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
@@ -59,6 +60,7 @@ import com.hammer.talkbbokki.analytics.logEvent
 import com.hammer.talkbbokki.domain.model.CategoryLevel
 import com.hammer.talkbbokki.ui.dialog.CommonDialog
 import com.hammer.talkbbokki.ui.theme.Gray04
+import com.hammer.talkbbokki.ui.theme.Gray06
 import com.hammer.talkbbokki.ui.theme.Gray07
 import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
 import com.hammer.talkbbokki.ui.theme.MainColor02
@@ -74,6 +76,7 @@ fun MainRoute(
     onClickBookmarkMenu: () -> Unit,
     onClickLevel: (String, String, String) -> Unit,
     onClickSuggestion: () -> Unit,
+    onClickOnboard: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val categoryLevel by viewModel.categoryLevel.collectAsState()
@@ -83,13 +86,9 @@ fun MainRoute(
         MainScreen(
             categoryLevel = categoryLevel,
             onClickBookmarkMenu = {
-//                    onClickBookmarkMenu()
-//                    logEvent(AnalyticsConst.Event.CLICK_BOOKMARK_MENU)
-
                 showDrawerMenu = true
             },
-            onClickLevel = onClickLevel,
-            onClickSuggestion = { onClickSuggestion() }
+            onClickLevel = onClickLevel
         )
         AnimatedVisibility(
             visible = showDrawerMenu,
@@ -101,10 +100,16 @@ fun MainRoute(
             )
         ) {
             SlideMenuBar(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                showDrawerMenu = false
-            }
+                modifier = Modifier.fillMaxSize(),
+                onClickMenuClose = { showDrawerMenu = false },
+                onClickNickname = {},
+                onClickBookmark = {
+                    onClickBookmarkMenu()
+                    logEvent(AnalyticsConst.Event.CLICK_BOOKMARK_MENU)
+                },
+                onClickSuggestion = { onClickSuggestion() },
+                onClickOnboard = { onClickOnboard() }
+            )
         }
     }
 }
@@ -114,8 +119,7 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     categoryLevel: List<CategoryLevel>,
     onClickBookmarkMenu: () -> Unit,
-    onClickLevel: (String, String, String) -> Unit,
-    onClickSuggestion: () -> Unit
+    onClickLevel: (String, String, String) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
@@ -141,10 +145,6 @@ fun MainScreen(
 
         items(categoryLevel) {
             LevelItem(it, onClickLevel) { showDialog = true }
-        }
-
-        item(span = { GridItemSpan(2) }) {
-            SuggestionButton { onClickSuggestion() }
         }
     }
 }
@@ -260,8 +260,12 @@ fun LevelItem(
 @Composable
 fun SlideMenuBar(
     modifier: Modifier = Modifier,
-    menuList: List<String> = emptyList(),
-    onClickMenuClose: () -> Unit
+    userNickname: String = "",
+    onClickMenuClose: () -> Unit,
+    onClickNickname: () -> Unit,
+    onClickBookmark: () -> Unit,
+    onClickSuggestion: () -> Unit,
+    onClickOnboard: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
@@ -279,9 +283,65 @@ fun SlideMenuBar(
                 .background(MainColor02)
                 .clickable(enabled = false) {}
         ) {
-            Text("Text in Bodycontext")
-            Button(onClick = { onClickMenuClose() }) {
-                Text("Click to open")
+            Spacer(modifier = Modifier.height(50.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close),
+                contentDescription = null,
+                tint = White,
+                modifier = Modifier
+                    .clickable { onClickMenuClose() }
+                    .padding(top = 15.dp, start = 15.dp, bottom = 4.dp)
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(20.dp)
+            ) {
+                Text(
+                    text = userNickname.ifBlank {
+                        stringResource(id = R.string.main_menu_nickname)
+                    },
+                    style = TalkbbokkiTypography.b1_bold,
+                    color = White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_edit),
+                    contentDescription = null,
+                    tint = White,
+                    modifier = Modifier
+                        .clickable { onClickNickname() }
+                        .padding(start = 8.dp)
+                        .align(Alignment.CenterVertically)
+                )
+            }
+            Divider(
+                modifier = Modifier.fillMaxWidth(),
+                color = Gray06
+            )
+            Column(modifier = Modifier.padding(start = 15.dp, top = 24.dp, end = 15.dp)) {
+                Text(
+                    text = stringResource(id = R.string.main_menu_bookmark),
+                    style = TalkbbokkiTypography.b2_regular,
+                    color = Gray04,
+                    modifier = Modifier
+                        .clickable { onClickBookmark() }
+                )
+                Spacer(modifier = Modifier.height(28.dp))
+                Text(
+                    text = stringResource(id = R.string.main_menu_suggestion),
+                    style = TalkbbokkiTypography.b2_regular,
+                    color = Gray04,
+                    modifier = Modifier
+                        .clickable { onClickSuggestion() }
+                )
+                Spacer(modifier = Modifier.height(28.dp))
+                Text(
+                    text = stringResource(id = R.string.main_menu_onboard),
+                    style = TalkbbokkiTypography.b2_regular,
+                    color = Gray04,
+                    modifier = Modifier
+                        .clickable { onClickOnboard() }
+                )
             }
         }
     }
