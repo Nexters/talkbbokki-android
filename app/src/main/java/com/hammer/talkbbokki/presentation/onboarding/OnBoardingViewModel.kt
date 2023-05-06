@@ -35,24 +35,24 @@ enum class OnBoardingInfo(
     @StringRes val highlightRes: Int,
     @DrawableRes val imageRes: Int? = null
 ) {
-    Board1(
+    CATEGORY(
         titleRes = R.string.onboarding_title_1,
         subTitleRes = R.string.onboarding_subtitle_1,
         highlightRes = R.string.onboarding_title_highlight_1,
         imageRes = R.drawable.image_onboarding_01
     ),
-    Board2(
+    STARTER(
         titleRes = R.string.onboarding_title_2,
         subTitleRes = R.string.onboarding_subtitle_2,
         highlightRes = R.string.onboarding_title_highlight_2
     ),
-    Board3(
+    SHARE(
         titleRes = R.string.onboarding_title_3,
         subTitleRes = R.string.onboarding_subtitle_3,
         highlightRes = R.string.onboarding_title_highlight_3,
         imageRes = R.drawable.image_onboarding_03
     ),
-    Board4(
+    COMMENTS(
         titleRes = R.string.onboarding_title_4,
         subTitleRes = R.string.onboarding_subtitle_4,
         highlightRes = R.string.onboarding_title_highlight_4,
