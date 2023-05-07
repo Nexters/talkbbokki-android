@@ -14,6 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -91,6 +92,11 @@ fun DetailRoute(
         onClickStarter = { viewModel.getTalkStarter() },
         updateViewCnt = { viewModel.postViewCnt(item.id) },
         onClickShowDialog = { showDialog = true },
+        onClickComment = {
+            // TODO : 댓글 페이지 연결
+        },
+        onClickPrev = { viewModel.clickPrev() },
+        onClickNext = { viewModel.clickNext() },
         starter = starter
     )
     if (showToast) {
@@ -109,11 +115,14 @@ fun DetailScreen(
     onClickStarter: () -> Unit,
     updateViewCnt: () -> Unit,
     onClickShowDialog: () -> Unit,
+    onClickComment: () -> Unit,
+    onClickPrev: () -> Unit,
+    onClickNext: () -> Unit,
     starter: TalkOrderItem
 ) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
 
-    Column(
+    Box(
         modifier = modifier
             .fillMaxSize()
             .background(item.bgColor.toHexColor())
@@ -132,6 +141,12 @@ fun DetailScreen(
                 onClickShowDialog
             )
         }
+        DetailBottomNavigation(
+            modifier = modifier.fillMaxWidth().align(Alignment.BottomCenter),
+            onClickComment = { onClickComment() },
+            onClickPrev = { onClickPrev() },
+            onClickNext = { onClickNext() }
+        )
     }
 }
 
@@ -150,6 +165,89 @@ fun DetailHeader(cardFace: CardFace, onBackClick: () -> Unit) {
             tint = Black,
             contentDescription = null
         )
+    }
+}
+
+@Composable
+fun DetailBottomNavigation(
+    modifier: Modifier = Modifier,
+    onClickComment: () -> Unit,
+    onClickPrev: () -> Unit,
+    onClickNext: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = Gray07)
+            .shadow(elevation = 10.dp)
+            .padding(start = 20.dp, top = 16.dp, bottom = 16.dp, end = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        /* 댓글 정보 */
+        Row(
+            modifier = Modifier.clickable { onClickComment() },
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_comments),
+                tint = White,
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "205",
+                style = TalkbbokkiTypography.b2_regular,
+                color = White
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            /* < 이전 카드 */
+            Row(
+                modifier = Modifier.clickable { onClickPrev() }
+            ) {
+                Icon(
+                    modifier = Modifier.width(18.dp).height(18.dp),
+                    painter = painterResource(id = R.drawable.ic_arrow_prev),
+                    tint = White,
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = stringResource(id = R.string.detail_bottom_navigation_prev),
+                    style = TalkbbokkiTypography.b2_bold,
+                    color = White
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(
+                modifier = Modifier
+                    .height(15.dp)
+                    .width(1.dp)
+                    .background(White.copy(alpha = 0.35f))
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+
+            /* 다음 카드 > */
+            Row(
+                modifier = Modifier.clickable { onClickNext() }
+            ) {
+                Text(
+                    text = stringResource(id = R.string.detail_bottom_navigation_next),
+                    style = TalkbbokkiTypography.b2_bold,
+                    color = White
+                )
+                Icon(
+                    modifier = Modifier.width(18.dp).height(18.dp),
+                    painter = painterResource(id = R.drawable.ic_arrow_next),
+                    tint = White,
+                    contentDescription = null
+                )
+            }
+        }
     }
 }
 
