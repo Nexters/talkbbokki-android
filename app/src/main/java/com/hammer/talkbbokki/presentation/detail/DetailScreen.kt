@@ -46,6 +46,7 @@ fun DetailRoute(
     val toastMessage by viewModel.toastMessage.collectAsState()
     val item by viewModel.currentTopic.collectAsState()
     val starter by viewModel.talkOrder.collectAsState()
+    val hasPrevAndNext by viewModel.hasPrevAndNext.collectAsState()
 
     var showToast by remember(toastMessage) { mutableStateOf(toastMessage > 0) }
     var showDialog by remember { mutableStateOf(false) }
@@ -79,6 +80,7 @@ fun DetailRoute(
     DetailScreen(
         onClickToList = onClickToList,
         item = item,
+        hasPrevAndNext = hasPrevAndNext,
         onClickBookmark = {
             if (it) viewModel.addBookmark() else viewModel.removeBookmark()
             logEvent(
@@ -111,6 +113,7 @@ fun DetailScreen(
     modifier: Modifier = Modifier,
     onClickToList: () -> Unit,
     item: TopicItem,
+    hasPrevAndNext: Pair<Boolean, Boolean>,
     onClickBookmark: (Boolean) -> Unit,
     onClickStarter: () -> Unit,
     updateViewCnt: () -> Unit,
@@ -142,7 +145,11 @@ fun DetailScreen(
             )
         }
         DetailBottomNavigation(
-            modifier = modifier.fillMaxWidth().align(Alignment.BottomCenter),
+            modifier = modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter),
+            hasPrev = hasPrevAndNext.first,
+            hasNext = hasPrevAndNext.second,
             onClickComment = { onClickComment() },
             onClickPrev = { onClickPrev() },
             onClickNext = { onClickNext() }
@@ -171,6 +178,8 @@ fun DetailHeader(cardFace: CardFace, onBackClick: () -> Unit) {
 @Composable
 fun DetailBottomNavigation(
     modifier: Modifier = Modifier,
+    hasPrev: Boolean,
+    hasNext: Boolean,
     onClickComment: () -> Unit,
     onClickPrev: () -> Unit,
     onClickNext: () -> Unit
@@ -201,25 +210,31 @@ fun DetailBottomNavigation(
                 color = White
             )
         }
+
+        val prevColor = White.copy(alpha = if (hasPrev) 1f else 0.35f)
+        val nextColor = White.copy(alpha = if (hasNext) 1f else 0.35f)
         Row(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
             /* < 이전 카드 */
             Row(
-                modifier = Modifier.clickable { onClickPrev() }
+                modifier = Modifier.clickable(enabled = hasPrev) { onClickPrev() }
             ) {
                 Icon(
-                    modifier = Modifier.width(18.dp).height(18.dp),
+                    modifier = Modifier
+                        .width(18.dp)
+                        .height(18.dp)
+                        .align(Alignment.CenterVertically),
                     painter = painterResource(id = R.drawable.ic_arrow_prev),
-                    tint = White,
+                    tint = prevColor,
                     contentDescription = null
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = stringResource(id = R.string.detail_bottom_navigation_prev),
                     style = TalkbbokkiTypography.b2_bold,
-                    color = White
+                    color = prevColor
                 )
             }
             Spacer(modifier = Modifier.width(12.dp))
@@ -233,17 +248,20 @@ fun DetailBottomNavigation(
 
             /* 다음 카드 > */
             Row(
-                modifier = Modifier.clickable { onClickNext() }
+                modifier = Modifier.clickable(enabled = hasNext) { onClickNext() }
             ) {
                 Text(
                     text = stringResource(id = R.string.detail_bottom_navigation_next),
                     style = TalkbbokkiTypography.b2_bold,
-                    color = White
+                    color = nextColor
                 )
                 Icon(
-                    modifier = Modifier.width(18.dp).height(18.dp),
+                    modifier = Modifier
+                        .width(18.dp)
+                        .height(18.dp)
+                        .align(Alignment.CenterVertically),
                     painter = painterResource(id = R.drawable.ic_arrow_next),
-                    tint = White,
+                    tint = nextColor,
                     contentDescription = null
                 )
             }
