@@ -34,7 +34,7 @@ class DetailViewModel @Inject constructor(
     private val _item = savedStateHandle.get<TopicItem>("topic") ?: TopicItem()
 
     val item: StateFlow<TopicItem> = bookmarkRepository
-        .findItem(savedStateHandle.get<Int>("id") ?: 0)
+        .findItem(_item.id)
         .map {
             (it ?: _item).copy(
                 bgColor = _item.bgColor
