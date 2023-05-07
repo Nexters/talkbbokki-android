@@ -165,7 +165,7 @@ fun MainHeader(
         ) {
             Icon(
                 modifier = Modifier.clickable { onClickBookmarkMenu() },
-                painter = painterResource(id = R.drawable.ic_like_list),
+                painter = painterResource(id = R.drawable.ic_menu),
                 contentDescription = null,
                 tint = White
             )
