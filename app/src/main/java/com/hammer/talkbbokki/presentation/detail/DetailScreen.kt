@@ -43,7 +43,7 @@ fun DetailRoute(
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val toastMessage by viewModel.toastMessage.collectAsState()
-    val item by viewModel.item.collectAsState()
+    val item by viewModel.currentTopic.collectAsState()
     val starter by viewModel.talkOrder.collectAsState()
 
     var showToast by remember(toastMessage) { mutableStateOf(toastMessage > 0) }
