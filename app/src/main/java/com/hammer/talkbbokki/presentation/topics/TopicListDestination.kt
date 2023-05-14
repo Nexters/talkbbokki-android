@@ -13,7 +13,7 @@ object TopicListDestination : TalkbbokkiNavigationDestination {
 }
 
 fun NavGraphBuilder.topicListGraph(
-    navigateToDetail: (level: String, item: TopicItem) -> Unit,
+    navigateToDetail: (item: TopicItem) -> Unit,
     navigateToMain: () -> Unit
 ) {
     composable(
