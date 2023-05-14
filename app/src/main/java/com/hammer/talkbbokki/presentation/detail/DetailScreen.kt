@@ -46,7 +46,6 @@ fun DetailRoute(
     val toastMessage by viewModel.toastMessage.collectAsState()
     val item by viewModel.currentTopic.collectAsState()
     val starter by viewModel.talkOrder.collectAsState()
-    val hasPrevAndNext by viewModel.hasPrevAndNext.collectAsState()
 
     var showToast by remember(toastMessage) { mutableStateOf(toastMessage > 0) }
     var showDialog by remember { mutableStateOf(false) }
@@ -80,7 +79,6 @@ fun DetailRoute(
     DetailScreen(
         onClickToList = onClickToList,
         item = item,
-        hasPrevAndNext = hasPrevAndNext,
         onClickBookmark = {
             if (it) viewModel.addBookmark() else viewModel.removeBookmark()
             logEvent(
@@ -94,11 +92,6 @@ fun DetailRoute(
         onClickStarter = { viewModel.getTalkStarter() },
         updateViewCnt = { viewModel.postViewCnt(item.id) },
         onClickShowDialog = { showDialog = true },
-        onClickComment = {
-            // TODO : 댓글 페이지 연결
-        },
-        onClickPrev = { viewModel.clickPrev() },
-        onClickNext = { viewModel.clickNext() },
         starter = starter
     )
     if (showToast) {
@@ -113,14 +106,10 @@ fun DetailScreen(
     modifier: Modifier = Modifier,
     onClickToList: () -> Unit,
     item: TopicItem,
-    hasPrevAndNext: Pair<Boolean, Boolean>,
     onClickBookmark: (Boolean) -> Unit,
     onClickStarter: () -> Unit,
     updateViewCnt: () -> Unit,
     onClickShowDialog: () -> Unit,
-    onClickComment: () -> Unit,
-    onClickPrev: () -> Unit,
-    onClickNext: () -> Unit,
     starter: TalkOrderItem
 ) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
