@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.hammer.talkbbokki.ui.theme.Gray06
 import com.hammer.talkbbokki.ui.theme.MainColor01
 import com.hammer.talkbbokki.ui.theme.MainColor02
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
@@ -33,28 +34,34 @@ enum class ButtonType(
     LargeWhite(
         White,
         MainColor01
+    ),
+    Disable(
+        Gray06,
+        White
     )
 }
 
 @Composable
 fun CommonLargeButton(
     modifier: Modifier = Modifier,
+    isEnable: Boolean = true,
     text: String,
     type: ButtonType = ButtonType.LargeBlack,
     onClickButton: () -> Unit
 ) {
+    val buttonType = if (isEnable) type else ButtonType.Disable
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(60.dp)
-            .background(color = type.backgroundColor, shape = RoundedCornerShape(8.dp))
-            .clickable { onClickButton() },
+            .background(color = buttonType.backgroundColor, shape = RoundedCornerShape(8.dp))
+            .clickable(enabled = isEnable) { onClickButton() },
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
             style = TalkbbokkiTypography.button_large,
-            color = type.textColor,
+            color = buttonType.textColor,
             textAlign = TextAlign.Center
         )
     }
