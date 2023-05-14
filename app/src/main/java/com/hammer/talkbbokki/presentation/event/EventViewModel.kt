@@ -5,7 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hammer.talkbbokki.domain.model.TopicItem
-import com.hammer.talkbbokki.domain.repository.BookmarkRepository
 import com.hammer.talkbbokki.domain.repository.DetailRepository
 import com.hammer.talkbbokki.domain.usecase.TopicUseCase
 import com.hammer.talkbbokki.presentation.topics.TopicLevel
@@ -27,7 +26,6 @@ import kotlinx.coroutines.launch
 class EventViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val topicUseCase: TopicUseCase,
-    private val bookmarkRepository: BookmarkRepository,
     private val detailRepository: DetailRepository
 ) : ViewModel() {
     val selectedLevel = savedStateHandle.get<String>("level") ?: "event"
@@ -39,6 +37,7 @@ class EventViewModel @Inject constructor(
     val currentTopic: StateFlow<TopicItem>
         get() = _currentTopic.asStateFlow().also {
             println("디버깅ㅇㅇㅇ _currentTopic : ${it.value.name}")
+            getCommentsCount(it.value.id)
         }
     private val _currentIndex: MutableStateFlow<Int> = MutableStateFlow(0)
     val hasPrevAndNext: StateFlow<Pair<Boolean, Boolean>>
@@ -50,6 +49,8 @@ class EventViewModel @Inject constructor(
                 l
             }.distinctUntilChanged()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true to true)
+    private val _commentsCount: MutableStateFlow<Int> = MutableStateFlow(0)
+    val commentsCount: StateFlow<Int> get() = _commentsCount.asStateFlow()
 
     init {
         getTopicList()
@@ -74,6 +75,17 @@ class EventViewModel @Inject constructor(
                     _topicList.addAll(list)
                     println("디버깅ㅇㅇㅇ _topicList : ${_topicList.joinToString { it.name }}")
                     _currentTopic.update { list.first() }
+                }
+        }
+    }
+
+    private fun getCommentsCount(id: Int) {
+        viewModelScope.launch {
+            detailRepository.getTopicCommentsCount(id)
+                .catch {
+                    _commentsCount.value = 0
+                }.collect {
+                    _commentsCount.value = it
                 }
         }
     }

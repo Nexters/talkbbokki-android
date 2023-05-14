@@ -170,6 +170,7 @@ fun DetailBottomNavigation(
     modifier: Modifier = Modifier,
     hasPrev: Boolean,
     hasNext: Boolean,
+    commentsCount: Int,
     onClickComment: () -> Unit,
     onClickPrev: () -> Unit,
     onClickNext: () -> Unit
@@ -195,7 +196,7 @@ fun DetailBottomNavigation(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "205",
+                text = commentsCount.toString(),
                 style = TalkbbokkiTypography.b2_regular,
                 color = White
             )

@@ -42,6 +42,7 @@ fun EventListRoute(
 ) {
     val item by viewModel.currentTopic.collectAsState()
     val hasPrevAndNext by viewModel.hasPrevAndNext.collectAsState()
+    val commentsCount by viewModel.commentsCount.collectAsState()
 
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
@@ -74,6 +75,7 @@ fun EventListRoute(
     EventScreen(
         item = item,
         hasPrevAndNext = hasPrevAndNext,
+        commentsCount = commentsCount,
         updateViewCnt = { viewModel.postViewCnt(item.id) },
         onClickShowDialog = { showDialog = true },
         onClickComment = {
@@ -90,6 +92,7 @@ fun EventScreen(
     modifier: Modifier = Modifier,
     item: TopicItem,
     hasPrevAndNext: Pair<Boolean, Boolean>,
+    commentsCount: Int,
     updateViewCnt: () -> Unit,
     onClickShowDialog: () -> Unit,
     onClickComment: () -> Unit,
@@ -121,6 +124,7 @@ fun EventScreen(
                 .align(Alignment.BottomCenter),
             hasPrev = hasPrevAndNext.first,
             hasNext = hasPrevAndNext.second,
+            commentsCount = commentsCount,
             onClickComment = { onClickComment() },
             onClickPrev = { onClickPrev() },
             onClickNext = { onClickNext() }
