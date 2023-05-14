@@ -8,15 +8,19 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.zip
 
 @HiltViewModel
 class IntroViewModel @Inject constructor(
     dataStore: DataStoreManager
 ) : ViewModel() {
-    val showOnBoarding: StateFlow<Boolean> = dataStore.showOnBoarding
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = true
-        )
+    val showOnBoarding: StateFlow<Boolean> = dataStore.showOnBoarding.zip(
+        dataStore.introduceComments
+    ) { onboard, comments ->
+        onboard || comments
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = true
+    )
 }

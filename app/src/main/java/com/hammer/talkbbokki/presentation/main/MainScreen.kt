@@ -1,13 +1,17 @@
 package com.hammer.talkbbokki.presentation.main
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +31,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -38,10 +43,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
@@ -52,8 +63,10 @@ import com.hammer.talkbbokki.domain.model.CategoryLevel
 import com.hammer.talkbbokki.presentation.setting.nickname.NicknameSettingScreen
 import com.hammer.talkbbokki.ui.dialog.CommonDialog
 import com.hammer.talkbbokki.ui.theme.Gray04
+import com.hammer.talkbbokki.ui.theme.Gray06
 import com.hammer.talkbbokki.ui.theme.Gray07
 import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
+import com.hammer.talkbbokki.ui.theme.MainColor02
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import com.hammer.talkbbokki.ui.theme.White
 import com.hammer.talkbbokki.ui.theme.suggestionButtonColor
@@ -66,26 +79,48 @@ fun MainRoute(
     onClickBookmarkMenu: () -> Unit,
     onClickLevel: (String, String, String) -> Unit,
     onClickSuggestion: () -> Unit,
+    onClickOnboard: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val categoryLevel by viewModel.categoryLevel.collectAsState()
+    val userNickname by viewModel.userNickname.collectAsState()
     val showSettingNickname by viewModel.showNicknameDialog.collectAsState()
     val textState by viewModel.verifyMessage.collectAsState()
-    Box(
-        modifier = modifier.fillMaxSize().background(MainBackgroundColor)
-    ) {
-        if (!showSettingNickname) {
-            MainScreen(
-                categoryLevel = categoryLevel,
-                onClickBookmarkMenu = {
+
+    var showDrawerMenu by remember { mutableStateOf(false) }
+
+    Box {
+        MainScreen(
+            categoryLevel = categoryLevel,
+            onClickBookmarkMenu = {
+                showDrawerMenu = true
+            },
+            onClickLevel = onClickLevel
+        )
+        AnimatedVisibility(
+            visible = showDrawerMenu,
+            enter = slideInHorizontally(
+                initialOffsetX = { fullWidth -> fullWidth }
+            ),
+            exit = slideOutHorizontally(
+                targetOffsetX = { fullWidth -> fullWidth }
+            )
+        ) {
+            SlideMenuBar(
+                modifier = Modifier.fillMaxSize(),
+                userNickname = userNickname,
+                onClickMenuClose = { showDrawerMenu = false },
+                onClickNickname = {
+                    viewModel.openNicknamePage()
+                },
+                onClickBookmark = {
                     onClickBookmarkMenu()
                     logEvent(AnalyticsConst.Event.CLICK_BOOKMARK_MENU)
                 },
-                onClickLevel = onClickLevel,
-                onClickSuggestion = { onClickSuggestion() }
+                onClickSuggestion = { onClickSuggestion() },
+                onClickOnboard = { onClickOnboard() }
             )
         }
-
         AnimatedVisibility(
             visible = showSettingNickname,
             enter = slideInVertically(
@@ -107,10 +142,10 @@ fun MainRoute(
 
 @Composable
 fun MainScreen(
+    modifier: Modifier = Modifier,
     categoryLevel: List<CategoryLevel>,
     onClickBookmarkMenu: () -> Unit,
-    onClickLevel: (String, String, String) -> Unit,
-    onClickSuggestion: () -> Unit
+    onClickLevel: (String, String, String) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
@@ -122,7 +157,7 @@ fun MainScreen(
         )
     }
     LazyVerticalGrid(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MainBackgroundColor)
             .padding(start = 20.dp, end = 20.dp, bottom = 22.dp),
@@ -136,10 +171,6 @@ fun MainScreen(
 
         items(categoryLevel) {
             LevelItem(it, onClickLevel) { showDialog = true }
-        }
-
-        item(span = { GridItemSpan(2) }) {
-            SuggestionButton { onClickSuggestion() }
         }
     }
 }
@@ -160,7 +191,7 @@ fun MainHeader(
         ) {
             Icon(
                 modifier = Modifier.clickable { onClickBookmarkMenu() },
-                painter = painterResource(id = R.drawable.ic_like_list),
+                painter = painterResource(id = R.drawable.ic_menu),
                 contentDescription = null,
                 tint = White
             )
@@ -251,6 +282,121 @@ fun LevelItem(
             contentScale = ContentScale.FillBounds,
             contentDescription = null
         )
+    }
+}
+
+@Composable
+fun SlideMenuBar(
+    modifier: Modifier = Modifier,
+    userNickname: String = "",
+    onClickMenuClose: () -> Unit,
+    onClickNickname: () -> Unit,
+    onClickBookmark: () -> Unit,
+    onClickSuggestion: () -> Unit,
+    onClickOnboard: () -> Unit
+) {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+
+    Box {
+        Scrim(
+            open = true,
+            onClose = { onClickMenuClose() },
+            color = MainColor02.copy(alpha = 0f)
+        )
+
+        Column(
+            modifier = modifier
+                .padding(start = screenWidth * 0.35f)
+                .background(MainColor02)
+                .clickable(enabled = false) {}
+        ) {
+            Spacer(modifier = Modifier.height(50.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close),
+                contentDescription = null,
+                tint = White,
+                modifier = Modifier
+                    .clickable { onClickMenuClose() }
+                    .padding(top = 15.dp, start = 15.dp, bottom = 4.dp)
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(20.dp)
+            ) {
+                Text(
+                    text = userNickname.ifBlank {
+                        stringResource(id = R.string.main_menu_nickname)
+                    },
+                    style = TalkbbokkiTypography.b1_bold,
+                    color = White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_edit),
+                    contentDescription = null,
+                    tint = White,
+                    modifier = Modifier
+                        .clickable { onClickNickname() }
+                        .padding(start = 8.dp)
+                        .align(Alignment.CenterVertically)
+                )
+            }
+            Divider(
+                modifier = Modifier.fillMaxWidth(),
+                color = Gray06
+            )
+            Column(modifier = Modifier.padding(start = 15.dp, top = 24.dp, end = 15.dp)) {
+                Text(
+                    text = stringResource(id = R.string.main_menu_bookmark),
+                    style = TalkbbokkiTypography.b2_regular,
+                    color = Gray04,
+                    modifier = Modifier
+                        .clickable { onClickBookmark() }
+                )
+                Spacer(modifier = Modifier.height(28.dp))
+                Text(
+                    text = stringResource(id = R.string.main_menu_suggestion),
+                    style = TalkbbokkiTypography.b2_regular,
+                    color = Gray04,
+                    modifier = Modifier
+                        .clickable { onClickSuggestion() }
+                )
+                Spacer(modifier = Modifier.height(28.dp))
+                Text(
+                    text = stringResource(id = R.string.main_menu_onboard),
+                    style = TalkbbokkiTypography.b2_regular,
+                    color = Gray04,
+                    modifier = Modifier
+                        .clickable { onClickOnboard() }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun Scrim(
+    open: Boolean,
+    onClose: () -> Unit,
+    color: Color
+) {
+    val dismissDrawer = if (open) {
+        Modifier
+            .pointerInput(onClose) { detectTapGestures { onClose() } }
+            .semantics(mergeDescendants = true) {
+                onClick { onClose(); true }
+            }
+    } else {
+        Modifier
+    }
+
+    Canvas(
+        Modifier
+            .fillMaxSize()
+            .then(dismissDrawer)
+    ) {
+        drawRect(color)
     }
 }
 

@@ -32,6 +32,9 @@ class MainViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
+    private val _userNickname: MutableStateFlow<String> = MutableStateFlow("")
+    val userNickname: StateFlow<String> get() = _userNickname.asStateFlow()
+
     private val _showNicknameDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showNicknameDialog: StateFlow<Boolean> get() = _showNicknameDialog.asStateFlow()
 
@@ -51,6 +54,9 @@ class MainViewModel @Inject constructor(
                 }
                 .collect { nickname ->
                     _showNicknameDialog.update { nickname == null }
+                    nickname?.let {
+                        _userNickname.value = nickname
+                    }
                 }
         }
     }
@@ -93,8 +99,14 @@ class MainViewModel @Inject constructor(
                 .catch { }
                 .collect {
                     _showNicknameDialog.update { false }
+                    _userNickname.value = nickname
                 }
         }
+    }
+
+    fun openNicknamePage() {
+        _showNicknameDialog.update { true }
+        checkNickname("")
     }
 
     fun closeNicknamePage() {
