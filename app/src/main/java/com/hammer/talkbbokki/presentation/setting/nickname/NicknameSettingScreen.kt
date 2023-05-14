@@ -51,48 +51,54 @@ fun NicknameSettingScreen(
 ) {
     var textField by remember { mutableStateOf("") }
 
-    ConstraintLayout(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MainColor02)
-            .padding(top = 16.dp, start = 20.dp, end = 20.dp, bottom = 16.dp)
-            .clickable(enabled = false) {}
-    ) {
-        val (header, field, button) = createRefs()
-
-        NicknameSettingHeader(
-            modifier = Modifier.constrainAs(header) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            },
-            onBackClick = onBackClick
-        )
-
-        NicknameSettingTextField(
-            modifier = Modifier.constrainAs(field) {
-                top.linkTo(header.bottom, margin = 24.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            },
-            verifyMessage = textState,
-            enableOutline = textState > 0,
-            text = textField.trim(),
-            textChange = {
-                checkNickname(it.trim())
-                textField = it
-            }
-        )
-
-        NicknameSettingButton(
-            modifier = Modifier.constrainAs(button) {
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            },
-            isEnable = textState == R.string.setting_nickname_usable
+    Box {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MainColor02)
+                .clickable(enabled = false) {}
+        ) {}
+        ConstraintLayout(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(top = 16.dp, start = 20.dp, end = 20.dp, bottom = 16.dp)
         ) {
-            onClickSend(textField)
+            val (header, field, button) = createRefs()
+
+            NicknameSettingHeader(
+                modifier = Modifier.constrainAs(header) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+                onBackClick = onBackClick
+            )
+
+            NicknameSettingTextField(
+                modifier = Modifier.constrainAs(field) {
+                    top.linkTo(header.bottom, margin = 24.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+                verifyMessage = textState,
+                enableOutline = textState > 0,
+                text = textField.trim(),
+                textChange = {
+                    checkNickname(it.trim())
+                    textField = it
+                }
+            )
+
+            NicknameSettingButton(
+                modifier = Modifier.constrainAs(button) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+                isEnable = textState == R.string.setting_nickname_usable
+            ) {
+                onClickSend(textField)
+            }
         }
     }
 }
@@ -197,7 +203,14 @@ fun NicknameSettingTextField(
                     color = messageColor
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
         }
+
+        Text(
+            text = stringResource(id = R.string.setting_nickname_notice),
+            style = TalkbbokkiTypography.caption,
+            color = Gray05
+        )
     }
 }
 

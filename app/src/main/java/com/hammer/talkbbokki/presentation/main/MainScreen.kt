@@ -83,6 +83,7 @@ fun MainRoute(
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val categoryLevel by viewModel.categoryLevel.collectAsState()
+    val userNickname by viewModel.userNickname.collectAsState()
     val showSettingNickname by viewModel.showNicknameDialog.collectAsState()
     val textState by viewModel.verifyMessage.collectAsState()
 
@@ -107,8 +108,11 @@ fun MainRoute(
         ) {
             SlideMenuBar(
                 modifier = Modifier.fillMaxSize(),
+                userNickname = userNickname,
                 onClickMenuClose = { showDrawerMenu = false },
-                onClickNickname = {},
+                onClickNickname = {
+                    viewModel.openNicknamePage()
+                },
                 onClickBookmark = {
                     onClickBookmarkMenu()
                     logEvent(AnalyticsConst.Event.CLICK_BOOKMARK_MENU)

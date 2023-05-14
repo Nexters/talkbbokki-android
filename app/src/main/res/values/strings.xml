@@ -69,6 +69,7 @@
     <string name="setting_nickname_info">톡뽀끼에서 사용할 닉네임을 입력해 주세요!</string>
     <string name="setting_nickname_text_field_hint">영어, 한글, 숫자로 된 2–9자의 텍스트를 입력하세요.</string>
     <string name="setting_nickname_set_button">닉네임 설정하기</string>
+    <string name="setting_nickname_notice">해당 닉네임은 앱 내에서 사용자 구분을 위해 사용되며, 개인 정보는 수집하지 않음을 알려드립니다.</string>
     <string name="setting_nickname_usable">사용가능한 닉네임입니다.</string>
     <string name="setting_nickname_error_too_short">2자 이상의 닉네임을 입력해 주세요.</string>
     <string name="setting_nickname_error_too_long">최대 입력 글자수를 초과하였습니다.</string>
