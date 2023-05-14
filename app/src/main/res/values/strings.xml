@@ -4,7 +4,8 @@
     <string name="menu_setting_push">알림 설정</string>
 
     <string name="admob_app_id">ca-app-pub-6775338233067833~3697888039</string>
-    <string name="admob_ads_id">ca-app-pub-6775338233067833/5087809569</string>
+    <string name="admob_ads_full_screen_id">ca-app-pub-6775338233067833/5087809569</string>
+    <string name="admob_ads_banner_id">ca-app-pub-6775338233067833/4290565738</string>
 
     <string name="onboarding_title_1">친밀도만 선택하세요!\n대화주제 제안해드려요</string>
     <string name="onboarding_title_highlight_1">친밀도</string>
@@ -12,9 +13,12 @@
     <string name="onboarding_title_highlight_2">STARTER</string>
     <string name="onboarding_title_3">뽑은 대화주제\n손쉽게 공유하세요!</string>
     <string name="onboarding_title_highlight_3">공유</string>
+    <string name="onboarding_title_4">댓글로 서로의 의견을\n들어보세요!</string>
+    <string name="onboarding_title_highlight_4">댓글</string>
     <string name="onboarding_subtitle_1">대화 주제 고민은 그만!</string>
     <string name="onboarding_subtitle_2">오늘은 누구부터 이야기 해볼까요?</string>
     <string name="onboarding_subtitle_3">온라인이든, 오프라인이든 상관없어요!</string>
+    <string name="onboarding_subtitle_4">주제에 대한 타인의 의견이 궁금하다면?</string>
     <string name="onboarding_button_next">다음</string>
     <string name="onboarding_button_start">시작할래요!</string>
 
@@ -29,6 +33,10 @@
     <string name="main_suggestion_topic_button">제안하기</string>
     <string name="main_coming_soon_dialog_text">아직 준비중이에요!\n조금만 기다려주세요.</string>\
     <string name="main_coming_soon_dialog_close_button">슬프지만 닫기</string>
+    <string name="main_menu_nickname">닉네임을 설정해주세요</string>
+    <string name="main_menu_bookmark">즐겨찾기한 주제</string>
+    <string name="main_menu_suggestion">주제 제안하기</string>
+    <string name="main_menu_onboard">사용 방법 살펴보기</string>
 
     <string name="bookmark_header_title">기억하고 싶은 대화 주제,\n여기 다 - 모아뒀어요</string>
     <string name="bookmark_total_count">총 %d개</string>
@@ -53,10 +61,23 @@
 
     <string name="detail_starter">STARTER</string>
     <string name="detail_topic">TOPIC</string>
+    <string name="detail_bottom_navigation_prev">이전 카드</string>
+    <string name="detail_bottom_navigation_next">다음 카드</string>
     <string name="detail_card_bookmark_success">즐겨찾기 등록 완료!</string>
     <string name="detail_card_bookmark_cancel">즐겨찾기 등록 취소!</string>
     <string name="detail_card_bookmark_fail">즐겨찾기 에러 발생!</string>
     <string name="detail_image_share_complete">이미지 저장 완료!</string>
+
+    <string name="setting_nickname_title">닉네임 설정</string>
+    <string name="setting_nickname_info">톡뽀끼에서 사용할 닉네임을 입력해 주세요!</string>
+    <string name="setting_nickname_text_field_hint">영어, 한글, 숫자로 된 2–9자의 텍스트를 입력하세요.</string>
+    <string name="setting_nickname_set_button">닉네임 설정하기</string>
+    <string name="setting_nickname_notice">해당 닉네임은 앱 내에서 사용자 구분을 위해 사용되며, 개인 정보는 수집하지 않음을 알려드립니다.</string>
+    <string name="setting_nickname_usable">사용가능한 닉네임입니다.</string>
+    <string name="setting_nickname_error_too_short">2자 이상의 닉네임을 입력해 주세요.</string>
+    <string name="setting_nickname_error_too_long">최대 입력 글자수를 초과하였습니다.</string>
+    <string name="setting_nickname_error_exist">이미 사용중인 닉네임입니다.</string>
+    <string name="setting_nickname_error_not_allow_char">영어, 한글, 숫자로만 구성해 주세요.</string>
 
     <string name="comment_send_button">등록</string>
     <string name="recomment_button">답글 달기</string>

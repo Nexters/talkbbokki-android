@@ -11,51 +11,29 @@ import com.hammer.talkbbokki.data.entity.TalkOrderItem
 import com.hammer.talkbbokki.domain.model.TopicItem
 import com.hammer.talkbbokki.domain.repository.BookmarkRepository
 import com.hammer.talkbbokki.domain.repository.DetailRepository
-import com.hammer.talkbbokki.presentation.topics.TopicLevel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val bookmarkRepository: BookmarkRepository,
     private val detailRepository: DetailRepository
 ) : ViewModel() {
-    private val _category = savedStateHandle.get<String>("level") ?: "level1"
-    private val _bgColor = savedStateHandle.get<String>("bgColor")
-        ?: TopicLevel.valueOf(_category.uppercase()).backgroundColor
-    private val _item = TopicItem(
-        id = savedStateHandle.get<Int>("id") ?: 0,
-        tag = savedStateHandle.get<String>("tag") ?: "LOVE",
-        name = savedStateHandle.get<String>("topic") ?: "대화 주제",
-        category = _category,
-        shareLink = savedStateHandle.get<String>("shareLink") ?: "",
-        bgColor = _bgColor
-    )
+    private val _item get() = savedStateHandle["topic"] ?: TopicItem()
 
-    val item: StateFlow<TopicItem> = bookmarkRepository
-        .findItem(savedStateHandle.get<Int>("id") ?: 0)
-        .map {
-            (it ?: _item).copy(
-                bgColor = _bgColor
-            )
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = _item
-        )
+    private val _currentTopic: MutableStateFlow<TopicItem> = MutableStateFlow(_item)
+    val currentTopic: StateFlow<TopicItem>
+        get() = _currentTopic.asStateFlow()
 
     private val _toastMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
     val toastMessage: StateFlow<Int> get() = _toastMessage.asStateFlow()
@@ -68,6 +46,7 @@ class DetailViewModel @Inject constructor(
             AnalyticsConst.Event.SCREEN_CARD_DETAIL,
             hashMapOf(AnalyticsConst.Key.TOPIC_ID to _item.id.toString())
         )
+        getBookmarkTopic()
         getTalkStarter()
         viewModelScope.launch {
             delay(5000L)
@@ -85,9 +64,28 @@ class DetailViewModel @Inject constructor(
         }
     }
 
+    private fun getBookmarkTopic() {
+        viewModelScope.launch {
+            bookmarkRepository.findItem(_item.id)
+                .map {
+                    var temp = _item
+                    it?.let {
+                        temp = _item.copy(
+                            isBookmark = it.isBookmark
+                        )
+                    }
+                    println("디버깅ㅇㅇㅇ currentTopic : $temp")
+                    temp
+                }.catch { _item }
+                .collect {
+                    _currentTopic.value = it
+                }
+        }
+    }
+
     fun addBookmark() {
         viewModelScope.launch(Dispatchers.IO) {
-            bookmarkRepository.addBookmark(item.value)
+            bookmarkRepository.addBookmark(_item)
                 .catch {
                     _toastMessage.value = R.string.detail_card_bookmark_fail
                 }
@@ -99,7 +97,7 @@ class DetailViewModel @Inject constructor(
 
     fun removeBookmark() {
         viewModelScope.launch(Dispatchers.IO) {
-            bookmarkRepository.removeBookmark(item.value.id)
+            bookmarkRepository.removeBookmark(_item.id)
                 .catch {
                     _toastMessage.value = R.string.detail_card_bookmark_fail
                 }

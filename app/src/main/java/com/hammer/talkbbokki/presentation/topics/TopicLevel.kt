@@ -27,5 +27,17 @@ enum class TopicLevel(
         level = "event",
         title = R.string.main_level4_title,
         backgroundColor = "FF7490"
-    )
+    );
+
+    companion object {
+        fun getLevelColor(category: String): String {
+            return when (category.lowercase()) {
+                LEVEL1.level -> LEVEL1.backgroundColor
+                LEVEL2.level -> LEVEL2.backgroundColor
+                LEVEL3.level -> LEVEL3.backgroundColor
+                EVENT.level -> EVENT.backgroundColor
+                else -> "FFFFFF"
+            }
+        }
+    }
 }

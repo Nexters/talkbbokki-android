@@ -11,3 +11,5 @@ fun HashMap<String, String?>?.toBundle(): Bundle {
     }
     return bundle
 }
+
+fun String.validateNickname(): Boolean = matches(Regex("[0-9|a-zA-Zㄱ-ㅎㅏ-ㅣ가-힝 ]*"))

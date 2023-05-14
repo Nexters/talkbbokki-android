@@ -10,5 +10,4 @@ interface TopicRepository {
     fun setTodayViewCnt(id: Int): Flow<Int>
 
     fun getOpenedCards(): Flow<ViewCardPrefData>
-    fun setOpenedIndex(isReset: Boolean = false, index: String): Flow<Set<String>>
 }

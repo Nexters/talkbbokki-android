@@ -12,6 +12,8 @@ import com.hammer.talkbbokki.presentation.comment.commentDetailGraph
 import com.hammer.talkbbokki.presentation.comment.commentsGraph
 import com.hammer.talkbbokki.presentation.detail.DetailDestination
 import com.hammer.talkbbokki.presentation.detail.detailGraph
+import com.hammer.talkbbokki.presentation.event.EventDestination
+import com.hammer.talkbbokki.presentation.event.eventGraph
 import com.hammer.talkbbokki.presentation.intro.IntroDestination
 import com.hammer.talkbbokki.presentation.intro.introGraph
 import com.hammer.talkbbokki.presentation.main.MainDestination
@@ -22,7 +24,6 @@ import com.hammer.talkbbokki.presentation.suggestion.SuggestionDestination
 import com.hammer.talkbbokki.presentation.suggestion.suggestionGraph
 import com.hammer.talkbbokki.presentation.topics.TopicListDestination
 import com.hammer.talkbbokki.presentation.topics.topicListGraph
-import java.util.*
 
 @Composable
 fun TalkbbokkiNavHost(
@@ -60,15 +61,22 @@ fun TalkbbokkiNavHost(
                     TopicListDestination.route + "?level=$level&title=$title&bgColor=$bgColor"
                 )
             },
+            navigateToEvent = { level, bgColor ->
+                navController.navigate(
+                    EventDestination.route + "?level=$level&bgColor=$bgColor"
+                )
+            },
             navigateToBookmark = { navController.navigate(BookmarkDestination.route) },
-            navigateToSuggestion = { navController.navigate(SuggestionDestination.route) }
+            navigateToSuggestion = { navController.navigate(SuggestionDestination.route) },
+            navigateToOnboard = {
+                navController.navigate(OnBoardingDestination.route) {
+                    popUpTo(MainDestination.route) { inclusive = true }
+                }
+            }
         )
         topicListGraph(
-            navigateToDetail = { level, item ->
-                navController.navigate(
-                    DetailDestination.route +
-                            "?level=$level&id=${item.id}&tag=${item.tag}&topic=${item.name}&shareLink=${item.shareLink}&bgColor=${item.bgColor}"
-                )
+            navigateToDetail = { item ->
+                navController.navigate(DetailDestination.route + "?topic=$item")
             },
             navigateToMain = {
                 navController.popBackStack()
@@ -82,12 +90,15 @@ fun TalkbbokkiNavHost(
                 navController.navigate(CommentsDestination.route)
             }
         )
+        eventGraph(
+            navigateToComments = {},
+            navigateToMain = {
+                navController.popBackStack()
+            }
+        )
         bookmarkGraph(
             navigateToDetail = { item ->
-                navController.navigate(
-                    DetailDestination.route +
-                            "?level=${item.category.uppercase(Locale.getDefault())}&id=${item.id}&tag=${item.tag}&topic=${item.name}&shareLink=${item.shareLink}&bgColor=${item.bgColor}"
-                )
+                navController.navigate(DetailDestination.route + "?topic=$item")
             },
             onBackClick = { navController.popBackStack() }
         )
