@@ -1,6 +1,7 @@
 package com.hammer.talkbbokki.data.remote
 
 import com.hammer.talkbbokki.data.entity.CategoryLevelListEntity
+import com.hammer.talkbbokki.data.entity.CommentsCountEntity
 import com.hammer.talkbbokki.data.entity.TalkOrderEntity
 import com.hammer.talkbbokki.data.entity.TopicItemListEntity
 import com.hammer.talkbbokki.data.entity.UserInfoEntity
@@ -59,4 +60,9 @@ internal interface TalkbbokkiService {
     suspend fun postViewCnt(
         @Path("topicId") topicId: Int
     )
+
+    @GET("/api/topics/{topicId}/comments/count")
+    suspend fun getTopicCommentsCount(
+        @Path("topicId") topicId: Int
+    ): CommentsCountEntity
 }

@@ -8,6 +8,8 @@ import com.hammer.talkbbokki.presentation.bookmark.BookmarkDestination
 import com.hammer.talkbbokki.presentation.bookmark.bookmarkGraph
 import com.hammer.talkbbokki.presentation.detail.DetailDestination
 import com.hammer.talkbbokki.presentation.detail.detailGraph
+import com.hammer.talkbbokki.presentation.event.EventDestination
+import com.hammer.talkbbokki.presentation.event.eventGraph
 import com.hammer.talkbbokki.presentation.intro.IntroDestination
 import com.hammer.talkbbokki.presentation.intro.introGraph
 import com.hammer.talkbbokki.presentation.main.MainDestination
@@ -55,6 +57,11 @@ fun TalkbbokkiNavHost(
                     TopicListDestination.route + "?level=$level&title=$title&bgColor=$bgColor"
                 )
             },
+            navigateToEvent = { level, bgColor ->
+                navController.navigate(
+                    EventDestination.route + "?level=$level&bgColor=$bgColor"
+                )
+            },
             navigateToBookmark = { navController.navigate(BookmarkDestination.route) },
             navigateToSuggestion = { navController.navigate(SuggestionDestination.route) },
             navigateToOnboard = {
@@ -73,6 +80,12 @@ fun TalkbbokkiNavHost(
         )
         detailGraph(
             navigateToTopicList = {
+                navController.popBackStack()
+            }
+        )
+        eventGraph(
+            navigateToComments = {},
+            navigateToMain = {
                 navController.popBackStack()
             }
         )

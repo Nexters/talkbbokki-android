@@ -78,6 +78,7 @@ fun MainRoute(
     modifier: Modifier = Modifier,
     onClickBookmarkMenu: () -> Unit,
     onClickLevel: (String, String, String) -> Unit,
+    onClickEvent: (String, String) -> Unit,
     onClickSuggestion: () -> Unit,
     onClickOnboard: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
@@ -95,7 +96,9 @@ fun MainRoute(
             onClickBookmarkMenu = {
                 showDrawerMenu = true
             },
-            onClickLevel = onClickLevel
+            onClickLevel = onClickLevel,
+            onClickEvent = onClickEvent,
+            onClickSuggestion = onClickSuggestion
         )
         AnimatedVisibility(
             visible = showDrawerMenu,
@@ -145,7 +148,9 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     categoryLevel: List<CategoryLevel>,
     onClickBookmarkMenu: () -> Unit,
-    onClickLevel: (String, String, String) -> Unit
+    onClickLevel: (String, String, String) -> Unit,
+    onClickEvent: (String, String) -> Unit,
+    onClickSuggestion: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
@@ -170,7 +175,7 @@ fun MainScreen(
         }
 
         items(categoryLevel) {
-            LevelItem(it, onClickLevel) { showDialog = true }
+            LevelItem(it, onClickLevel, onClickEvent) { showDialog = true }
         }
     }
 }
@@ -229,6 +234,7 @@ fun MainHeader(
 fun LevelItem(
     level: CategoryLevel,
     onClickLevel: (String, String, String) -> Unit,
+    onClickEvent: (String, String) -> Unit,
     showDialog: () -> Unit
 ) {
     Box(modifier = Modifier.aspectRatio(1f)) {
@@ -244,11 +250,13 @@ fun LevelItem(
                     )
                 )
                 if (level.isActive) {
-                    onClickLevel(
-                        level.id,
-                        (level.title).replace("\n", "**"),
-                        level.bgColor.replace("#", "")
-                    )
+                    val id = level.id
+                    val title = (level.title).replace("\n", "**")
+                    val bgColor = level.bgColor.replace("#", "")
+                    when (id.lowercase()) {
+                        "event" -> onClickEvent(id, bgColor)
+                        else -> onClickLevel(id, title, bgColor)
+                    }
                 } else {
                     showDialog()
                 }

@@ -16,35 +16,24 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val bookmarkRepository: BookmarkRepository,
     private val detailRepository: DetailRepository
 ) : ViewModel() {
-    private val _item = savedStateHandle.get<TopicItem>("topic") ?: TopicItem()
+    private val _item get() = savedStateHandle["topic"] ?: TopicItem()
 
-    val item: StateFlow<TopicItem> = bookmarkRepository
-        .findItem(_item.id)
-        .map {
-            (it ?: _item).copy(
-                bgColor = _item.bgColor
-            )
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = _item
-        )
+    private val _currentTopic: MutableStateFlow<TopicItem> = MutableStateFlow(_item)
+    val currentTopic: StateFlow<TopicItem>
+        get() = _currentTopic.asStateFlow()
 
     private val _toastMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
     val toastMessage: StateFlow<Int> get() = _toastMessage.asStateFlow()
@@ -57,6 +46,7 @@ class DetailViewModel @Inject constructor(
             AnalyticsConst.Event.SCREEN_CARD_DETAIL,
             hashMapOf(AnalyticsConst.Key.TOPIC_ID to _item.id.toString())
         )
+        getBookmarkTopic()
         getTalkStarter()
         viewModelScope.launch {
             delay(5000L)
@@ -74,9 +64,28 @@ class DetailViewModel @Inject constructor(
         }
     }
 
+    private fun getBookmarkTopic() {
+        viewModelScope.launch {
+            bookmarkRepository.findItem(_item.id)
+                .map {
+                    var temp = _item
+                    it?.let {
+                        temp = _item.copy(
+                            isBookmark = it.isBookmark
+                        )
+                    }
+                    println("디버깅ㅇㅇㅇ currentTopic : $temp")
+                    temp
+                }.catch { _item }
+                .collect {
+                    _currentTopic.value = it
+                }
+        }
+    }
+
     fun addBookmark() {
         viewModelScope.launch(Dispatchers.IO) {
-            bookmarkRepository.addBookmark(item.value)
+            bookmarkRepository.addBookmark(_item)
                 .catch {
                     _toastMessage.value = R.string.detail_card_bookmark_fail
                 }
@@ -88,7 +97,7 @@ class DetailViewModel @Inject constructor(
 
     fun removeBookmark() {
         viewModelScope.launch(Dispatchers.IO) {
-            bookmarkRepository.removeBookmark(item.value.id)
+            bookmarkRepository.removeBookmark(_item.id)
                 .catch {
                     _toastMessage.value = R.string.detail_card_bookmark_fail
                 }

@@ -11,6 +11,7 @@ object MainDestination : TalkbbokkiNavigationDestination {
 
 fun NavGraphBuilder.mainGraph(
     navigateToList: (level: String, title: String, bgColor: String) -> Unit,
+    navigateToEvent: (level: String, bgColor: String) -> Unit,
     navigateToBookmark: () -> Unit,
     navigateToSuggestion: () -> Unit,
     navigateToOnboard: () -> Unit
@@ -18,6 +19,7 @@ fun NavGraphBuilder.mainGraph(
     composable(route = MainDestination.route) {
         MainRoute(
             onClickLevel = navigateToList,
+            onClickEvent = navigateToEvent,
             onClickBookmarkMenu = navigateToBookmark,
             onClickSuggestion = navigateToSuggestion,
             onClickOnboard = navigateToOnboard

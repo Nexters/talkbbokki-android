@@ -14,6 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -43,7 +44,7 @@ fun DetailRoute(
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val toastMessage by viewModel.toastMessage.collectAsState()
-    val item by viewModel.item.collectAsState()
+    val item by viewModel.currentTopic.collectAsState()
     val starter by viewModel.talkOrder.collectAsState()
 
     var showToast by remember(toastMessage) { mutableStateOf(toastMessage > 0) }
@@ -113,7 +114,7 @@ fun DetailScreen(
 ) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
 
-    Column(
+    Box(
         modifier = modifier
             .fillMaxSize()
             .background(item.bgColor.toHexColor())
@@ -124,6 +125,7 @@ fun DetailScreen(
                 Modifier.align(Alignment.Center),
                 cardFace,
                 item,
+                item.isBookmark,
                 starter,
                 onClickToList,
                 onClickBookmark,
@@ -154,14 +156,110 @@ fun DetailHeader(cardFace: CardFace, onBackClick: () -> Unit) {
 }
 
 @Composable
+fun DetailBottomNavigation(
+    modifier: Modifier = Modifier,
+    hasPrev: Boolean,
+    hasNext: Boolean,
+    commentsCount: Int,
+    onClickComment: () -> Unit,
+    onClickPrev: () -> Unit,
+    onClickNext: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = Gray07)
+            .shadow(elevation = 10.dp)
+            .padding(start = 20.dp, top = 16.dp, bottom = 16.dp, end = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        /* 댓글 정보 */
+        Row(
+            modifier = Modifier.clickable { onClickComment() },
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_comments),
+                tint = White,
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = commentsCount.toString(),
+                style = TalkbbokkiTypography.b2_regular,
+                color = White
+            )
+        }
+
+        val prevColor = White.copy(alpha = if (hasPrev) 1f else 0.35f)
+        val nextColor = White.copy(alpha = if (hasNext) 1f else 0.35f)
+        Row(
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            /* < 이전 카드 */
+            Row(
+                modifier = Modifier.clickable(enabled = hasPrev) { onClickPrev() }
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .width(18.dp)
+                        .height(18.dp)
+                        .align(Alignment.CenterVertically),
+                    painter = painterResource(id = R.drawable.ic_arrow_prev),
+                    tint = prevColor,
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = stringResource(id = R.string.detail_bottom_navigation_prev),
+                    style = TalkbbokkiTypography.b2_bold,
+                    color = prevColor
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(
+                modifier = Modifier
+                    .height(15.dp)
+                    .width(1.dp)
+                    .background(White.copy(alpha = 0.35f))
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+
+            /* 다음 카드 > */
+            Row(
+                modifier = Modifier.clickable(enabled = hasNext) { onClickNext() }
+            ) {
+                Text(
+                    text = stringResource(id = R.string.detail_bottom_navigation_next),
+                    style = TalkbbokkiTypography.b2_bold,
+                    color = nextColor
+                )
+                Icon(
+                    modifier = Modifier
+                        .width(18.dp)
+                        .height(18.dp)
+                        .align(Alignment.CenterVertically),
+                    painter = painterResource(id = R.drawable.ic_arrow_next),
+                    tint = nextColor,
+                    contentDescription = null
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun DetailFlipCard(
     modifier: Modifier = Modifier,
     cardFace: CardFace,
     item: TopicItem,
-    starter: TalkOrderItem,
+    isBookmarked: Boolean,
+    starter: TalkOrderItem? = null,
     onClickToList: () -> Unit,
-    onClickBookmark: (Boolean) -> Unit,
-    onClickStarter: () -> Unit,
+    onClickBookmark: ((Boolean) -> Unit)? = null,
+    onClickStarter: (() -> Unit)? = null,
     updateViewCnt: () -> Unit,
     onClickShowDialog: () -> Unit
 ) {
@@ -185,6 +283,7 @@ fun DetailFlipCard(
         back = {
             BackCardFace(
                 item,
+                isBookmarked,
                 starter,
                 onClickBookmark,
                 updateViewCnt,
@@ -299,10 +398,11 @@ fun FrontCardFace(item: TopicItem) {
 @Composable
 fun BackCardFace(
     item: TopicItem,
-    starter: TalkOrderItem,
-    onClickBookmark: (Boolean) -> Unit,
+    isBookmarked: Boolean,
+    starter: TalkOrderItem? = null,
+    onClickBookmark: ((Boolean) -> Unit)? = null,
     updateViewCnt: () -> Unit,
-    onClickStarter: () -> Unit,
+    onClickStarter: (() -> Unit)? = null,
     onClickShowDialog: () -> Unit
 ) {
     val context = LocalContext.current
@@ -319,7 +419,7 @@ fun BackCardFace(
             Spacer(
                 modifier = Modifier.height(2.dp)
             )
-            Topic(item, onClickBookmark)
+            Topic(item, isBookmarked, onClickBookmark)
             Spacer(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -333,8 +433,10 @@ fun BackCardFace(
                     .padding(horizontal = 5.dp)
                     .background(Gray03)
             )
-            Starter(starter.rule ?: "") {
-                onClickStarter()
+            starter?.let {
+                Starter(starter.rule ?: "") {
+                    onClickStarter?.invoke()
+                }
             }
             Spacer(
                 modifier = Modifier
@@ -345,7 +447,7 @@ fun BackCardFace(
             )
             ShareBottom(onClickShareLink = {
                 updateViewCnt()
-                shareLink(context, item.shareLink + "&rule=${starter.id}")
+                shareLink(context, item.shareLink + "&rule=${starter?.id}")
                 logEvent(
                     AnalyticsConst.Event.CLICK_CARD_SHARE,
                     hashMapOf(AnalyticsConst.Key.TOPIC_ID to item.id.toString())
@@ -370,9 +472,9 @@ fun BackCardFace(
 @Composable
 fun Topic(
     item: TopicItem,
-    onClickBookmark: (Boolean) -> Unit
+    isBookmarked: Boolean,
+    onClickBookmark: ((Boolean) -> Unit)? = null
 ) {
-    var toggleBookmark by remember { mutableStateOf(item.isBookmark) }
     Column(
         modifier = Modifier.padding(24.dp)
     ) {
@@ -383,21 +485,22 @@ fun Topic(
                 color = Gray05,
                 style = TalkbbokkiTypography.b2_regular
             )
-            Icon(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .size(24.dp)
-                    .padding(1.dp)
-                    .clickable {
-                        toggleBookmark = !toggleBookmark
-                        onClickBookmark(toggleBookmark)
-                    },
-                painter = painterResource(
-                    id = if (toggleBookmark) R.drawable.ic_star_fill else R.drawable.ic_star_empty
-                ),
-                tint = if (toggleBookmark) MainColor01 else Gray04,
-                contentDescription = null
-            )
+            onClickBookmark?.let {
+                Icon(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .size(24.dp)
+                        .padding(1.dp)
+                        .clickable {
+                            onClickBookmark(!isBookmarked)
+                        },
+                    painter = painterResource(
+                        id = if (isBookmarked) R.drawable.ic_star_fill else R.drawable.ic_star_empty
+                    ),
+                    tint = if (isBookmarked) MainColor01 else Gray04,
+                    contentDescription = null
+                )
+            }
         }
         Spacer(
             modifier = Modifier
