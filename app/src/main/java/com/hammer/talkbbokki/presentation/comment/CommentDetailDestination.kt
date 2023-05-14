@@ -4,19 +4,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.hammer.talkbbokki.presentation.navigation.TalkbbokkiNavigationDestination
 
-object CommentsDestination : TalkbbokkiNavigationDestination {
+object CommentDetailDestination : TalkbbokkiNavigationDestination {
     override val route: String
-        get() = "comments_route"
+        get() = "comments_detail_route"
 }
 
-fun NavGraphBuilder.commentsGraph(
+fun NavGraphBuilder.commentDetailGraph(
     onBackClick: () -> Unit,
-    navigateToCommentDetail: () -> Unit
 ) {
-    composable(route = CommentsDestination.route) {
-        CommentsRoute(
+    composable(route = CommentDetailDestination.route) {
+        CommentDetailRoute(
             onBackClick = onBackClick,
-            onRecommentClick = navigateToCommentDetail
         )
     }
 }

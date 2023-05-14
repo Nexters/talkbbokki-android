@@ -25,11 +25,14 @@ import com.hammer.talkbbokki.ui.theme.*
 
 @Composable
 fun CommentsRoute(
-    onBackClick: () -> Unit, viewModel: CommentsViewModel = hiltViewModel()
+    onBackClick: () -> Unit,
+    onRecommentClick: () -> Unit,
+    viewModel: CommentsViewModel = hiltViewModel()
 ) {
     val comments = viewModel.getComments()
     CommentsScreen(
         onBackClick,
+        onRecommentClick,
         comments
     )
 }
@@ -37,6 +40,7 @@ fun CommentsRoute(
 @Composable
 fun CommentsScreen(
     onBackClick: () -> Unit,
+    onRecommentClick: () -> Unit,
     comments: List<Comment>
 ) {
     Box(
@@ -51,7 +55,8 @@ fun CommentsScreen(
         ) {
             CommentsHeader(onBackClick)
             CommentList(
-                comments
+                comments,
+                onRecommentClick
             )
         }
         Box(Modifier.align(Alignment.BottomCenter)) {
@@ -87,7 +92,12 @@ fun CommentsHeader(
 
 @Composable
 fun CommentItem(
-    nickname: String, date: String, content: String, replyCount: Int, onDeleteClick: () -> Unit
+    nickname: String,
+    date: String,
+    content: String,
+    replyCount: Int,
+    onDeleteClick: () -> Unit,
+    onRecommentClick: () -> Unit
 ) {
     val isMine = false
     Column(modifier = Modifier.padding(20.dp)) {
@@ -105,7 +115,7 @@ fun CommentItem(
                 contentDescription = null,
                 modifier = Modifier
                     .clickable {
-                        // 삭제하기
+                        onDeleteClick()
                     }
                     .align(Alignment.End))
         }
@@ -117,13 +127,17 @@ fun CommentItem(
                 text = if (replyCount == 0) stringResource(R.string.recomment_button) else "답글($replyCount)",
                 style = TalkbbokkiTypography.caption,
                 color = Gray06,
-                modifier = Modifier.clickable { onDeleteClick() },
+                modifier = Modifier.clickable {
+                    onRecommentClick()
+                },
             )
             Spacer(modifier = Modifier.width(12.dp))
             if (!isMine) {
                 Text(
                     text = stringResource(R.string.report_comment_button),
-                    modifier = Modifier.clickable { onDeleteClick() },
+                    modifier = Modifier.clickable {
+                        // 댓글 신고
+                    },
                     style = TalkbbokkiTypography.caption,
                     color = Gray06
                 )
@@ -133,7 +147,10 @@ fun CommentItem(
 }
 
 @Composable
-fun CommentList(comments: List<Comment>) {
+fun CommentList(
+    comments: List<Comment>,
+    onRecommentClick: () -> Unit
+) {
     LazyColumn {
         itemsIndexed(comments) { idx, comment ->
             CommentItem(
@@ -141,7 +158,8 @@ fun CommentList(comments: List<Comment>) {
                 date = comment.date,
                 content = comment.content,
                 replyCount = comment.replyCount,
-                onDeleteClick = comment.onDeleteClick
+                onDeleteClick = comment.onDeleteClick,
+                onRecommentClick = onRecommentClick
             )
         }
     }
