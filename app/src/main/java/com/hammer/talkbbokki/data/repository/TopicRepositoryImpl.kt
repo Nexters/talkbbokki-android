@@ -36,8 +36,4 @@ internal class TopicRepositoryImpl @Inject constructor(
     }
 
     override fun getOpenedCards(): Flow<ViewCardPrefData> = dataStore.viewCards
-
-    override fun setOpenedIndex(isReset: Boolean, index: String): Flow<Set<String>> = flow {
-        dataStore.setOpenedIndex(isReset, index)
-    }
 }

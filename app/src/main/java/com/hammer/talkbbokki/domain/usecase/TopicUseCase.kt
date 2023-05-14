@@ -23,6 +23,4 @@ class TopicUseCase @Inject constructor(
         repository.setTodayViewCnt(id).flowOn(dispatcher)
 
     fun getOpenedCards(): Flow<ViewCardPrefData> = repository.getOpenedCards()
-    fun setOpenedIndex(isReset: Boolean = false, index: String): Flow<Set<String>> =
-        repository.setOpenedIndex(isReset, index).flowOn(dispatcher)
 }
