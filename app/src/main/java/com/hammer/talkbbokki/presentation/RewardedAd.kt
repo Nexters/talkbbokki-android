@@ -17,7 +17,7 @@ var rewardedAd: RewardedAd? = null
 fun loadAd(context: Context) {
     RewardedAd.load(
         context,
-        context.getString(R.string.admob_ads_id),
+        context.getString(R.string.admob_ads_full_screen_id),
         AdRequest.Builder().build(),
         object : RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {

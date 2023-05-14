@@ -4,7 +4,8 @@
     <string name="menu_setting_push">알림 설정</string>
 
     <string name="admob_app_id">ca-app-pub-6775338233067833~3697888039</string>
-    <string name="admob_ads_id">ca-app-pub-6775338233067833/5087809569</string>
+    <string name="admob_ads_full_screen_id">ca-app-pub-6775338233067833/5087809569</string>
+    <string name="admob_ads_banner_id">ca-app-pub-6775338233067833/4290565738</string>
 
     <string name="onboarding_title_1">친밀도만 선택하세요!\n대화주제 제안해드려요</string>
     <string name="onboarding_title_highlight_1">친밀도</string>
