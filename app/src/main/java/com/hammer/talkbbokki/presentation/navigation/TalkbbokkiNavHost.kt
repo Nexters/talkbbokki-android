@@ -63,7 +63,12 @@ fun TalkbbokkiNavHost(
                 )
             },
             navigateToBookmark = { navController.navigate(BookmarkDestination.route) },
-            navigateToSuggestion = { navController.navigate(SuggestionDestination.route) }
+            navigateToSuggestion = { navController.navigate(SuggestionDestination.route) },
+            navigateToOnboard = {
+                navController.navigate(OnBoardingDestination.route) {
+                    popUpTo(MainDestination.route) { inclusive = true }
+                }
+            }
         )
         topicListGraph(
             navigateToDetail = { item ->

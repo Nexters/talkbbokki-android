@@ -25,6 +25,8 @@ val Gray02 = Color(0xFFF4F4F4)
 val Gray01 = Color(0xFFFAFAFA)
 val White = Color(0xFFFFFFFF)
 
+val Error01 = Color(0xFFF03D3D)
+
 val Transparent = Color(0x00000000)
 
 val suggestionButtonColor = Color(0xFF272727)
