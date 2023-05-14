@@ -4,12 +4,15 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.domain.model.TopicItem
+import com.hammer.talkbbokki.domain.repository.BookmarkRepository
 import com.hammer.talkbbokki.domain.repository.DetailRepository
 import com.hammer.talkbbokki.domain.usecase.TopicUseCase
 import com.hammer.talkbbokki.presentation.topics.TopicLevel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +29,8 @@ import kotlinx.coroutines.launch
 class EventViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val topicUseCase: TopicUseCase,
-    private val detailRepository: DetailRepository
+    private val detailRepository: DetailRepository,
+    private val bookmarkRepository: BookmarkRepository
 ) : ViewModel() {
     val selectedLevel = savedStateHandle.get<String>("level") ?: "event"
     val selectedBgColor = savedStateHandle.get<String>("bgColor")
@@ -38,6 +42,7 @@ class EventViewModel @Inject constructor(
         get() = _currentTopic.asStateFlow().also {
             println("디버깅ㅇㅇㅇ _currentTopic : ${it.value.name}")
             getCommentsCount(it.value.id)
+            getBookmarkTopic(it.value.id)
         }
     private val _currentIndex: MutableStateFlow<Int> = MutableStateFlow(0)
     val hasPrevAndNext: StateFlow<Pair<Boolean, Boolean>>
@@ -51,6 +56,11 @@ class EventViewModel @Inject constructor(
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true to true)
     private val _commentsCount: MutableStateFlow<Int> = MutableStateFlow(0)
     val commentsCount: StateFlow<Int> get() = _commentsCount.asStateFlow()
+    private val _isBookmarked: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isBookmarked: StateFlow<Boolean> get() = _isBookmarked.asStateFlow()
+
+    private val _toastMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
+    val toastMessage: StateFlow<Int> get() = _toastMessage.asStateFlow()
 
     init {
         getTopicList()
@@ -90,6 +100,18 @@ class EventViewModel @Inject constructor(
         }
     }
 
+    private fun getBookmarkTopic(id: Int) {
+        viewModelScope.launch {
+            bookmarkRepository.findItem(id)
+                .map {
+                    it?.isBookmark ?: _currentTopic.value.isBookmark
+                }.catch { _isBookmarked.value = _currentTopic.value.isBookmark }
+                .collect {
+                    _isBookmarked.value = it
+                }
+        }
+    }
+
     fun postViewCnt(topicId: Int) {
         viewModelScope.launch {
             detailRepository.postViewCnt(topicId)
@@ -97,6 +119,32 @@ class EventViewModel @Inject constructor(
                     Log.d("DetailViewModel", "조회수 업데이트 실패!")
                 }
                 .collect()
+        }
+    }
+
+    fun addBookmark() {
+        viewModelScope.launch(Dispatchers.IO) {
+            bookmarkRepository.addBookmark(_currentTopic.value)
+                .catch {
+                    _toastMessage.value = R.string.detail_card_bookmark_fail
+                }
+                .collect {
+                    _isBookmarked.value = true
+                    _toastMessage.value = R.string.detail_card_bookmark_success
+                }
+        }
+    }
+
+    fun removeBookmark() {
+        viewModelScope.launch(Dispatchers.IO) {
+            bookmarkRepository.removeBookmark(_currentTopic.value.id)
+                .catch {
+                    _toastMessage.value = R.string.detail_card_bookmark_fail
+                }
+                .collect {
+                    _isBookmarked.value = false
+                    _toastMessage.value = R.string.detail_card_bookmark_cancel
+                }
         }
     }
 

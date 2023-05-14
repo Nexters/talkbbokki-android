@@ -125,6 +125,7 @@ fun DetailScreen(
                 Modifier.align(Alignment.Center),
                 cardFace,
                 item,
+                item.isBookmark,
                 starter,
                 onClickToList,
                 onClickBookmark,
@@ -254,6 +255,7 @@ fun DetailFlipCard(
     modifier: Modifier = Modifier,
     cardFace: CardFace,
     item: TopicItem,
+    isBookmarked: Boolean,
     starter: TalkOrderItem? = null,
     onClickToList: () -> Unit,
     onClickBookmark: ((Boolean) -> Unit)? = null,
@@ -281,6 +283,7 @@ fun DetailFlipCard(
         back = {
             BackCardFace(
                 item,
+                isBookmarked,
                 starter,
                 onClickBookmark,
                 updateViewCnt,
@@ -395,6 +398,7 @@ fun FrontCardFace(item: TopicItem) {
 @Composable
 fun BackCardFace(
     item: TopicItem,
+    isBookmarked: Boolean,
     starter: TalkOrderItem? = null,
     onClickBookmark: ((Boolean) -> Unit)? = null,
     updateViewCnt: () -> Unit,
@@ -415,7 +419,7 @@ fun BackCardFace(
             Spacer(
                 modifier = Modifier.height(2.dp)
             )
-            Topic(item, onClickBookmark)
+            Topic(item, isBookmarked, onClickBookmark)
             Spacer(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -468,9 +472,9 @@ fun BackCardFace(
 @Composable
 fun Topic(
     item: TopicItem,
+    isBookmarked: Boolean,
     onClickBookmark: ((Boolean) -> Unit)? = null
 ) {
-    var toggleBookmark by remember { mutableStateOf(item.isBookmark) }
     Column(
         modifier = Modifier.padding(24.dp)
     ) {
@@ -488,13 +492,12 @@ fun Topic(
                         .size(24.dp)
                         .padding(1.dp)
                         .clickable {
-                            toggleBookmark = !toggleBookmark
-                            onClickBookmark(toggleBookmark)
+                            onClickBookmark(!isBookmarked)
                         },
                     painter = painterResource(
-                        id = if (toggleBookmark) R.drawable.ic_star_fill else R.drawable.ic_star_empty
+                        id = if (isBookmarked) R.drawable.ic_star_fill else R.drawable.ic_star_empty
                     ),
-                    tint = if (toggleBookmark) MainColor01 else Gray04,
+                    tint = if (isBookmarked) MainColor01 else Gray04,
                     contentDescription = null
                 )
             }
