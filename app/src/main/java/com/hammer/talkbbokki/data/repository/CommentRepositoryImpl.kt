@@ -1,6 +1,5 @@
 package com.hammer.talkbbokki.data.repository
 
-import com.hammer.talkbbokki.data.entity.CommentItem
 import com.hammer.talkbbokki.data.remote.TalkbbokkiService
 import com.hammer.talkbbokki.domain.model.Comment
 import com.hammer.talkbbokki.domain.repository.CommentRepository
@@ -12,8 +11,8 @@ internal class CommentRepositoryImpl
     @Inject constructor(
     private val service: TalkbbokkiService
 ) : CommentRepository {
-    override fun getCommentList(topicId: Int): Flow<List<CommentItem>> = flow {
-        emit(service.getComments(topicId).result)
+    override fun getCommentList(topicId: Int): Flow<List<com.hammer.talkbbokki.presentation.comment.Comment>> = flow {
+        emit(service.getComments(topicId).result.map { it.toModel() })
     }
 
     override fun postComment(topicId: Int, comment: Comment): Flow<Unit> = flow {

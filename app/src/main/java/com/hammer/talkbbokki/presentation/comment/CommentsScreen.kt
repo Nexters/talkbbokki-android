@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,11 +30,11 @@ fun CommentsRoute(
     onRecommentClick: () -> Unit,
     viewModel: CommentsViewModel = hiltViewModel()
 ) {
-    val comments = viewModel.getComments()
+    val comments = viewModel.commentItems.collectAsState()
     CommentsScreen(
         onBackClick,
         onRecommentClick,
-        comments
+        comments.value
     )
 }
 

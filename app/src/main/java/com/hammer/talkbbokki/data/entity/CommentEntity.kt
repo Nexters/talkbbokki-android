@@ -1,6 +1,8 @@
 package com.hammer.talkbbokki.data.entity
 
 import com.google.gson.annotations.SerializedName
+import com.hammer.talkbbokki.presentation.comment.Comment
+import java.util.*
 
 data class CommentEntity(
     val result: List<CommentItem>
@@ -15,4 +17,12 @@ data class CommentItem(
     val topicId: Int,
     val createAt: String,
     val modifyAt: String
-)
+) {
+    fun toModel(): Comment = Comment(
+        nickname = userId,
+        date = createAt,
+        content = body,
+        replyCount = 1,
+        onDeleteClick = {}
+    )
+}
