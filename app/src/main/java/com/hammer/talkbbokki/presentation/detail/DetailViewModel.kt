@@ -23,9 +23,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -39,30 +40,35 @@ class DetailViewModel @Inject constructor(
     private var _item
         get() = savedStateHandle["topic"] ?: TopicItem()
         set(value) {
+            println("디버깅ㅇㅇㅇ _item : $value")
             savedStateHandle["topic"] = value
-            _currentTopic.update { value }
-            _currentIndex.update { _topicList.indexOf(value) }
+            _currentTopic.value = value
+            _currentIndex.value = _topicList.indexOfFirst { it.id == _item.id }
         }
 
     private val _currentTopic: MutableStateFlow<TopicItem> = MutableStateFlow(_item)
     val currentTopic: StateFlow<TopicItem>
-        get() = combine(
-            _currentTopic,
-            bookmarkRepository.findItem(_item.id)
-        ) { topic, bookmarked ->
-            topic.copy(
-                isBookmark = bookmarked != null
-            )
-        }.catch {
-            _item
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), _item)
-    private val _currentIndex: MutableStateFlow<Int> = MutableStateFlow(0)
-
+        get() = _currentTopic.asStateFlow()
+            .zip(
+                bookmarkRepository.findItem(_item.id)
+            ) { topic, bookmark ->
+                var temp = topic
+                bookmark?.let {
+                    temp = topic.copy(isBookmark = it.isBookmark)
+                }
+                println("디버깅ㅇㅇㅇ currentTopic : $temp")
+                temp
+            }.catch { _item }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), _item)
+    private val _currentIndex: MutableStateFlow<Int> = MutableStateFlow(-1)
     val hasPrevAndNext: StateFlow<Pair<Boolean, Boolean>>
-        get() = _currentIndex
+        get() = _currentIndex.asStateFlow()
             .map {
-                (it != 0) to (it != _topicList.lastIndex)
-            }
+                println("디버깅ㅇㅇㅇ _currentIndex : ${_currentIndex.value}")
+                val l = (it != 0) to (it != _topicList.lastIndex)
+                println("디버깅ㅇㅇㅇ hasPrevAndNext : $l")
+                l
+            }.distinctUntilChanged()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true to true)
 
     private val _toastMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
@@ -108,7 +114,8 @@ class DetailViewModel @Inject constructor(
                 .collect { list ->
                     _topicList.clear()
                     _topicList.addAll(list)
-                    _currentIndex.update { list.indexOf(_item) }
+                    println("디버깅ㅇㅇㅇ _topicList : $_topicList")
+                    _currentIndex.value = list.indexOfFirst { it.id == _item.id }
                 }
         }
     }

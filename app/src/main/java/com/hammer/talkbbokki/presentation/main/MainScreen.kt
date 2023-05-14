@@ -61,6 +61,7 @@ fun MainRoute(
     modifier: Modifier = Modifier,
     onClickBookmarkMenu: () -> Unit,
     onClickLevel: (String, String, String) -> Unit,
+    onClickEvent: (String, String) -> Unit,
     onClickSuggestion: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
@@ -72,6 +73,7 @@ fun MainRoute(
             logEvent(AnalyticsConst.Event.CLICK_BOOKMARK_MENU)
         },
         onClickLevel = onClickLevel,
+        onClickEvent = onClickEvent,
         onClickSuggestion = { onClickSuggestion() }
     )
 }
@@ -81,6 +83,7 @@ fun MainScreen(
     categoryLevel: List<CategoryLevel>,
     onClickBookmarkMenu: () -> Unit,
     onClickLevel: (String, String, String) -> Unit,
+    onClickEvent: (String, String) -> Unit,
     onClickSuggestion: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
@@ -106,7 +109,7 @@ fun MainScreen(
         }
 
         items(categoryLevel) {
-            LevelItem(it, onClickLevel) { showDialog = true }
+            LevelItem(it, onClickLevel, onClickEvent) { showDialog = true }
         }
 
         item(span = { GridItemSpan(2) }) {
@@ -166,6 +169,7 @@ fun MainHeader(
 fun LevelItem(
     level: CategoryLevel,
     onClickLevel: (String, String, String) -> Unit,
+    onClickEvent: (String, String) -> Unit,
     showDialog: () -> Unit
 ) {
     Box(modifier = Modifier.aspectRatio(1f)) {
@@ -181,11 +185,13 @@ fun LevelItem(
                     )
                 )
                 if (level.isActive) {
-                    onClickLevel(
-                        level.id,
-                        (level.title).replace("\n", "**"),
-                        level.bgColor.replace("#", "")
-                    )
+                    val id = level.id
+                    val title = (level.title).replace("\n", "**")
+                    val bgColor = level.bgColor.replace("#", "")
+                    when (id.lowercase()) {
+                        "event" -> onClickEvent(id, bgColor)
+                        else -> onClickLevel(id, title, bgColor)
+                    }
                 } else {
                     showDialog()
                 }

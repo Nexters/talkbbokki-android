@@ -144,16 +144,6 @@ fun DetailScreen(
                 onClickShowDialog
             )
         }
-        DetailBottomNavigation(
-            modifier = modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter),
-            hasPrev = hasPrevAndNext.first,
-            hasNext = hasPrevAndNext.second,
-            onClickComment = { onClickComment() },
-            onClickPrev = { onClickPrev() },
-            onClickNext = { onClickNext() }
-        )
     }
 }
 
@@ -274,10 +264,10 @@ fun DetailFlipCard(
     modifier: Modifier = Modifier,
     cardFace: CardFace,
     item: TopicItem,
-    starter: TalkOrderItem,
+    starter: TalkOrderItem? = null,
     onClickToList: () -> Unit,
-    onClickBookmark: (Boolean) -> Unit,
-    onClickStarter: () -> Unit,
+    onClickBookmark: ((Boolean) -> Unit)? = null,
+    onClickStarter: (() -> Unit)? = null,
     updateViewCnt: () -> Unit,
     onClickShowDialog: () -> Unit
 ) {
@@ -415,10 +405,10 @@ fun FrontCardFace(item: TopicItem) {
 @Composable
 fun BackCardFace(
     item: TopicItem,
-    starter: TalkOrderItem,
-    onClickBookmark: (Boolean) -> Unit,
+    starter: TalkOrderItem? = null,
+    onClickBookmark: ((Boolean) -> Unit)? = null,
     updateViewCnt: () -> Unit,
-    onClickStarter: () -> Unit,
+    onClickStarter: (() -> Unit)? = null,
     onClickShowDialog: () -> Unit
 ) {
     val context = LocalContext.current
@@ -449,8 +439,10 @@ fun BackCardFace(
                     .padding(horizontal = 5.dp)
                     .background(Gray03)
             )
-            Starter(starter.rule ?: "") {
-                onClickStarter()
+            starter?.let {
+                Starter(starter.rule ?: "") {
+                    onClickStarter?.invoke()
+                }
             }
             Spacer(
                 modifier = Modifier
@@ -461,7 +453,7 @@ fun BackCardFace(
             )
             ShareBottom(onClickShareLink = {
                 updateViewCnt()
-                shareLink(context, item.shareLink + "&rule=${starter.id}")
+                shareLink(context, item.shareLink + "&rule=${starter?.id}")
                 logEvent(
                     AnalyticsConst.Event.CLICK_CARD_SHARE,
                     hashMapOf(AnalyticsConst.Key.TOPIC_ID to item.id.toString())
@@ -486,7 +478,7 @@ fun BackCardFace(
 @Composable
 fun Topic(
     item: TopicItem,
-    onClickBookmark: (Boolean) -> Unit
+    onClickBookmark: ((Boolean) -> Unit)? = null
 ) {
     var toggleBookmark by remember { mutableStateOf(item.isBookmark) }
     Column(
@@ -499,21 +491,23 @@ fun Topic(
                 color = Gray05,
                 style = TalkbbokkiTypography.b2_regular
             )
-            Icon(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .size(24.dp)
-                    .padding(1.dp)
-                    .clickable {
-                        toggleBookmark = !toggleBookmark
-                        onClickBookmark(toggleBookmark)
-                    },
-                painter = painterResource(
-                    id = if (toggleBookmark) R.drawable.ic_star_fill else R.drawable.ic_star_empty
-                ),
-                tint = if (toggleBookmark) MainColor01 else Gray04,
-                contentDescription = null
-            )
+            onClickBookmark?.let {
+                Icon(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .size(24.dp)
+                        .padding(1.dp)
+                        .clickable {
+                            toggleBookmark = !toggleBookmark
+                            onClickBookmark(toggleBookmark)
+                        },
+                    painter = painterResource(
+                        id = if (toggleBookmark) R.drawable.ic_star_fill else R.drawable.ic_star_empty
+                    ),
+                    tint = if (toggleBookmark) MainColor01 else Gray04,
+                    contentDescription = null
+                )
+            }
         }
         Spacer(
             modifier = Modifier
