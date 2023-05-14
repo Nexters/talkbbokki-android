@@ -1,10 +1,10 @@
 package com.hammer.talkbbokki.presentation.detail
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.hammer.talkbbokki.presentation.navigation.TalkbbokkiNavigationDestination
+import com.hammer.talkbbokki.presentation.topics.TopicType
 
 object DetailDestination : TalkbbokkiNavigationDestination {
     override val route: String
@@ -15,14 +15,9 @@ fun NavGraphBuilder.detailGraph(
     navigateToTopicList: () -> Unit
 ) {
     composable(
-        route = DetailDestination.route + "?level={level}&id={id}&tag={tag}&topic={topic}&shareLink={shareLink}&bgColor={bgColor}",
+        route = DetailDestination.route + "?topic={topic}",
         arguments = listOf(
-            navArgument("level") { type = NavType.StringType },
-            navArgument("id") { type = NavType.IntType },
-            navArgument("tag") { type = NavType.StringType },
-            navArgument("topic") { type = NavType.StringType },
-            navArgument("shareLink") { type = NavType.StringType },
-            navArgument("bgColor") { type = NavType.StringType }
+            navArgument("topic") { type = TopicType }
         )
     ) {
         DetailRoute(
