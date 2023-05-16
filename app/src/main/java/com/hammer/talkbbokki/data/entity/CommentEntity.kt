@@ -5,7 +5,13 @@ import com.hammer.talkbbokki.presentation.comment.Comment
 import java.util.*
 
 data class CommentEntity(
-    val result: List<CommentItem>
+    val result: Result
+)
+
+data class Result(
+    val contents : List<CommentItem>,
+    val previous : Int,
+    val next : Int
 )
 
 data class CommentItem(
