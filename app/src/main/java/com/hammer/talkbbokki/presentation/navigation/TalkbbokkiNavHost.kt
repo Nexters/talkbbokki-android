@@ -94,8 +94,8 @@ fun TalkbbokkiNavHost(
             }
         )
         eventGraph(
-            navigateToComments = {
-                navController.navigate(CommentsDestination.route)
+            navigateToComments = { topicId ->
+                navController.navigate(CommentsDestination.route + "?topicId=$topicId")
             },
             navigateToMain = {
                 navController.popBackStack()
