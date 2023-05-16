@@ -41,7 +41,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun DetailRoute(
     onClickToList: () -> Unit,
-    onClickToComments: () -> Unit,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val toastMessage by viewModel.toastMessage.collectAsState()
@@ -79,7 +78,6 @@ fun DetailRoute(
 
     DetailScreen(
         onClickToList = onClickToList,
-        onClickToComments = onClickToComments,
         item = item,
         onClickBookmark = {
             if (it) viewModel.addBookmark() else viewModel.removeBookmark()
@@ -107,7 +105,6 @@ fun DetailRoute(
 fun DetailScreen(
     modifier: Modifier = Modifier,
     onClickToList: () -> Unit,
-    onClickToComments: () -> Unit,
     item: TopicItem,
     onClickBookmark: (Boolean) -> Unit,
     onClickStarter: () -> Unit,
@@ -116,25 +113,12 @@ fun DetailScreen(
     starter: TalkOrderItem
 ) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
-
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(item.bgColor.toHexColor())
     ) {
         DetailHeader(cardFace = cardFace, onBackClick = { cardFace = CardFace.BACK })
-        Icon(
-            modifier = Modifier
-                .padding(
-                    horizontal = dimensionResource(id = R.dimen.horizontal_padding),
-                    vertical = dimensionResource(id = R.dimen.vertical_padding)
-                )
-                .size(24.dp)
-                .clickable { onClickToComments() },
-            painter = painterResource(id = R.drawable.ic_close),
-            tint = Black,
-            contentDescription = null
-        )
         Box(modifier = modifier.fillMaxSize()) {
             DetailFlipCard(
                 Modifier.align(Alignment.Center),

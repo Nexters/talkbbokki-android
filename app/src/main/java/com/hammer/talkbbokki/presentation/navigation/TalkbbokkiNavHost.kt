@@ -85,9 +85,6 @@ fun TalkbbokkiNavHost(
         detailGraph(
             navigateToTopicList = {
                 navController.popBackStack()
-            },
-            navigateToComments = {
-                navController.navigate(CommentsDestination.route)
             }
         )
         eventGraph(
@@ -97,7 +94,9 @@ fun TalkbbokkiNavHost(
             }
         )
         eventGraph(
-            navigateToComments = {},
+            navigateToComments = {
+                navController.navigate(CommentsDestination.route)
+            },
             navigateToMain = {
                 navController.popBackStack()
             }

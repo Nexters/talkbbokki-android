@@ -13,7 +13,6 @@ object DetailDestination : TalkbbokkiNavigationDestination {
 
 fun NavGraphBuilder.detailGraph(
     navigateToTopicList: () -> Unit,
-    navigateToComments: () -> Unit
 ) {
     composable(
         route = DetailDestination.route + "?topic={topic}",
@@ -23,7 +22,6 @@ fun NavGraphBuilder.detailGraph(
     ) {
         DetailRoute(
             onClickToList = navigateToTopicList,
-            onClickToComments = navigateToComments
         )
     }
 }

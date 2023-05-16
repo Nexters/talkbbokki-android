@@ -18,12 +18,12 @@ class CommentsViewModel @Inject constructor(
     val commentItems: StateFlow<List<Comment>> get() = _commentItems
 
     init {
-        getComments()
+        getComments(10)
     }
 
-    fun getComments() {
+    fun getComments(topicId : Int) {
         viewModelScope.launch {
-            repository.getCommentList(7)
+            repository.getCommentList(topicId)
                 .collect {
                     _commentItems.value = it
                 }
