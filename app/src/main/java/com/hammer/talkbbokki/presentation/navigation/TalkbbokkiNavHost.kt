@@ -96,6 +96,12 @@ fun TalkbbokkiNavHost(
                 navController.popBackStack()
             }
         )
+        eventGraph(
+            navigateToComments = {},
+            navigateToMain = {
+                navController.popBackStack()
+            }
+        )
         bookmarkGraph(
             navigateToDetail = { item ->
                 navController.navigate(DetailDestination.route + "?topic=$item")
