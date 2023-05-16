@@ -1,5 +1,6 @@
 package com.hammer.talkbbokki.presentation.comment
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -55,10 +56,14 @@ fun CommentsScreen(
                 .padding(bottom = 78.dp)
         ) {
             CommentsHeader(onBackClick)
-            CommentList(
-                comments,
-                onRecommentClick
-            )
+            if (comments.isEmpty()) {
+                CommentEmpty()
+            } else {
+                CommentList(
+                    comments,
+                    onRecommentClick
+                )
+            }
         }
         Box(Modifier.align(Alignment.BottomCenter)) {
             CommentInputArea()
@@ -143,6 +148,30 @@ fun CommentItem(
                     color = Gray06
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun CommentEmpty() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            Modifier.align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.image_comment_none),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(width = 106.dp, height = 116.dp)
+                    .padding(bottom = 16.dp)
+            )
+            Text(
+                text = "아직 등록된 댓글이 없어요\n" +
+                        "첫 번째 댓글을 달아보세요",
+                style = TalkbbokkiTypography.b2_bold,
+                color = Gray05
+            )
         }
     }
 }
