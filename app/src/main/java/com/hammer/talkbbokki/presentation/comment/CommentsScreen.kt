@@ -35,6 +35,7 @@ fun CommentsRoute(
     CommentsScreen(
         onBackClick,
         onRecommentClick,
+        { viewModel.postComment(it) },
         comments.value
     )
 }
@@ -43,6 +44,7 @@ fun CommentsRoute(
 fun CommentsScreen(
     onBackClick: () -> Unit,
     onRecommentClick: () -> Unit,
+    onClickPostComment: (String) -> Unit,
     comments: List<Comment>
 ) {
     Box(
@@ -66,7 +68,7 @@ fun CommentsScreen(
             }
         }
         Box(Modifier.align(Alignment.BottomCenter)) {
-            CommentInputArea()
+            CommentInputArea { onClickPostComment(it) }
         }
     }
 }
@@ -196,7 +198,9 @@ fun CommentList(
 }
 
 @Composable
-fun CommentInputArea() {
+fun CommentInputArea(
+    onClickPostComment: (String) -> Unit,
+) {
     val commentText = remember { mutableStateOf("") }
     Column(modifier = Modifier.run {
         fillMaxWidth()
@@ -232,7 +236,7 @@ fun CommentInputArea() {
             Box(
                 modifier = Modifier
                     .clickable {
-                        // 댓글 작성
+                        onClickPostComment(commentText.value)
                     }
                     .align(Alignment.Bottom)
                     .size(height = 48.dp, width = 52.dp)

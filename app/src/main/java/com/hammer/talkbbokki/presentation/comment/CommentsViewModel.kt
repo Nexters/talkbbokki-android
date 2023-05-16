@@ -1,19 +1,22 @@
 package com.hammer.talkbbokki.presentation.comment
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hammer.talkbbokki.domain.repository.CommentRepository
+import com.hammer.talkbbokki.domain.repository.UserInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CommentsViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle, private val repository: CommentRepository
+    savedStateHandle: SavedStateHandle,
+    private val repository: CommentRepository,
+    private val userInfoRpo: UserInfoRepository
+
 ) : ViewModel() {
 
     private val _commentItems: MutableStateFlow<List<Comment>> = MutableStateFlow(listOf())
@@ -26,7 +29,7 @@ class CommentsViewModel @Inject constructor(
 
     init {
         getComments(selectedTopicId)
-        android.util.Log.e("@@@", selectedTopicId.toString() + "test")
+        Log.e("@@@", selectedTopicId.toString() + "test")
     }
 
     fun getComments(topicId: Int) {
@@ -43,7 +46,7 @@ class CommentsViewModel @Inject constructor(
                 selectedTopicId,
                 com.hammer.talkbbokki.domain.model.Comment(body, getTokenId(), selectedTopicId)
             ).collect {
-                android.util.Log.e("@@@", it.toString() + "test")
+                Log.e("@@@", it.toString() + "test")
             }
         }
     }
@@ -52,12 +55,11 @@ class CommentsViewModel @Inject constructor(
         viewModelScope.launch {
             repository.deleteComment(selectedTopicId).collect {
                 _deleteCommentSuccess.value = true
-                android.util.Log.e("@@@", it.toString() + "test")
+                Log.e("@@@", it.toString() + "test")
             }
         }
     }
 
-    fun getTokenId(): String {
-        return ""
-    }
+    suspend fun getTokenId(): String = userInfoRpo.getUserDeviceToken().first() ?: ""
+
 }
