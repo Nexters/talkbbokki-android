@@ -78,4 +78,10 @@
     <string name="setting_nickname_error_too_long">최대 입력 글자수를 초과하였습니다.</string>
     <string name="setting_nickname_error_exist">이미 사용중인 닉네임입니다.</string>
     <string name="setting_nickname_error_not_allow_char">영어, 한글, 숫자로만 구성해 주세요.</string>
+
+    <string name="comment_report_title">신고하기</string>
+    <string name="comment_report_writer">작성자</string>
+    <string name="comment_report_comment_contents">내용</string>
+    <string name="comment_report_reason_title">신고 사유 선택</string>
+    <string name="comment_report_reason_notice">해당 댓글에 적용되지 않는 사유일 경우 반려될 수 있어요.</string>
 </resources>
