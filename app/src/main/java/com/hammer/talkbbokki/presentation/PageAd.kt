@@ -50,6 +50,7 @@ fun showPageAd(context: Context, onAdDismissed: () -> Unit) {
             }
         }
         interstitialAd?.show(activity)
+        onAdDismissed()
     } else {
         Toast.makeText(context, "아직 광고가 준비되지 않았어요", Toast.LENGTH_SHORT).show()
         onAdDismissed()
