@@ -80,6 +80,10 @@
     <string name="setting_nickname_error_exist">이미 사용중인 닉네임입니다.</string>
     <string name="setting_nickname_error_not_allow_char">영어, 한글, 숫자로만 구성해 주세요.</string>
 
+    <string name="comment_send_button">등록</string>
+    <string name="recomment_button">답글 달기</string>
+    <string name="report_comment_button">신고하기</string>
+
     <string name="comment_report_title">신고하기</string>
     <string name="comment_report_writer">작성자</string>
     <string name="comment_report_comment_contents">내용</string>
@@ -88,4 +92,5 @@
     <string name="comment_report_send">신고하기</string>
     <string name="comment_report_send_success">신고를 완료했어요</string>
     <string name="dialog_ok">확인</string>
+
 </resources>

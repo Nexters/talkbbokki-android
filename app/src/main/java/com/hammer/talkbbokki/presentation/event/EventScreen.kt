@@ -41,8 +41,8 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun EventListRoute(
-    onClickToComments: () -> Unit,
     onClickBack: () -> Unit,
+    onClickToComments: (topicId : Int) -> Unit,
     viewModel: EventViewModel = hiltViewModel()
 ) {
     val item by viewModel.currentTopic.collectAsState()
@@ -89,9 +89,7 @@ fun EventListRoute(
         commentsCount = commentsCount,
         updateViewCnt = { viewModel.postViewCnt(item.id) },
         onClickShowDialog = { showDialog = true },
-        onClickComment = {
-            onClickToComments()
-        },
+        onClickComment = { onClickToComments(item.id) },
         onClickBookmark = {
             if (it) viewModel.addBookmark() else viewModel.removeBookmark()
             logEvent(

@@ -12,7 +12,7 @@ object EventDestination : TalkbbokkiNavigationDestination {
 }
 
 fun NavGraphBuilder.eventGraph(
-    navigateToComments: () -> Unit,
+    navigateToComments: (topicId : Int) -> Unit,
     navigateToMain: () -> Unit
 ) {
     composable(

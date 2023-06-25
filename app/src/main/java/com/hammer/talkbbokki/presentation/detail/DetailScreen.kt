@@ -113,7 +113,6 @@ fun DetailScreen(
     starter: TalkOrderItem
 ) {
     var cardFace by remember { mutableStateOf(CardFace.FRONT) }
-
     Box(
         modifier = modifier
             .fillMaxSize()

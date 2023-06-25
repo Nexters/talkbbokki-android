@@ -41,6 +41,11 @@ abstract class RepositoryModule {
     ): PushRepository
 
     @Binds
+    internal abstract fun bindsCommentRepository(
+        repository: CommentRepositoryImpl
+    ): CommentRepository
+
+    @Binds
     internal abstract fun bindsUserInfoRepository(
         repository: UserInfoRepositoryImpl
     ): UserInfoRepository
