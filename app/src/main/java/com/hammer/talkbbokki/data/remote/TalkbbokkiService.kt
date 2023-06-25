@@ -5,6 +5,8 @@ import com.hammer.talkbbokki.data.entity.CommentsCountEntity
 import com.hammer.talkbbokki.data.entity.TalkOrderEntity
 import com.hammer.talkbbokki.data.entity.TopicItemListEntity
 import com.hammer.talkbbokki.data.entity.UserInfoEntity
+import com.hammer.talkbbokki.domain.model.ReportRequest
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -65,4 +67,11 @@ internal interface TalkbbokkiService {
     suspend fun getTopicCommentsCount(
         @Path("topicId") topicId: Int
     ): CommentsCountEntity
+
+    @POST("/api/topics/{topicId}/comments/{commentId}/report")
+    suspend fun postCommentReport(
+        @Path("topicId") topicId: Int,
+        @Path("commentId") commentId: Int,
+        @Body request: ReportRequest
+    )
 }

@@ -17,6 +17,7 @@ import com.hammer.talkbbokki.presentation.main.mainGraph
 import com.hammer.talkbbokki.presentation.onboarding.OnBoardingDestination
 import com.hammer.talkbbokki.presentation.onboarding.onboardingGraph
 import com.hammer.talkbbokki.presentation.suggestion.SuggestionDestination
+import com.hammer.talkbbokki.presentation.suggestion.reportGraph
 import com.hammer.talkbbokki.presentation.suggestion.suggestionGraph
 import com.hammer.talkbbokki.presentation.topics.TopicListDestination
 import com.hammer.talkbbokki.presentation.topics.topicListGraph
@@ -96,6 +97,9 @@ fun TalkbbokkiNavHost(
             onBackClick = { navController.popBackStack() }
         )
         suggestionGraph(
+            onBackClick = { navController.popBackStack() }
+        )
+        reportGraph(
             onBackClick = { navController.popBackStack() }
         )
     }
