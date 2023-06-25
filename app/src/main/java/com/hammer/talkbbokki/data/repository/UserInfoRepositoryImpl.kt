@@ -13,6 +13,10 @@ internal class UserInfoRepositoryImpl @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     private val cache: UserInfoCache
 ) : UserInfoRepository {
+    override fun saveUserId(id: String) {
+        cache.id = id
+    }
+
     override fun postUserInfo(id: String, pushToken: String): Flow<Unit> = flow {
         cache.update(id, pushToken)
         dataStoreManager.updateDeviceToken(pushToken)
@@ -24,6 +28,8 @@ internal class UserInfoRepositoryImpl @Inject constructor(
         dataStoreManager.updateNickname(nickname)
         emit(service.saveDeviceToken(cache.id, cache.deviceToken, nickname))
     }
+
+    override fun getUserId(): Flow<String?> = flow { emit(cache.id) }
 
     override fun getUserDeviceToken(): Flow<String?> = dataStoreManager.appDeviceToken
 
