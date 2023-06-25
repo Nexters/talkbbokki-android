@@ -35,14 +35,17 @@ fun CommentDetailRoute(
         onBackClick,
         recomments.value.first(),
         recomments.value
-    )
+    ) {
+        viewModel.deleteComment(it)
+    }
 }
 
 @Composable
 fun CommentDetailScreen(
     onBackClick: () -> Unit,
-    comment: Comment,
-    recomments: List<Comment>
+    comment: CommentModel,
+    recomments: List<CommentModel>,
+    onDeleteClick: (CommentModel) -> Unit
 ) {
     Box(
         Modifier
@@ -56,15 +59,12 @@ fun CommentDetailScreen(
         ) {
             CommentDetailHeader(onBackClick)
             CommentContents(
-                nickname = comment.nickname,
-                date = comment.date,
-                content = comment.content,
-                replyCount = comment.replyCount,
-                onDeleteClick = comment.onDeleteClick
+                comment = comment,
+                onDeleteClick = { onDeleteClick(it) }
             )
-            RecommentList(
-                recomments
-            )
+            RecommentList(recomments) {
+                onDeleteClick(it)
+            }
         }
         Box(Modifier.align(Alignment.BottomCenter)) {
             RecommentInputArea()
@@ -74,7 +74,7 @@ fun CommentDetailScreen(
 
 @Composable
 fun CommentDetailHeader(
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val replyCount = 0
     Box(
@@ -82,7 +82,8 @@ fun CommentDetailHeader(
             .height(56.dp)
             .fillMaxWidth()
     ) {
-        Icon(painter = painterResource(id = R.drawable.ic_arrow_left),
+        Icon(
+            painter = painterResource(id = R.drawable.ic_arrow_left),
             tint = White,
             contentDescription = null,
             modifier = Modifier
@@ -90,16 +91,20 @@ fun CommentDetailHeader(
                     onBackClick()
                 }
                 .align(Alignment.CenterStart)
-                .padding(start = 20.dp))
+                .padding(start = 20.dp)
+        )
         Text(
-            text = "답글 ($replyCount)", Modifier.align(Alignment.Center), color = White
+            text = "답글 ($replyCount)",
+            Modifier.align(Alignment.Center),
+            color = White
         )
     }
 }
 
 @Composable
 fun RecommentItem(
-    nickname: String, date: String, content: String, replyCount: Int, onDeleteClick: () -> Unit
+    comment: CommentModel,
+    onDeleteClick: (CommentModel) -> Unit
 ) {
     Box(modifier = Modifier.padding(20.dp)) {
         Image(
@@ -108,10 +113,7 @@ fun RecommentItem(
             contentDescription = null
         )
         CommentContents(
-            nickname = nickname,
-            date = date,
-            content = content,
-            replyCount = replyCount,
+            comment = comment,
             onDeleteClick = onDeleteClick
         )
     }
@@ -119,7 +121,8 @@ fun RecommentItem(
 
 @Composable
 fun CommentContents(
-    nickname: String, date: String, content: String, replyCount: Int, onDeleteClick: () -> Unit
+    comment: CommentModel,
+    onDeleteClick: (CommentModel) -> Unit
 ) {
     val isMine = false
     val isParentComment = false
@@ -127,31 +130,34 @@ fun CommentContents(
     Column(modifier = Modifier.padding(start = 26.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = nickname, style = TalkbbokkiTypography.b3_bold,
+                text = comment.nickname,
+                style = TalkbbokkiTypography.b3_bold,
                 color = if (isMine) MainColor01 else White
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = date, style = TalkbbokkiTypography.caption, color = Gray06)
+            Text(text = comment.date, style = TalkbbokkiTypography.caption, color = Gray06)
         }
         if (isMine) {
-            Icon(painter = painterResource(id = R.drawable.ic_close),
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close),
                 tint = White,
                 contentDescription = null,
                 modifier = Modifier
                     .clickable {
-                        onDeleteClick()
+                        onDeleteClick(comment)
                     }
-                    .align(Alignment.End))
+                    .align(Alignment.End)
+            )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = content, style = TalkbbokkiTypography.b3_regular, color = White)
+        Text(text = comment.content, style = TalkbbokkiTypography.b3_regular, color = White)
         Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (isParentComment) {
                 Text(
-                    text = "답글($replyCount)",
+                    text = stringResource(R.string.recommnet_count, comment.replyCount),
                     style = TalkbbokkiTypography.caption,
-                    color = Gray06,
+                    color = Gray06
                 )
                 Spacer(modifier = Modifier.width(12.dp))
             }
@@ -168,19 +174,18 @@ fun CommentContents(
             }
         }
     }
-
 }
 
 @Composable
-fun RecommentList(comments: List<Comment>) {
+fun RecommentList(
+    comments: List<CommentModel>,
+    onDeleteClick: (CommentModel) -> Unit
+) {
     LazyColumn {
         itemsIndexed(comments) { idx, comment ->
             RecommentItem(
-                nickname = comment.nickname,
-                date = comment.date,
-                content = comment.content,
-                replyCount = comment.replyCount,
-                onDeleteClick = comment.onDeleteClick
+                comment = comment,
+                onDeleteClick = { onDeleteClick(comment) }
             )
         }
     }
@@ -189,12 +194,14 @@ fun RecommentList(comments: List<Comment>) {
 @Composable
 fun RecommentInputArea() {
     val commentText = remember { mutableStateOf("") }
-    Column(modifier = Modifier.run {
-        fillMaxWidth()
-            .defaultMinSize(minHeight = 78.dp)
-            .background(MainBackgroundColor)
-            .padding(horizontal = 20.dp, vertical = 16.dp)
-    }) {
+    Column(
+        modifier = Modifier.run {
+            fillMaxWidth()
+                .defaultMinSize(minHeight = 78.dp)
+                .background(MainBackgroundColor)
+                .padding(horizontal = 20.dp, vertical = 16.dp)
+        }
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -227,7 +234,7 @@ fun RecommentInputArea() {
                     }
                     .align(Alignment.Bottom)
                     .size(height = 48.dp, width = 52.dp)
-                    .padding(horizontal = 12.dp),
+                    .padding(horizontal = 12.dp)
             ) {
                 Text(
                     stringResource(R.string.comment_send_button),
@@ -236,7 +243,7 @@ fun RecommentInputArea() {
                         .wrapContentHeight()
                         .align(Alignment.Center),
                     color = White,
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
             }
         }

@@ -82,6 +82,7 @@
 
     <string name="comment_send_button">등록</string>
     <string name="recomment_button">답글 달기</string>
+    <string name="recommnet_count">답글(%d)</string>
     <string name="report_comment_button">신고하기</string>
 
     <string name="comment_report_title">신고하기</string>

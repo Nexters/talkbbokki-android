@@ -20,6 +20,7 @@ import com.hammer.talkbbokki.presentation.main.MainDestination
 import com.hammer.talkbbokki.presentation.main.mainGraph
 import com.hammer.talkbbokki.presentation.onboarding.OnBoardingDestination
 import com.hammer.talkbbokki.presentation.onboarding.onboardingGraph
+import com.hammer.talkbbokki.presentation.suggestion.ReportDestination
 import com.hammer.talkbbokki.presentation.suggestion.SuggestionDestination
 import com.hammer.talkbbokki.presentation.suggestion.reportGraph
 import com.hammer.talkbbokki.presentation.suggestion.suggestionGraph
@@ -113,7 +114,10 @@ fun TalkbbokkiNavHost(
         )
         commentsGraph(
             onBackClick = { navController.popBackStack() },
-            navigateToCommentDetail = { navController.navigate(CommentDetailDestination.route) }
+            navigateToCommentDetail = { navController.navigate(CommentDetailDestination.route) },
+            onClickReport = { comment ->
+                navController.navigate(ReportDestination.route + "?comment=$comment")
+            }
         )
         commentDetailGraph(
             onBackClick = { navController.popBackStack() }

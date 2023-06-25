@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.hammer.talkbbokki.data.local.cache.UserInfoCache
 import com.hammer.talkbbokki.domain.model.ReportRequest
 import com.hammer.talkbbokki.domain.repository.ReportRepository
+import com.hammer.talkbbokki.presentation.comment.CommentModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,10 +22,11 @@ class ReportViewModel @Inject constructor(
     private val repo: ReportRepository,
     private val userInfoCache: UserInfoCache
 ) : ViewModel() {
-    private val topicId = savedStateHandle.get<Int>("topicId")
-    private val commentId = savedStateHandle.get<Int>("commentId")
-    val writer = savedStateHandle.getStateFlow("nickname", "")
-    val comments = savedStateHandle.getStateFlow("comments", "")
+    private val commentItem = savedStateHandle.get<CommentModel>("comment")
+    private val topicId = commentItem?.topicId
+    private val commentId = commentItem?.id
+    val writer = MutableStateFlow(commentItem?.nickname ?: commentItem?.userId ?: "")
+    val comments = MutableStateFlow(commentItem?.content ?: "")
     private val _reportReasons: MutableStateFlow<List<ReportReasonItem>> =
         MutableStateFlow(
             ReportReasonKeyword.getReportReasons().map {

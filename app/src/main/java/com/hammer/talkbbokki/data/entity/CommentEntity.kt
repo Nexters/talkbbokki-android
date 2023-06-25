@@ -1,6 +1,6 @@
 package com.hammer.talkbbokki.data.entity
 
-import com.hammer.talkbbokki.presentation.comment.Comment
+import com.hammer.talkbbokki.presentation.comment.CommentModel
 
 data class CommentEntity(
     val result: Result?
@@ -23,11 +23,13 @@ data class CommentItem(
     val createAt: String?,
     val modifyAt: String?
 ) {
-    fun toModel(): Comment = Comment(
+    fun toModel(): CommentModel = CommentModel(
+        id = id,
+        topicId = topicId ?: 0,
+        userId = userId ?: "",
         nickname = userNickname ?: userId ?: "",
         date = createAt ?: "",
         content = body ?: "",
-        replyCount = childCommentCount ?: 0,
-        onDeleteClick = {}
+        replyCount = childCommentCount ?: 0
     )
 }

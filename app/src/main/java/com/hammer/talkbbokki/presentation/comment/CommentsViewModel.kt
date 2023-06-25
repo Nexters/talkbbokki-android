@@ -24,14 +24,14 @@ class CommentsViewModel @Inject constructor(
 
     private val _parentCommentId = savedStateHandle.get<Int>("parentCommentId")
 
-    private val _commentItems: MutableStateFlow<List<Comment>> = MutableStateFlow(listOf())
-    val commentItems: StateFlow<List<Comment>> get() = _commentItems
+    private val _commentItems: MutableStateFlow<List<CommentModel>> = MutableStateFlow(listOf())
+    val commentItems: StateFlow<List<CommentModel>> get() = _commentItems
 
     private val _deleteCommentSuccess: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val deleteCommentSuccess: StateFlow<Boolean> get() = _deleteCommentSuccess.asStateFlow()
 
     private val selectedTopicId = savedStateHandle.get<Int>("topicId") ?: 0
-    private val totalCommentList: MutableList<Comment> = mutableListOf()
+    private val totalCommentList: MutableList<CommentModel> = mutableListOf()
     private var _nextPageId: Int? = null
 
     init {
@@ -86,7 +86,7 @@ class CommentsViewModel @Inject constructor(
         }
     }
 
-    fun deleteComment() {
+    fun deleteComment(comment: CommentModel) {
         viewModelScope.launch {
             repository.deleteComment(selectedTopicId).collect {
                 _deleteCommentSuccess.value = true
