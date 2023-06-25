@@ -31,7 +31,7 @@ class CommentsViewModel @Inject constructor(
     val deleteCommentSuccess: StateFlow<Boolean> get() = _deleteCommentSuccess.asStateFlow()
 
     private val selectedTopicId = savedStateHandle.get<Int>("topicId") ?: 0
-
+    private val totalCommentList: MutableList<Comment> = mutableListOf()
     private var _nextPageId: Int? = null
 
     init {
@@ -41,10 +41,28 @@ class CommentsViewModel @Inject constructor(
 
     private fun getComments(topicId: Int) {
         viewModelScope.launch {
-            repository.getCommentList(topicId, _nextPageId)
+            repository.getCommentList(topicId)
                 .catch {}
                 .collect {
-                    _commentItems.value = it.result?.contents?.map { it.toModel() }.orEmpty()
+                    totalCommentList.clear()
+                    totalCommentList.addAll(
+                        it.result?.contents?.map { it.toModel() }.orEmpty()
+                    )
+                    _commentItems.value = totalCommentList.toList()
+                    _nextPageId = it.result?.next
+                }
+        }
+    }
+
+    fun getNextPage() {
+        viewModelScope.launch {
+            repository.getCommentList(selectedTopicId, _nextPageId)
+                .catch {}
+                .collect {
+                    totalCommentList.addAll(
+                        it.result?.contents?.map { it.toModel() }.orEmpty()
+                    )
+                    _commentItems.value = totalCommentList.toList()
                     _nextPageId = it.result?.next
                 }
         }
