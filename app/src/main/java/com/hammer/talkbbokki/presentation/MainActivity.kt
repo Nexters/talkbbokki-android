@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadAd(this)
+        loadPageAd(this)
 
         val launchFrom = if (intent.data != null) {
             AnalyticsConst.Event.APP_LAUNCH_FROM_LINK
@@ -86,6 +87,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         removeAd()
+        removePageAd()
         super.onDestroy()
     }
 

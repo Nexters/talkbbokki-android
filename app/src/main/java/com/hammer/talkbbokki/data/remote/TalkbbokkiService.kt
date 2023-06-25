@@ -1,18 +1,8 @@
 package com.hammer.talkbbokki.data.remote
 
 import com.hammer.talkbbokki.data.entity.*
-import com.hammer.talkbbokki.data.entity.CategoryLevelListEntity
-import com.hammer.talkbbokki.data.entity.CommentsCountEntity
-import com.hammer.talkbbokki.data.entity.TalkOrderEntity
-import com.hammer.talkbbokki.data.entity.TopicItemListEntity
-import com.hammer.talkbbokki.data.entity.UserInfoEntity
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
 import com.hammer.talkbbokki.domain.model.Comment
+import com.hammer.talkbbokki.domain.model.ReportRequest
 import retrofit2.http.*
 
 internal interface TalkbbokkiService {
@@ -77,11 +67,18 @@ internal interface TalkbbokkiService {
     @POST("/api/topics/{topicId}/comments")
     suspend fun postComments(
         @Path("topicId") topicId: Int,
-        @Body comment : Comment
+        @Body comment: Comment
     )
 
     @DELETE("/api/comments/{commentId}")
     suspend fun deleteComment(
         @Path("commentId") commentId: Int
+    )
+
+    @POST("/api/topics/{topicId}/comments/{commentId}/report")
+    suspend fun postCommentReport(
+        @Path("topicId") topicId: Int,
+        @Path("commentId") commentId: Int,
+        @Body request: ReportRequest
     )
 }

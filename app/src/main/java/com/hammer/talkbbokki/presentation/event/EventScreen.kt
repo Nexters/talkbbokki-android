@@ -33,6 +33,7 @@ import com.hammer.talkbbokki.presentation.detail.CardFace
 import com.hammer.talkbbokki.presentation.detail.DetailBottomNavigation
 import com.hammer.talkbbokki.presentation.detail.DetailFlipCard
 import com.hammer.talkbbokki.presentation.detail.DetailHeader
+import com.hammer.talkbbokki.presentation.showPageAd
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import com.hammer.talkbbokki.ui.theme.White
 import com.hammer.talkbbokki.ui.util.toHexColor
@@ -79,6 +80,8 @@ fun EventListRoute(
         }
     }
 
+    val context = LocalContext.current
+
     EventScreen(
         item = item,
         isBookmarked = isBookmarked,
@@ -97,13 +100,19 @@ fun EventListRoute(
                 )
             )
         },
-        onClickPrev = { viewModel.clickPrev() },
-        onClickNext = { viewModel.clickNext() },
+        onClickPrev = {
+            viewModel.clickPrev()
+        },
+        onClickNext = {
+            showPageAd(context) {
+                viewModel.clickNext()
+            }
+        },
         onClickBack = onClickBack
     )
 
     if (showToast) {
-        Toast.makeText(LocalContext.current, stringResource(id = toastMessage), Toast.LENGTH_SHORT)
+        Toast.makeText(context, stringResource(id = toastMessage), Toast.LENGTH_SHORT)
             .show()
         showToast = false
     }
