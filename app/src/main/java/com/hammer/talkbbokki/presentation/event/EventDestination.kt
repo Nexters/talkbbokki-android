@@ -5,7 +5,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.hammer.talkbbokki.presentation.navigation.TalkbbokkiNavigationDestination
-import com.hammer.talkbbokki.presentation.report.CommentReportScreen
 
 object EventDestination : TalkbbokkiNavigationDestination {
     override val route: String
@@ -23,15 +22,9 @@ fun NavGraphBuilder.eventGraph(
             navArgument("bgColor") { type = NavType.StringType }
         )
     ) {
-        CommentReportScreen(
-            writer = "작성자 나와라",
-            comments = "코멘트 나와랏 코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏"
-        ) {
-            navigateToMain()
-        }
-        /*EventListRoute(
+        EventListRoute(
             onClickToComments = navigateToComments,
             onClickBack = navigateToMain
-        )*/
+        )
     }
 }

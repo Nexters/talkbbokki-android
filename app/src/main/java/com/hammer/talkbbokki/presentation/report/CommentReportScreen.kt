@@ -10,17 +10,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -28,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.ui.theme.Gray05
 import com.hammer.talkbbokki.ui.theme.Gray06
@@ -39,10 +38,13 @@ import com.hammer.talkbbokki.ui.theme.White
 @Composable
 fun CommentReportScreen(
     modifier: Modifier = Modifier,
-    writer: String,
-    comments: String,
-    onClickClose: () -> Unit
+    onClickClose: () -> Unit,
+    viewModel: ReportViewModel = hiltViewModel()
 ) {
+    val writer = "작성자 나와라"
+    val comments = "코멘트 나와랏 코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏"
+    val reasonList by viewModel.reportReasons.collectAsState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -60,9 +62,11 @@ fun CommentReportScreen(
             color = Gray06,
             thickness = 12.dp
         )
-        ReportReason(
-            reasonList = listOf("욕설/비방", "음란물", "광고", "기타")
-        )
+        ReportReasons(
+            reasonList = reasonList
+        ) { index ->
+            viewModel.onChangedReason(index)
+        }
     }
 }
 
@@ -101,7 +105,8 @@ fun ReportHeader(
     comments: String
 ) {
     ConstraintLayout(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 24.dp)
     ) {
         val (writerFieldRef, writerRef, commentsFieldRef, commentRef) = createRefs()
@@ -117,10 +122,13 @@ fun ReportHeader(
         )
 
         Text(
-            modifier = Modifier.constrainAs(writerRef) {
-                baseline.linkTo(writerFieldRef.baseline)
-                start.linkTo(writerFieldRef.end)
-            }.padding(start = 12.dp).width(290.dp),
+            modifier = Modifier
+                .constrainAs(writerRef) {
+                    baseline.linkTo(writerFieldRef.baseline)
+                    start.linkTo(writerFieldRef.end)
+                }
+                .padding(start = 12.dp)
+                .width(290.dp),
             text = writer,
             style = TalkbbokkiTypography.b2_regular,
             color = White,
@@ -129,20 +137,25 @@ fun ReportHeader(
         )
 
         Text(
-            modifier = Modifier.constrainAs(commentsFieldRef) {
-                top.linkTo(writerFieldRef.bottom)
-                start.linkTo(writerFieldRef.start)
-            }.padding(top = 24.dp),
+            modifier = Modifier
+                .constrainAs(commentsFieldRef) {
+                    top.linkTo(writerFieldRef.bottom)
+                    start.linkTo(writerFieldRef.start)
+                }
+                .padding(top = 24.dp),
             text = stringResource(id = R.string.comment_report_comment_contents),
             style = TalkbbokkiTypography.b2_regular,
             color = Gray05
         )
 
         Text(
-            modifier = Modifier.constrainAs(commentRef) {
-                baseline.linkTo(commentsFieldRef.baseline)
-                start.linkTo(writerRef.start)
-            }.padding(start = 12.dp).width(290.dp),
+            modifier = Modifier
+                .constrainAs(commentRef) {
+                    baseline.linkTo(commentsFieldRef.baseline)
+                    start.linkTo(writerRef.start)
+                }
+                .padding(start = 12.dp)
+                .width(290.dp),
             text = comments,
             style = TalkbbokkiTypography.b2_regular,
             color = White,
@@ -153,33 +166,34 @@ fun ReportHeader(
 }
 
 @Composable
-fun ReportReason(
+fun ReportReasons(
     modifier: Modifier = Modifier,
-    reasonList: List<String>
+    reasonList: List<ReportReasonItem>,
+    onSelectedReason: (Int) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
             .padding(top = 24.dp)
     ) {
-        this.items(reasonList) {
-            ReportReasonItem(
-                reason = it,
-                isChecked = false
-            ) { check, reason ->
+        this.itemsIndexed(reasonList) { index, item ->
+            ReportReason(
+                index = index,
+                reason = item
+            ) { index ->
+                onSelectedReason(index)
             }
         }
     }
 }
 
 @Composable
-fun ReportReasonItem(
+fun ReportReason(
     modifier: Modifier = Modifier,
-    reason: String,
-    isChecked: Boolean,
-    onCheckChange: (Boolean, String) -> Unit
+    index: Int,
+    reason: ReportReasonItem,
+    onCheckChange: (Int) -> Unit
 ) {
-    var check by remember { mutableStateOf(isChecked) }
     ConstraintLayout(
         modifier = modifier.fillMaxWidth()
     ) {
@@ -189,10 +203,9 @@ fun ReportReasonItem(
                 start.linkTo(parent.start)
                 top.linkTo(parent.top)
             },
-            checked = check,
+            checked = reason.checked,
             onCheckedChange = {
-                check = it
-                onCheckChange(it, reason)
+                onCheckChange(index)
             },
             colors = CheckboxDefaults.colors(
                 checkedColor = MainColor01,
@@ -204,8 +217,10 @@ fun ReportReasonItem(
                 start.linkTo(checkBoxRef.end)
                 top.linkTo(checkBoxRef.top)
                 bottom.linkTo(checkBoxRef.bottom)
+            }.clickable {
+                onCheckChange(index)
             },
-            text = reason,
+            text = reason.reason.keyword,
             style = TalkbbokkiTypography.b2_regular,
             color = White
         )
