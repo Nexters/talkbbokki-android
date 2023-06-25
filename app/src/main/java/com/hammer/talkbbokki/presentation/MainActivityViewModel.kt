@@ -32,9 +32,20 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+    fun saveUserId(id: String) {
+        viewModelScope.launch {
+            repo.getUserId()
+                .catch {}.collect { savedId ->
+                    if (savedId != id) {
+                        repo.saveUserId(id)
+                    }
+                }
+        }
+    }
+
     fun saveDeviceToken(id: String, newToken: String) {
         viewModelScope.launch {
-            repo.getUserDeviceToken().collect { savedToken ->
+            repo.getUserDeviceToken().catch { }.collect { savedToken ->
                 if (newToken != savedToken) {
                     repo.postUserInfo(id, newToken)
                         .catch { }
