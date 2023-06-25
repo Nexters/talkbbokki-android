@@ -2,17 +2,27 @@ package com.hammer.talkbbokki.presentation.report
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.hammer.talkbbokki.data.local.cache.UserInfoCache
+import com.hammer.talkbbokki.domain.model.ReportRequest
+import com.hammer.talkbbokki.domain.repository.ReportRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ReportViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val repo: ReportRepository,
+    private val userInfoCache: UserInfoCache
 ) : ViewModel() {
+    private val topicId = savedStateHandle.get<Int>("topicId")
+    private val commentId = savedStateHandle.get<Int>("commentId")
     val writer = savedStateHandle.getStateFlow("nickname", "")
     val comments = savedStateHandle.getStateFlow("comments", "")
     private val _reportReasons: MutableStateFlow<List<ReportReasonItem>> =
@@ -45,6 +55,23 @@ class ReportViewModel @Inject constructor(
     }
 
     fun sendReport() {
-        _showDialog.value = true
+        topicId ?: return
+        commentId ?: return
+
+        val selectedItem = _reportReasons.value.find { it.checked }
+
+        viewModelScope.launch {
+            repo.postCommentReport(
+                topicId = topicId,
+                commentId = commentId,
+                request = ReportRequest(
+                    reportReason = selectedItem?.reason?.keyword ?: "",
+                    userId = userInfoCache.id
+                )
+            ).catch {
+            }.collect {
+                _showDialog.value = true
+            }
+        }
     }
 }

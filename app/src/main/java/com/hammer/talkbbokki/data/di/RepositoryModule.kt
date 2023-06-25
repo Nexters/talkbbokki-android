@@ -44,4 +44,9 @@ abstract class RepositoryModule {
     internal abstract fun bindsUserInfoRepository(
         repository: UserInfoRepositoryImpl
     ): UserInfoRepository
+
+    @Binds
+    internal abstract fun bindsReportRepository(
+        repository: ReportRepositoryImpl
+    ): ReportRepository
 }
