@@ -15,7 +15,8 @@ fun NavGraphBuilder.commentsGraph(
     onBackClick: () -> Unit,
     navigateToCommentDetail: () -> Unit
 ) {
-    composable(route = CommentsDestination.route + "?topicId={topicId}",
+    composable(
+        route = CommentsDestination.route + "?topicId={topicId}",
         arguments = listOf(navArgument("topicId") { type = NavType.IntType })
     ) {
         CommentsRoute(
