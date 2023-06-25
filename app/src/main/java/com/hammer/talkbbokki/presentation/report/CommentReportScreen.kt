@@ -28,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.ui.button.ButtonType
+import com.hammer.talkbbokki.ui.button.CommonLargeButton
+import com.hammer.talkbbokki.ui.dialog.CommonDialog
 import com.hammer.talkbbokki.ui.theme.Gray05
 import com.hammer.talkbbokki.ui.theme.Gray06
 import com.hammer.talkbbokki.ui.theme.MainColor01
@@ -41,31 +44,54 @@ fun CommentReportScreen(
     onClickClose: () -> Unit,
     viewModel: ReportViewModel = hiltViewModel()
 ) {
-    val writer = "작성자 나와라"
-    val comments = "코멘트 나와랏 코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏코멘트 나와랏"
+    val writer by viewModel.writer.collectAsState()
+    val comments by viewModel.comments.collectAsState()
     val reasonList by viewModel.reportReasons.collectAsState()
+    val sendButtonEnable by viewModel.sendButtonEnable.collectAsState()
+    val showDialog by viewModel.showDialog.collectAsState()
 
-    Column(
+    if (showDialog) {
+        CommonDialog(
+            showIcon = false,
+            text = stringResource(id = R.string.comment_report_send_success),
+            subText = null,
+            agreeText = stringResource(id = R.string.dialog_ok),
+            agreeAction = {
+                onClickClose()
+            }
+        )
+    }
+
+    Box(
         modifier = modifier
             .fillMaxSize()
             .background(MainColor02)
     ) {
-        ReportTopNavigation {
-            onClickClose()
+        Column {
+            ReportTopNavigation {
+                onClickClose()
+            }
+            ReportHeader(
+                writer = writer,
+                comments = comments
+            )
+            Divider(
+                modifier = Modifier.fillMaxWidth(),
+                color = Gray06,
+                thickness = 12.dp
+            )
+            ReportReasons(
+                reasonList = reasonList
+            ) { index ->
+                viewModel.onChangedReason(index)
+            }
         }
-        ReportHeader(
-            writer = writer,
-            comments = comments
-        )
-        Divider(
-            modifier = Modifier.fillMaxWidth(),
-            color = Gray06,
-            thickness = 12.dp
-        )
-        ReportReasons(
-            reasonList = reasonList
-        ) { index ->
-            viewModel.onChangedReason(index)
+        SendReportButton(
+            modifier = modifier
+                .align(Alignment.BottomCenter),
+            isEnable = sendButtonEnable
+        ) {
+            viewModel.sendReport()
         }
     }
 }
@@ -224,5 +250,26 @@ fun ReportReason(
             style = TalkbbokkiTypography.b2_regular,
             color = White
         )
+    }
+}
+
+@Composable
+fun SendReportButton(
+    modifier: Modifier = Modifier,
+    isEnable: Boolean,
+    onClickSend: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, bottom = 16.dp, end = 20.dp)
+    ) {
+        CommonLargeButton(
+            isEnable = isEnable,
+            type = ButtonType.LargePink,
+            text = stringResource(id = R.string.comment_report_send)
+        ) {
+            onClickSend()
+        }
     }
 }

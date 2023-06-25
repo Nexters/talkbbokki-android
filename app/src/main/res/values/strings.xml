@@ -84,4 +84,7 @@
     <string name="comment_report_comment_contents">내용</string>
     <string name="comment_report_reason_title">신고 사유 선택</string>
     <string name="comment_report_reason_notice">해당 댓글에 적용되지 않는 사유일 경우 반려될 수 있어요.</string>
+    <string name="comment_report_send">신고하기</string>
+    <string name="comment_report_send_success">신고를 완료했어요</string>
+    <string name="dialog_ok">확인</string>
 </resources>
