@@ -40,7 +40,6 @@ class EventViewModel @Inject constructor(
     private val _currentTopic: MutableStateFlow<TopicItem> = MutableStateFlow(TopicItem())
     val currentTopic: StateFlow<TopicItem>
         get() = _currentTopic.asStateFlow().also {
-            println("디버깅ㅇㅇㅇ _currentTopic : ${it.value.name}")
             getCommentsCount(it.value.id)
             getBookmarkTopic(it.value.id)
         }
@@ -48,10 +47,7 @@ class EventViewModel @Inject constructor(
     val hasPrevAndNext: StateFlow<Pair<Boolean, Boolean>>
         get() = _currentIndex.asStateFlow()
             .map {
-                println("디버깅ㅇㅇㅇ _currentIndex : ${_currentIndex.value}")
-                val l = (it != 0) to (it != _topicList.lastIndex)
-                println("디버깅ㅇㅇㅇ hasPrevAndNext : $l")
-                l
+                (it != 0) to (it != _topicList.lastIndex)
             }.distinctUntilChanged()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true to true)
     private val _commentsCount: MutableStateFlow<Int> = MutableStateFlow(0)
@@ -83,7 +79,6 @@ class EventViewModel @Inject constructor(
                 .collect { list ->
                     _topicList.clear()
                     _topicList.addAll(list)
-                    println("디버깅ㅇㅇㅇ _topicList : ${_topicList.joinToString { it.name }}")
                     _currentTopic.update { list.first() }
                 }
         }
@@ -151,7 +146,6 @@ class EventViewModel @Inject constructor(
     fun clickNext() {
         val nextIndex = _currentIndex.value + 1
         _topicList.getOrNull(nextIndex)?.let {
-            println("디버깅ㅇㅇㅇ clickNext : ${it.name}")
             _currentIndex.update { nextIndex }
             _currentTopic.value = it
         }
@@ -160,7 +154,6 @@ class EventViewModel @Inject constructor(
     fun clickPrev() {
         val prevIndex = _currentIndex.value - 1
         _topicList.getOrNull(prevIndex)?.let {
-            println("디버깅ㅇㅇㅇ clickPrev : ${it.name}")
             _currentIndex.update { prevIndex }
             _currentTopic.value = it
         }
