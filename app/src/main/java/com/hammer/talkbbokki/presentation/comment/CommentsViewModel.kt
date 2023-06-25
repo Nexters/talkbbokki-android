@@ -30,22 +30,22 @@ class CommentsViewModel @Inject constructor(
     private val _deleteCommentSuccess: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val deleteCommentSuccess: StateFlow<Boolean> get() = _deleteCommentSuccess.asStateFlow()
 
-    val selectedTopicId = savedStateHandle.get<Int>("topicId") ?: 0
+    private val selectedTopicId = savedStateHandle.get<Int>("topicId") ?: 0
+
+    private var _nextPageId: Int? = null
 
     init {
         getComments(selectedTopicId)
         Log.e("@@@", selectedTopicId.toString() + "test")
     }
 
-    fun getComments(topicId: Int) {
+    private fun getComments(topicId: Int) {
         viewModelScope.launch {
-            repository.getCommentList(
-                topicId,
-                null
-            )
+            repository.getCommentList(topicId, _nextPageId)
                 .catch {}
                 .collect {
-                    _commentItems.value = it
+                    _commentItems.value = it.result?.contents?.map { it.toModel() }.orEmpty()
+                    _nextPageId = it.result?.next
                 }
         }
     }
@@ -63,6 +63,7 @@ class CommentsViewModel @Inject constructor(
                 Log.e("@@@", "${it.message}")
             }.collect {
                 Log.e("@@@", it.toString() + "test")
+                getComments(selectedTopicId)
             }
         }
     }
