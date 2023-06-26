@@ -49,7 +49,7 @@ import kotlinx.parcelize.Parcelize
 @Composable
 fun CommentsRoute(
     onBackClick: () -> Unit,
-    onRecommentClick: (Int, Int) -> Unit,
+    onRecommentClick: (CommentModel) -> Unit,
     onReportClick: (CommentModel) -> Unit,
     viewModel: CommentsViewModel = hiltViewModel(),
 ) {
@@ -58,7 +58,7 @@ fun CommentsRoute(
         comments = comments.value,
         onBackClick = { onBackClick() },
         onRecommentClick = {
-            onRecommentClick(viewModel.selectedTopicId, it)
+            onRecommentClick(it)
         },
         onClickPostComment = { viewModel.postComment(it) },
         onReportClick = {
@@ -73,7 +73,7 @@ fun CommentsRoute(
 @Composable
 fun CommentsScreen(
     onBackClick: () -> Unit,
-    onRecommentClick: (Int) -> Unit,
+    onRecommentClick: (CommentModel) -> Unit,
     onClickPostComment: (String) -> Unit,
     onReportClick: (CommentModel) -> Unit,
     onDeleteClick: (CommentModel) -> Unit,
@@ -140,7 +140,7 @@ fun CommentsHeader(
 fun CommentItem(
     comment: CommentModel,
     onDeleteClick: () -> Unit,
-    onRecommentClick: (Int) -> Unit,
+    onRecommentClick: () -> Unit,
     onReportClick: (CommentModel) -> Unit,
 ) {
     val isMine = false
@@ -179,7 +179,7 @@ fun CommentItem(
                 style = TalkbbokkiTypography.caption,
                 color = Gray06,
                 modifier = Modifier.clickable {
-                    onRecommentClick(comment.id)
+                    onRecommentClick()
                 },
             )
             Spacer(modifier = Modifier.width(12.dp))
@@ -224,7 +224,7 @@ fun CommentEmpty() {
 @Composable
 fun CommentList(
     comments: List<CommentModel>,
-    onRecommentClick: (Int) -> Unit,
+    onRecommentClick: (CommentModel) -> Unit,
     onReportClick: (CommentModel) -> Unit,
     onDeleteClick: (CommentModel) -> Unit,
 ) {
@@ -233,7 +233,7 @@ fun CommentList(
             CommentItem(
                 comment = comment,
                 onDeleteClick = { onDeleteClick(comment) },
-                onRecommentClick = { onRecommentClick(it) },
+                onRecommentClick = { onRecommentClick(comment) },
                 onReportClick = { onReportClick(it) },
             )
         }

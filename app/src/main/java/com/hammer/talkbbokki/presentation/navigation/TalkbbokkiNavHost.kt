@@ -114,8 +114,8 @@ fun TalkbbokkiNavHost(
         )
         commentsGraph(
             onBackClick = { navController.popBackStack() },
-            navigateToCommentDetail = { topicId, commentId ->
-                navController.navigate(CommentDetailDestination.route + "?topicId=$topicId&commentId=$commentId")
+            navigateToCommentDetail = { comment ->
+                navController.navigate(CommentDetailDestination.route + "?comment=$comment")
             },
             onClickReport = { comment ->
                 navController.navigate(ReportDestination.route + "?comment=$comment")

@@ -14,7 +14,7 @@ object CommentsDestination : TalkbbokkiNavigationDestination {
 fun NavGraphBuilder.commentsGraph(
     onBackClick: () -> Unit,
     onClickReport: (CommentModel) -> Unit,
-    navigateToCommentDetail: (Int, Int) -> Unit
+    navigateToCommentDetail: (CommentModel) -> Unit
 ) {
     composable(
         route = CommentsDestination.route + "?topicId={topicId}",

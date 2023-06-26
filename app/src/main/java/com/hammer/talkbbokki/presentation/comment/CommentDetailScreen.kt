@@ -11,10 +11,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -30,13 +27,19 @@ fun CommentDetailRoute(
     onBackClick: () -> Unit,
     viewModel: ChildCommentsViewModel = hiltViewModel(),
 ) {
-    val recomments = viewModel.commentItems.collectAsState()
-    CommentDetailScreen(
-        onBackClick,
-        recomments.value.first(),
-        recomments.value,
-    ) {
-        viewModel.deleteComment(it)
+    val parentComment = viewModel.parentComment
+    val recomments by viewModel.commentItems.collectAsState()
+
+    if (parentComment == null) {
+        onBackClick()
+    } else {
+        CommentDetailScreen(
+            onBackClick,
+            parentComment,
+            recomments,
+        ) {
+            viewModel.deleteComment(it)
+        }
     }
 }
 

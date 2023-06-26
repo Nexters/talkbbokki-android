@@ -17,10 +17,10 @@ import javax.inject.Inject
 class ChildCommentsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: CommentRepository,
-): ViewModel() {
-
-    private val _parentCommentId = savedStateHandle.get<Int>("commentId")
-    private val _topicId = savedStateHandle.get<Int>("topicId")
+) : ViewModel() {
+    val parentComment = savedStateHandle.get<CommentModel>("comment")
+    private val _parentCommentId = parentComment?.id
+    private val _topicId = parentComment?.topicId
     private var _nextPageId: Int? = null
     private val totalCommentList: MutableList<CommentModel> = mutableListOf()
     private val _commentItems: MutableStateFlow<List<CommentModel>> = MutableStateFlow(listOf())
