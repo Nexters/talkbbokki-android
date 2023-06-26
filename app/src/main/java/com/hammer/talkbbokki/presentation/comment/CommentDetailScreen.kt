@@ -25,6 +25,7 @@ import com.hammer.talkbbokki.ui.theme.*
 @Composable
 fun CommentDetailRoute(
     onBackClick: () -> Unit,
+    onReportClick: (CommentModel) -> Unit,
     viewModel: ChildCommentsViewModel = hiltViewModel(),
 ) {
     val parentComment = viewModel.parentComment
@@ -37,6 +38,7 @@ fun CommentDetailRoute(
             onBackClick,
             parentComment,
             recomments,
+            onReportClick = { onReportClick(it) },
             onClickPostComment = { viewModel.postComment(it) },
             onDeleteClick = { viewModel.deleteComment(it) },
         )
@@ -49,6 +51,7 @@ fun CommentDetailScreen(
     comment: CommentModel,
     recomments: List<CommentModel>,
     onClickPostComment: (String) -> Unit,
+    onReportClick: (CommentModel) -> Unit,
     onDeleteClick: (CommentModel) -> Unit,
 ) {
     Box(
@@ -64,11 +67,14 @@ fun CommentDetailScreen(
             CommentDetailHeader(onBackClick)
             CommentContents(
                 comment = comment,
+                onReportClick = { onReportClick(it) },
                 onDeleteClick = { onDeleteClick(it) },
             )
-            RecommentList(recomments) {
-                onDeleteClick(it)
-            }
+            RecommentList(
+                recomments,
+                onReportClick = { onReportClick(it) },
+                onDeleteClick = { onDeleteClick(it) },
+            )
         }
         Box(Modifier.align(Alignment.BottomCenter)) {
             CommentInputArea { onClickPostComment(it) }
@@ -108,6 +114,7 @@ fun CommentDetailHeader(
 @Composable
 fun RecommentItem(
     comment: CommentModel,
+    onReportClick: (CommentModel) -> Unit,
     onDeleteClick: (CommentModel) -> Unit,
 ) {
     Box(modifier = Modifier.padding(20.dp)) {
@@ -118,6 +125,7 @@ fun RecommentItem(
         )
         CommentContents(
             comment = comment,
+            onReportClick = { onReportClick(it) },
             onDeleteClick = onDeleteClick,
         )
     }
@@ -126,6 +134,7 @@ fun RecommentItem(
 @Composable
 fun CommentContents(
     comment: CommentModel,
+    onReportClick: (CommentModel) -> Unit,
     onDeleteClick: (CommentModel) -> Unit,
 ) {
     val isMine = false
@@ -170,7 +179,7 @@ fun CommentContents(
                 Text(
                     text = stringResource(R.string.report_comment_button),
                     modifier = Modifier.clickable {
-                        // 신고하기
+                        onReportClick(comment)
                     },
                     style = TalkbbokkiTypography.caption,
                     color = Gray06,
@@ -183,12 +192,14 @@ fun CommentContents(
 @Composable
 fun RecommentList(
     comments: List<CommentModel>,
+    onReportClick: (CommentModel) -> Unit,
     onDeleteClick: (CommentModel) -> Unit,
 ) {
     LazyColumn {
         itemsIndexed(comments) { idx, comment ->
             RecommentItem(
                 comment = comment,
+                onReportClick = { onReportClick(comment) },
                 onDeleteClick = { onDeleteClick(comment) },
             )
         }

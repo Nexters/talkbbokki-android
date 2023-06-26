@@ -12,7 +12,8 @@ object CommentDetailDestination : TalkbbokkiNavigationDestination {
 }
 
 fun NavGraphBuilder.commentDetailGraph(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onReportClick: (CommentModel) -> Unit,
 ) {
     composable(
         route = CommentDetailDestination.route + "?comment={comment}",
@@ -21,7 +22,8 @@ fun NavGraphBuilder.commentDetailGraph(
         )
     ) {
         CommentDetailRoute(
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            onReportClick = onReportClick
         )
     }
 }
