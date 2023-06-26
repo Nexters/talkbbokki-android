@@ -55,7 +55,6 @@ class ChildCommentsViewModel @Inject constructor(
                 totalCommentList.clear()
                 totalCommentList.addAll(
                     it.result?.contents?.map { it.toModel(userInfoCache) }.orEmpty()
-                        .sortedBy { it.id }
                 )
                 _commentItems.value = totalCommentList.distinctBy { it.id }
                 _nextPageId = it.result?.next

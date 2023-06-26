@@ -5,18 +5,21 @@ import com.hammer.talkbbokki.domain.model.UserInfoModel
 class UserInfoCache {
     private var _id: String = ""
     var id: String = ""
+        get() = _id
         set(value) {
             field = value
             _id = value
         }
     private var _deviceToken: String = ""
     var deviceToken: String = ""
+        get() = _deviceToken
         set(value) {
             field = value
             _deviceToken = value
         }
     private var _nickname: String = ""
     var nickname: String = ""
+        get() = _nickname
         set(value) {
             field = value
             _nickname = value
@@ -39,6 +42,6 @@ class UserInfoCache {
     fun update(userInfo: UserInfoModel) {
         _id = userInfo.id
         _deviceToken = userInfo.pushToken
-        _nickname = userInfo.nickName
+        _nickname = userInfo.nickName ?: ""
     }
 }

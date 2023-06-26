@@ -3,23 +3,13 @@ package com.hammer.talkbbokki.data.remote
 import com.hammer.talkbbokki.data.entity.*
 import com.hammer.talkbbokki.domain.model.CommentRequest
 import com.hammer.talkbbokki.domain.model.ReportRequest
+import com.hammer.talkbbokki.domain.model.UserInfoRequest
 import retrofit2.http.*
 
 internal interface TalkbbokkiService {
-
-    @FormUrlEncoded
     @POST("/api/users")
     suspend fun saveDeviceToken(
-        @Field("uuid") ssaid: String,
-        @Field("pushToken") deviceToken: String
-    )
-
-    @FormUrlEncoded
-    @POST("/api/users")
-    suspend fun saveDeviceToken(
-        @Field("uuid") ssaid: String,
-        @Field("pushToken") deviceToken: String,
-        @Field("nickName") nickName: String? = ""
+        @Body request: UserInfoRequest
     )
 
     @GET("/api/users/nickname/exists")

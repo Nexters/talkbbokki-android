@@ -3,7 +3,10 @@ package com.hammer.talkbbokki.presentation.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.data.local.DataStoreManager
+import com.hammer.talkbbokki.data.local.cache.UserInfoCache
 import com.hammer.talkbbokki.domain.model.CategoryLevel
+import com.hammer.talkbbokki.domain.model.UserInfoRequest
 import com.hammer.talkbbokki.domain.repository.UserInfoRepository
 import com.hammer.talkbbokki.domain.usecase.CategoryLevelUseCase
 import com.hammer.talkbbokki.ui.util.validateNickname
@@ -23,7 +26,9 @@ import retrofit2.HttpException
 @HiltViewModel
 class MainViewModel @Inject constructor(
     useCase: CategoryLevelUseCase,
-    private val userInfoRepository: UserInfoRepository
+    private val userInfoRepository: UserInfoRepository,
+    private val dataStoreManager: DataStoreManager,
+    private val cache: UserInfoCache
 ) : ViewModel() {
     val categoryLevel: StateFlow<List<CategoryLevel>> = useCase.invoke()
         .stateIn(
@@ -56,8 +61,8 @@ class MainViewModel @Inject constructor(
                     _forceSettingNickname.update { true }
                 }
                 .collect { nickname ->
-                    _forceSettingNickname.update { nickname == null }
-                    nickname?.let {
+                    _forceSettingNickname.update { nickname.isNullOrBlank() }
+                    if (!nickname.isNullOrBlank()) {
                         _userNickname.value = nickname
                     }
                 }
@@ -98,10 +103,18 @@ class MainViewModel @Inject constructor(
 
     fun saveUserNickname(nickname: String) {
         viewModelScope.launch {
-            userInfoRepository.postUserNickname(nickname.trim())
+            userInfoRepository.postUserNickname(
+                UserInfoRequest(
+                    uuid = cache.id,
+                    pushToken = cache.deviceToken,
+                    nickName = nickname.trim()
+                )
+            )
                 .catch { }
                 .collect {
+                    cache.nickname = nickname
                     _showNicknameDialog.update { false }
+                    _forceSettingNickname.update { false }
                     _userNickname.value = nickname
                 }
         }
