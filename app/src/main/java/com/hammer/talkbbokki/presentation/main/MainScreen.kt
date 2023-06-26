@@ -86,6 +86,7 @@ fun MainRoute(
     val categoryLevel by viewModel.categoryLevel.collectAsState()
     val userNickname by viewModel.userNickname.collectAsState()
     val showSettingNickname by viewModel.showNicknameDialog.collectAsState()
+    val forceSettingNickname by viewModel.forceSettingNickname.collectAsState()
     val textState by viewModel.verifyMessage.collectAsState()
 
     var showDrawerMenu by remember { mutableStateOf(false) }
@@ -125,7 +126,7 @@ fun MainRoute(
             )
         }
         AnimatedVisibility(
-            visible = showSettingNickname,
+            visible = forceSettingNickname || showSettingNickname,
             enter = slideInVertically(
                 initialOffsetY = { fullHeight -> fullHeight }
             ),
@@ -137,7 +138,8 @@ fun MainRoute(
                 textState = textState,
                 checkNickname = viewModel::checkNickname,
                 onClickSend = viewModel::saveUserNickname,
-                onBackClick = viewModel::closeNicknamePage
+                onBackClick = viewModel::closeNicknamePage,
+                forceSetting = forceSettingNickname
             )
         }
     }

@@ -38,6 +38,9 @@ class MainViewModel @Inject constructor(
     private val _showNicknameDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showNicknameDialog: StateFlow<Boolean> get() = _showNicknameDialog.asStateFlow()
 
+    private val _forceSettingNickname: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val forceSettingNickname: StateFlow<Boolean> get() = _forceSettingNickname.asStateFlow()
+
     private val _verifyMessage: MutableStateFlow<Int> = MutableStateFlow(-1)
     val verifyMessage: StateFlow<Int> get() = _verifyMessage.asStateFlow()
 
@@ -50,10 +53,10 @@ class MainViewModel @Inject constructor(
             delay(1_000)
             userInfoRepository.getUserNickname()
                 .catch {
-                    _showNicknameDialog.update { true }
+                    _forceSettingNickname.update { true }
                 }
                 .collect { nickname ->
-                    _showNicknameDialog.update { nickname == null }
+                    _forceSettingNickname.update { nickname == null }
                     nickname?.let {
                         _userNickname.value = nickname
                     }
