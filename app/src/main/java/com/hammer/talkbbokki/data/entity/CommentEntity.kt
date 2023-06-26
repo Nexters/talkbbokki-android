@@ -1,6 +1,7 @@
 package com.hammer.talkbbokki.data.entity
 
 import com.hammer.talkbbokki.presentation.comment.CommentModel
+import com.hammer.talkbbokki.ui.util.DateUtil.toDateFormat
 
 data class CommentEntity(
     val result: Result?
@@ -28,7 +29,7 @@ data class CommentItem(
         topicId = topicId ?: 0,
         userId = userId ?: "",
         nickname = userNickname ?: userId ?: "",
-        date = createAt ?: "",
+        date = createAt?.toDateFormat() ?: "",
         content = body ?: "",
         replyCount = childCommentCount ?: 0
     )
