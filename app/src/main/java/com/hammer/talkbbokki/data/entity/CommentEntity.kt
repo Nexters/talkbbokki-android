@@ -1,5 +1,6 @@
 package com.hammer.talkbbokki.data.entity
 
+import com.hammer.talkbbokki.data.local.cache.UserInfoCache
 import com.hammer.talkbbokki.presentation.comment.CommentModel
 import com.hammer.talkbbokki.ui.util.DateUtil.toDateFormat
 
@@ -24,13 +25,14 @@ data class CommentItem(
     val createAt: String?,
     val modifyAt: String?
 ) {
-    fun toModel(): CommentModel = CommentModel(
+    fun toModel(userInfoCache: UserInfoCache): CommentModel = CommentModel(
         id = id,
         topicId = topicId ?: 0,
         userId = userId ?: "",
         nickname = userNickname ?: userId ?: "",
         date = createAt?.toDateFormat() ?: "",
         content = body ?: "",
-        replyCount = childCommentCount ?: 0
+        replyCount = childCommentCount ?: 0,
+        isMine = userId == userInfoCache.id
     )
 }

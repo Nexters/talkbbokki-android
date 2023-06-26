@@ -8,25 +8,25 @@ import com.hammer.talkbbokki.data.local.cache.UserInfoCache
 import com.hammer.talkbbokki.domain.model.CommentRequest
 import com.hammer.talkbbokki.domain.repository.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class CommentsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: CommentRepository,
-    private val userInfoCache: UserInfoCache
+    private val userInfoCache: UserInfoCache,
 ) : ViewModel() {
 
     private val _commentItems: MutableStateFlow<List<CommentModel>> = MutableStateFlow(listOf())
     val commentItems: StateFlow<List<CommentModel>> get() = _commentItems
 
-    private val _deleteCommentSuccess: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val deleteCommentSuccess: StateFlow<Boolean> get() = _deleteCommentSuccess.asStateFlow()
+    private val _showDeleteDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showDeleteDialog: StateFlow<Boolean> get() = _showDeleteDialog.asStateFlow()
 
     val selectedTopicId = savedStateHandle.get<Int>("topicId") ?: 0
     private val totalCommentList: MutableList<CommentModel> = mutableListOf()
@@ -44,7 +44,7 @@ class CommentsViewModel @Inject constructor(
                 .collect {
                     totalCommentList.clear()
                     totalCommentList.addAll(
-                        it.result?.contents?.map { it.toModel() }.orEmpty()
+                        it.result?.contents?.map { it.toModel(userInfoCache) }.orEmpty(),
                     )
                     _commentItems.value = totalCommentList.toList()
                     _nextPageId = it.result?.next
@@ -58,7 +58,7 @@ class CommentsViewModel @Inject constructor(
                 .catch {}
                 .collect {
                     totalCommentList.addAll(
-                        it.result?.contents?.map { it.toModel() }.orEmpty()
+                        it.result?.contents?.map { it.toModel(userInfoCache) }.orEmpty(),
                     )
                     _commentItems.value = totalCommentList.toList()
                     _nextPageId = it.result?.next
@@ -72,8 +72,8 @@ class CommentsViewModel @Inject constructor(
                 selectedTopicId,
                 CommentRequest(
                     body = body,
-                    userId = userInfoCache.id
-                )
+                    userId = userInfoCache.id,
+                ),
             ).catch {
                 Log.e("@@@", "${it.message}")
             }.collect {
@@ -85,10 +85,21 @@ class CommentsViewModel @Inject constructor(
 
     fun deleteComment(comment: CommentModel) {
         viewModelScope.launch {
-            repository.deleteComment(selectedTopicId).collect {
-                _deleteCommentSuccess.value = true
-                Log.e("@@@", it.toString() + "test")
-            }
+            repository.deleteComment(comment.id)
+                .catch { }.collect {
+                    _showDeleteDialog.value = false
+                    getComments(selectedTopicId)
+                    Log.e("@@@", it.toString() + "test")
+                }
         }
     }
+
+    fun showDeleteDialog() {
+        _showDeleteDialog.value = true
+    }
+
+    fun closeDeleteDialog() {
+        _showDeleteDialog.value = false
+    }
+
 }

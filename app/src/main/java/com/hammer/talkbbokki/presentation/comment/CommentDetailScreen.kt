@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.ui.dialog.CommonDialog
 import com.hammer.talkbbokki.ui.theme.*
 
 @Composable
@@ -31,6 +32,26 @@ fun CommentDetailRoute(
     val parentComment = viewModel.parentComment
     val recomments by viewModel.commentItems.collectAsState()
 
+    var tempDeleteComment by remember { mutableStateOf<CommentModel?>(null) }
+    val showDeleteDialog by viewModel.showDeleteDialog.collectAsState()
+    if (showDeleteDialog) {
+        CommonDialog(
+            showIcon = false,
+            text = stringResource(R.string.comment_delete_dialog_text),
+            subText = null,
+            agreeText = stringResource(R.string.comment_delete_dialog_ok),
+            agreeAction = {
+                tempDeleteComment?.let {
+                    viewModel.deleteComment(it)
+                }
+            },
+            disagreeText = stringResource(R.string.comment_delete_dialog_cancel),
+            disagreeAction = {
+                viewModel.closeDeleteDialog()
+            },
+        )
+    }
+
     if (parentComment == null) {
         onBackClick()
     } else {
@@ -40,7 +61,10 @@ fun CommentDetailRoute(
             recomments,
             onReportClick = { onReportClick(it) },
             onClickPostComment = { viewModel.postComment(it) },
-            onDeleteClick = { viewModel.deleteComment(it) },
+            onDeleteClick = {
+                tempDeleteComment = it
+                viewModel.showDeleteDialog()
+            },
         )
     }
 }
@@ -66,6 +90,7 @@ fun CommentDetailScreen(
         ) {
             CommentDetailHeader(onBackClick)
             CommentContents(
+                isParentComment = true,
                 comment = comment,
                 onReportClick = { onReportClick(it) },
                 onDeleteClick = { onDeleteClick(it) },
@@ -124,6 +149,7 @@ fun RecommentItem(
             contentDescription = null,
         )
         CommentContents(
+            isParentComment = false,
             comment = comment,
             onReportClick = { onReportClick(it) },
             onDeleteClick = onDeleteClick,
@@ -133,34 +159,44 @@ fun RecommentItem(
 
 @Composable
 fun CommentContents(
+    isParentComment: Boolean,
     comment: CommentModel,
     onReportClick: (CommentModel) -> Unit,
     onDeleteClick: (CommentModel) -> Unit,
 ) {
-    val isMine = false
-    val isParentComment = false
+    val isMine = comment.isMine
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(start = 26.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Row(
+                modifier = Modifier.weight(9f),
+            ) {
+                Text(
+                    text = comment.nickname,
+                    style = TalkbbokkiTypography.b3_bold,
+                    color = if (isMine) MainColor01 else White,
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = comment.date, style = TalkbbokkiTypography.caption, color = Gray06)
+            }
 
-    Column(modifier = Modifier.padding(start = 26.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = comment.nickname,
-                style = TalkbbokkiTypography.b3_bold,
-                color = if (isMine) MainColor01 else White,
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = comment.date, style = TalkbbokkiTypography.caption, color = Gray06)
-        }
-        if (isMine) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_close),
-                tint = White,
-                contentDescription = null,
-                modifier = Modifier
-                    .clickable {
-                        onDeleteClick(comment)
-                    }
-                    .align(Alignment.End),
-            )
+            if (!isParentComment && isMine) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_close),
+                    tint = White,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clickable {
+                            onDeleteClick(comment)
+                        }
+                        .weight(0.6f),
+                )
+            }
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = comment.content, style = TalkbbokkiTypography.b3_regular, color = White)

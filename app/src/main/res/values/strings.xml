@@ -85,6 +85,10 @@
     <string name="recommnet_count">답글(%d)</string>
     <string name="report_comment_button">신고하기</string>
 
+    <string name="comment_delete_dialog_text">삭제하면 이 댓글은 다시 볼 수 없어요.\n그래도 삭제하시겠어요?</string>
+    <string name="comment_delete_dialog_ok">그래도 할래요</string>
+    <string name="comment_delete_dialog_cancel">안할래요</string>
+
     <string name="comment_report_title">신고하기</string>
     <string name="comment_report_writer">작성자</string>
     <string name="comment_report_comment_contents">내용</string>
@@ -92,6 +96,8 @@
     <string name="comment_report_reason_notice">해당 댓글에 적용되지 않는 사유일 경우 반려될 수 있어요.</string>
     <string name="comment_report_send">신고하기</string>
     <string name="comment_report_send_success">신고를 완료했어요</string>
+    <string name="comment_report_already">신고한 댓글입니다.</string>
+
     <string name="dialog_ok">확인</string>
 
 </resources>

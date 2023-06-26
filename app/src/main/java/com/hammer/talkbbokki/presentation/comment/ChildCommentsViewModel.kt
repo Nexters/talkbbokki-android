@@ -19,7 +19,7 @@ import javax.inject.Inject
 class ChildCommentsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: CommentRepository,
-    private val userInfoCache: UserInfoCache
+    private val userInfoCache: UserInfoCache,
 ) : ViewModel() {
     val parentComment = savedStateHandle.get<CommentModel>("comment")
     private val _parentCommentId = parentComment?.id
@@ -29,14 +29,14 @@ class ChildCommentsViewModel @Inject constructor(
     private val _commentItems: MutableStateFlow<List<CommentModel>> = MutableStateFlow(listOf())
     val commentItems: StateFlow<List<CommentModel>> get() = _commentItems
 
-    private val _deleteCommentSuccess: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val deleteCommentSuccess: StateFlow<Boolean> get() = _deleteCommentSuccess.asStateFlow()
+    private val _showDeleteDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showDeleteDialog: StateFlow<Boolean> get() = _showDeleteDialog.asStateFlow()
 
     init {
         getChildComments()
     }
 
-    fun getChildComments() {
+    private fun getChildComments() {
         _topicId ?: return
         _parentCommentId ?: return
 
@@ -44,13 +44,13 @@ class ChildCommentsViewModel @Inject constructor(
             repository.getChildCommentList(
                 topicId = _topicId,
                 parentCommentId = _parentCommentId,
-                next = _nextPageId
+                next = _nextPageId,
             ).catch {
-
             }.collect {
                 totalCommentList.clear()
                 totalCommentList.addAll(
-                    it.result?.contents?.map { it.toModel() }.orEmpty().sortedBy { it.id }
+                    it.result?.contents?.map { it.toModel(userInfoCache) }.orEmpty()
+                        .sortedBy { it.id },
                 )
                 _commentItems.value = totalCommentList.toList()
                 _nextPageId = it.result?.next
@@ -67,8 +67,8 @@ class ChildCommentsViewModel @Inject constructor(
                 CommentRequest(
                     body = body,
                     userId = userInfoCache.id,
-                    parentCommentId = _parentCommentId
-                )
+                    parentCommentId = _parentCommentId,
+                ),
             ).catch {
                 Log.e("@@@", "${it.message}")
             }.collect {
@@ -78,12 +78,21 @@ class ChildCommentsViewModel @Inject constructor(
         }
     }
 
-    fun deleteComment(comment: CommentModel) {
-        _topicId ?: return
+    fun showDeleteDialog() {
+        _showDeleteDialog.value = true
+    }
 
+    fun closeDeleteDialog() {
+        _showDeleteDialog.value = false
+    }
+
+    fun deleteComment(comment: CommentModel) {
         viewModelScope.launch {
-            repository.deleteComment(_topicId).collect {
-                _deleteCommentSuccess.value = true
+            repository.deleteComment(
+                comment.id,
+            ).catch { }.collect {
+                _showDeleteDialog.value = false
+                getChildComments()
                 Log.e("@@@", it.toString() + "test")
             }
         }
