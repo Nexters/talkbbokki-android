@@ -21,6 +21,17 @@ internal class CommentRepositoryImpl @Inject constructor(
         )
     }
 
+    override fun getChildCommentList(
+        topicId: Int,
+        parentCommentId: Int,
+        next: Int?,
+        pageSize: Int
+    ): Flow<CommentEntity> = flow {
+        emit(
+            service.getChildComments(topicId, parentCommentId, next, pageSize)
+        )
+    }
+
     override fun postComment(topicId: Int, comment: CommentRequest): Flow<Unit> = flow {
         emit(service.postComments(topicId, comment))
     }

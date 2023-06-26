@@ -11,6 +11,13 @@ interface CommentRepository {
         pageSize: Int = 15
     ): Flow<CommentEntity>
 
+    fun getChildCommentList(
+        topicId: Int,
+        parentCommentId: Int,
+        next: Int? = null,
+        pageSize: Int = 15
+    ): Flow<CommentEntity>
+
     fun postComment(topicId: Int, comment: CommentRequest): Flow<Unit>
     fun deleteComment(commentId: Int): Flow<Unit>
 }

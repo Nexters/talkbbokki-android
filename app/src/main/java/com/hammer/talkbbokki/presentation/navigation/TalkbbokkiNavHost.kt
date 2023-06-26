@@ -31,12 +31,12 @@ import com.hammer.talkbbokki.presentation.topics.topicListGraph
 fun TalkbbokkiNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = IntroDestination.route
+    startDestination: String = IntroDestination.route,
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        modifier = modifier
+        modifier = modifier,
     ) {
         introGraph(
             navigateToOnBoarding = {
@@ -48,24 +48,24 @@ fun TalkbbokkiNavHost(
                 navController.navigate(MainDestination.route) {
                     popUpTo(IntroDestination.route) { inclusive = true }
                 }
-            }
+            },
         )
         onboardingGraph(
             navigateToMain = {
                 navController.navigate(MainDestination.route) {
                     popUpTo(OnBoardingDestination.route) { inclusive = true }
                 }
-            }
+            },
         )
         mainGraph(
             navigateToList = { level, title, bgColor ->
                 navController.navigate(
-                    TopicListDestination.route + "?level=$level&title=$title&bgColor=$bgColor"
+                    TopicListDestination.route + "?level=$level&title=$title&bgColor=$bgColor",
                 )
             },
             navigateToEvent = { level, bgColor ->
                 navController.navigate(
-                    EventDestination.route + "?level=$level&bgColor=$bgColor"
+                    EventDestination.route + "?level=$level&bgColor=$bgColor",
                 )
             },
             navigateToBookmark = { navController.navigate(BookmarkDestination.route) },
@@ -74,7 +74,7 @@ fun TalkbbokkiNavHost(
                 navController.navigate(OnBoardingDestination.route) {
                     popUpTo(MainDestination.route) { inclusive = true }
                 }
-            }
+            },
         )
         topicListGraph(
             navigateToDetail = { item ->
@@ -82,18 +82,18 @@ fun TalkbbokkiNavHost(
             },
             navigateToMain = {
                 navController.popBackStack()
-            }
+            },
         )
         detailGraph(
             navigateToTopicList = {
                 navController.popBackStack()
-            }
+            },
         )
         eventGraph(
             navigateToComments = {},
             navigateToMain = {
                 navController.popBackStack()
-            }
+            },
         )
         eventGraph(
             navigateToComments = { topicId ->
@@ -101,29 +101,31 @@ fun TalkbbokkiNavHost(
             },
             navigateToMain = {
                 navController.popBackStack()
-            }
+            },
         )
         bookmarkGraph(
             navigateToDetail = { item ->
                 navController.navigate(DetailDestination.route + "?topic=$item")
             },
-            onBackClick = { navController.popBackStack() }
+            onBackClick = { navController.popBackStack() },
         )
         suggestionGraph(
-            onBackClick = { navController.popBackStack() }
+            onBackClick = { navController.popBackStack() },
         )
         commentsGraph(
             onBackClick = { navController.popBackStack() },
-            navigateToCommentDetail = { navController.navigate(CommentDetailDestination.route) },
+            navigateToCommentDetail = { topicId, commentId ->
+                navController.navigate(CommentDetailDestination.route + "?topicId=$topicId&commentId=$commentId")
+            },
             onClickReport = { comment ->
                 navController.navigate(ReportDestination.route + "?comment=$comment")
-            }
+            },
         )
         commentDetailGraph(
-            onBackClick = { navController.popBackStack() }
+            onBackClick = { navController.popBackStack() },
         )
         reportGraph(
-            onBackClick = { navController.popBackStack() }
+            onBackClick = { navController.popBackStack() },
         )
     }
 }

@@ -66,6 +66,14 @@ internal interface TalkbbokkiService {
         @Query("pageSize") pageSize: Int?
     ): CommentEntity
 
+    @GET("/api/topics/{topicId}/comments/{parentId}/child-comments")
+    suspend fun getChildComments(
+        @Path("topicId") topicId: Int,
+        @Path("parentId") parentCommentId: Int,
+        @Query("next") next: Int?,
+        @Query("pageSize") pageSize: Int?
+    ): CommentEntity
+
     @POST("/api/topics/{topicId}/comments")
     suspend fun postComments(
         @Path("topicId") topicId: Int,

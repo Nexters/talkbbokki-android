@@ -22,15 +22,13 @@ class CommentsViewModel @Inject constructor(
     private val userInfoCache: UserInfoCache
 ) : ViewModel() {
 
-    private val _parentCommentId = savedStateHandle.get<Int>("parentCommentId")
-
     private val _commentItems: MutableStateFlow<List<CommentModel>> = MutableStateFlow(listOf())
     val commentItems: StateFlow<List<CommentModel>> get() = _commentItems
 
     private val _deleteCommentSuccess: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val deleteCommentSuccess: StateFlow<Boolean> get() = _deleteCommentSuccess.asStateFlow()
 
-    private val selectedTopicId = savedStateHandle.get<Int>("topicId") ?: 0
+    val selectedTopicId = savedStateHandle.get<Int>("topicId") ?: 0
     private val totalCommentList: MutableList<CommentModel> = mutableListOf()
     private var _nextPageId: Int? = null
 
@@ -74,8 +72,7 @@ class CommentsViewModel @Inject constructor(
                 selectedTopicId,
                 CommentRequest(
                     body = body,
-                    userId = userInfoCache.id,
-                    parentCommentId = _parentCommentId
+                    userId = userInfoCache.id
                 )
             ).catch {
                 Log.e("@@@", "${it.message}")
