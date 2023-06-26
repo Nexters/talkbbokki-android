@@ -37,9 +37,9 @@ fun CommentDetailRoute(
             onBackClick,
             parentComment,
             recomments,
-        ) {
-            viewModel.deleteComment(it)
-        }
+            onClickPostComment = { viewModel.postComment(it) },
+            onDeleteClick = { viewModel.deleteComment(it) },
+        )
     }
 }
 
@@ -48,6 +48,7 @@ fun CommentDetailScreen(
     onBackClick: () -> Unit,
     comment: CommentModel,
     recomments: List<CommentModel>,
+    onClickPostComment: (String) -> Unit,
     onDeleteClick: (CommentModel) -> Unit,
 ) {
     Box(
@@ -70,7 +71,7 @@ fun CommentDetailScreen(
             }
         }
         Box(Modifier.align(Alignment.BottomCenter)) {
-            RecommentInputArea()
+            CommentInputArea { onClickPostComment(it) }
         }
     }
 }

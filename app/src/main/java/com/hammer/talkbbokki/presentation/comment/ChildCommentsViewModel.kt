@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hammer.talkbbokki.data.local.cache.UserInfoCache
+import com.hammer.talkbbokki.domain.model.CommentRequest
 import com.hammer.talkbbokki.domain.repository.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +19,7 @@ import javax.inject.Inject
 class ChildCommentsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: CommentRepository,
+    private val userInfoCache: UserInfoCache
 ) : ViewModel() {
     val parentComment = savedStateHandle.get<CommentModel>("comment")
     private val _parentCommentId = parentComment?.id
@@ -40,15 +43,37 @@ class ChildCommentsViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getChildCommentList(
                 topicId = _topicId,
-                parentCommentId = _parentCommentId ?: 0,
+                parentCommentId = _parentCommentId,
                 next = _nextPageId
             ).catch {
 
             }.collect {
                 totalCommentList.clear()
-                totalCommentList.addAll(it.result?.contents?.map { it.toModel() }.orEmpty())
+                totalCommentList.addAll(
+                    it.result?.contents?.map { it.toModel() }.orEmpty().sortedBy { it.id }
+                )
                 _commentItems.value = totalCommentList.toList()
                 _nextPageId = it.result?.next
+            }
+        }
+    }
+
+    fun postComment(body: String) {
+        _topicId ?: return
+
+        viewModelScope.launch {
+            repository.postComment(
+                _topicId,
+                CommentRequest(
+                    body = body,
+                    userId = userInfoCache.id,
+                    parentCommentId = _parentCommentId
+                )
+            ).catch {
+                Log.e("@@@", "${it.message}")
+            }.collect {
+                Log.e("@@@", it.toString() + "test")
+                getChildComments()
             }
         }
     }
