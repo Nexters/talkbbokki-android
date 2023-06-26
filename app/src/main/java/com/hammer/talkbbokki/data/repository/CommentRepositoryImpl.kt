@@ -36,7 +36,15 @@ internal class CommentRepositoryImpl @Inject constructor(
         emit(service.postComments(topicId, comment))
     }
 
-    override fun deleteComment(commentId: Int): Flow<Unit> = flow {
-        emit(service.deleteComment(commentId))
+    override fun deleteComment(topicId: Int, commentId: Int): Flow<Unit> = flow {
+        emit(service.deleteComment(topicId, commentId))
+    }
+
+    override fun deleteChildComment(
+        topicId: Int,
+        parentCommentId: Int,
+        commentId: Int
+    ): Flow<Unit> = flow {
+        emit(service.deleteChildComment(topicId, parentCommentId, commentId))
     }
 }

@@ -114,9 +114,13 @@ class ChildCommentsViewModel @Inject constructor(
     }
 
     fun deleteComment(comment: CommentModel) {
+        _topicId ?: return
+        _parentCommentId ?: return
         viewModelScope.launch {
-            repository.deleteComment(
-                comment.id
+            repository.deleteChildComment(
+                topicId = _topicId,
+                parentCommentId = _parentCommentId,
+                commentId = comment.id
             ).catch { }.collect {
                 _showDeleteDialog.value = false
                 getChildComments()

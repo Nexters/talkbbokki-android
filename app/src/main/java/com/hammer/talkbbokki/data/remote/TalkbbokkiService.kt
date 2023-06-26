@@ -70,8 +70,16 @@ internal interface TalkbbokkiService {
         @Body comment: CommentRequest
     )
 
-    @DELETE("/api/comments/{commentId}")
+    @DELETE("/api/topics/{topicId}/comments/{commentId}")
     suspend fun deleteComment(
+        @Path("topicId") topicId: Int,
+        @Path("commentId") commentId: Int
+    )
+
+    @DELETE("/api/topics/{topicId}/parent-comments/{parentCommentId}/comments/{commentId}")
+    suspend fun deleteChildComment(
+        @Path("topicId") topicId: Int,
+        @Path("parentCommentId") parentCommentId: Int,
         @Path("commentId") commentId: Int
     )
 

@@ -19,5 +19,7 @@ interface CommentRepository {
     ): Flow<CommentEntity>
 
     fun postComment(topicId: Int, comment: CommentRequest): Flow<Unit>
-    fun deleteComment(commentId: Int): Flow<Unit>
+    fun deleteComment(topicId: Int, commentId: Int): Flow<Unit>
+
+    fun deleteChildComment(topicId: Int, parentCommentId: Int, commentId: Int): Flow<Unit>
 }

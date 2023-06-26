@@ -92,7 +92,7 @@ class CommentsViewModel @Inject constructor(
 
     fun deleteComment(comment: CommentModel) {
         viewModelScope.launch {
-            repository.deleteComment(comment.id)
+            repository.deleteComment(selectedTopicId, comment.id)
                 .catch { }.collect {
                     _showDeleteDialog.value = false
                     getComments(selectedTopicId)
