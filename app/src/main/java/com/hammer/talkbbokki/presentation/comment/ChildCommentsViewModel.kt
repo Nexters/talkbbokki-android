@@ -29,6 +29,9 @@ class ChildCommentsViewModel @Inject constructor(
     private val _commentItems: MutableStateFlow<List<CommentModel>> = MutableStateFlow(listOf())
     val commentItems: StateFlow<List<CommentModel>> get() = _commentItems
 
+    private val _commentCount: MutableStateFlow<Int> = MutableStateFlow(parentComment?.replyCount ?: 0)
+    val commentCount: StateFlow<Int> get() = _commentCount.asStateFlow()
+
     private val _showDeleteDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showDeleteDialog: StateFlow<Boolean> get() = _showDeleteDialog.asStateFlow()
 
@@ -74,6 +77,7 @@ class ChildCommentsViewModel @Inject constructor(
             }.collect {
                 Log.e("@@@", it.toString() + "test")
                 getChildComments()
+                _commentCount.value = commentCount.value + 1
             }
         }
     }
@@ -93,6 +97,7 @@ class ChildCommentsViewModel @Inject constructor(
             ).catch { }.collect {
                 _showDeleteDialog.value = false
                 getChildComments()
+                _commentCount.value = (commentCount.value - 1).coerceAtLeast(0)
                 Log.e("@@@", it.toString() + "test")
             }
         }

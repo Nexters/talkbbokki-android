@@ -31,6 +31,7 @@ fun CommentDetailRoute(
 ) {
     val parentComment = viewModel.parentComment
     val recomments by viewModel.commentItems.collectAsState()
+    val commentCount by viewModel.commentCount.collectAsState()
 
     var tempDeleteComment by remember { mutableStateOf<CommentModel?>(null) }
     val showDeleteDialog by viewModel.showDeleteDialog.collectAsState()
@@ -56,9 +57,10 @@ fun CommentDetailRoute(
         onBackClick()
     } else {
         CommentDetailScreen(
-            onBackClick,
-            parentComment,
-            recomments,
+            commentCount = commentCount,
+            comment = parentComment,
+            recomments = recomments,
+            onBackClick = onBackClick,
             onReportClick = { onReportClick(it) },
             onClickPostComment = { viewModel.postComment(it) },
             onDeleteClick = {
@@ -71,6 +73,7 @@ fun CommentDetailRoute(
 
 @Composable
 fun CommentDetailScreen(
+    commentCount: Int,
     onBackClick: () -> Unit,
     comment: CommentModel,
     recomments: List<CommentModel>,
@@ -88,7 +91,7 @@ fun CommentDetailScreen(
                 .fillMaxSize()
                 .padding(bottom = 78.dp),
         ) {
-            CommentDetailHeader(onBackClick)
+            CommentDetailHeader(commentCount, onBackClick)
             CommentContents(
                 isParentComment = true,
                 comment = comment,
@@ -109,9 +112,10 @@ fun CommentDetailScreen(
 
 @Composable
 fun CommentDetailHeader(
+    commentCount: Int,
     onBackClick: () -> Unit,
 ) {
-    val replyCount = 0
+    val replyCount = commentCount
     Box(
         Modifier
             .height(56.dp)

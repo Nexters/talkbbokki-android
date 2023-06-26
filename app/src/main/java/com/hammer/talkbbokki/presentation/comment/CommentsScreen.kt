@@ -40,6 +40,7 @@ fun CommentsRoute(
     onReportClick: (CommentModel) -> Unit,
     viewModel: CommentsViewModel = hiltViewModel(),
 ) {
+    val commentCount by viewModel.commentCount.collectAsState()
     val comments by viewModel.commentItems.collectAsState()
 
     var tempDeleteComment by remember { mutableStateOf<CommentModel?>(null) }
@@ -62,6 +63,7 @@ fun CommentsRoute(
         )
     }
     CommentsScreen(
+        commentCount = commentCount,
         comments = comments,
         onBackClick = { onBackClick() },
         onRecommentClick = {
@@ -80,6 +82,7 @@ fun CommentsRoute(
 
 @Composable
 fun CommentsScreen(
+    commentCount: Int,
     onBackClick: () -> Unit,
     onRecommentClick: (CommentModel) -> Unit,
     onClickPostComment: (String) -> Unit,
@@ -97,7 +100,10 @@ fun CommentsScreen(
                 .fillMaxSize()
                 .padding(bottom = 78.dp),
         ) {
-            CommentsHeader(onBackClick)
+            CommentsHeader(
+                commentCount,
+                onBackClick,
+            )
             if (comments.isEmpty()) {
                 CommentEmpty()
             } else {
@@ -117,9 +123,10 @@ fun CommentsScreen(
 
 @Composable
 fun CommentsHeader(
+    commentCount: Int,
     onBackClick: () -> Unit,
 ) {
-    val replyCount = 0
+    val replyCount = commentCount
     Box(
         Modifier
             .height(56.dp)

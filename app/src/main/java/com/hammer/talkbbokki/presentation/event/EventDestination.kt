@@ -12,19 +12,19 @@ object EventDestination : TalkbbokkiNavigationDestination {
 }
 
 fun NavGraphBuilder.eventGraph(
-    navigateToComments: (topicId : Int) -> Unit,
-    navigateToMain: () -> Unit
+    navigateToComments: (Int, Int) -> Unit,
+    navigateToMain: () -> Unit,
 ) {
     composable(
         route = EventDestination.route + "?level={level}&bgColor={bgColor}",
         arguments = listOf(
             navArgument("level") { type = NavType.StringType },
-            navArgument("bgColor") { type = NavType.StringType }
-        )
+            navArgument("bgColor") { type = NavType.StringType },
+        ),
     ) {
         EventListRoute(
             onClickToComments = navigateToComments,
-            onClickBack = navigateToMain
+            onClickBack = navigateToMain,
         )
     }
 }

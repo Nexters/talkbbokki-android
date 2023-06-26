@@ -21,9 +21,11 @@ class CommentsViewModel @Inject constructor(
     private val repository: CommentRepository,
     private val userInfoCache: UserInfoCache,
 ) : ViewModel() {
+    private val _commentCount: MutableStateFlow<Int> = MutableStateFlow(savedStateHandle.get<Int>("commentCount") ?: 0)
+    val commentCount: StateFlow<Int> get() = _commentCount.asStateFlow()
 
     private val _commentItems: MutableStateFlow<List<CommentModel>> = MutableStateFlow(listOf())
-    val commentItems: StateFlow<List<CommentModel>> get() = _commentItems
+    val commentItems: StateFlow<List<CommentModel>> get() = _commentItems.asStateFlow()
 
     private val _showDeleteDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showDeleteDialog: StateFlow<Boolean> get() = _showDeleteDialog.asStateFlow()
@@ -79,6 +81,7 @@ class CommentsViewModel @Inject constructor(
             }.collect {
                 Log.e("@@@", it.toString() + "test")
                 getComments(selectedTopicId)
+                _commentCount.value = commentCount.value + 1
             }
         }
     }
@@ -89,6 +92,7 @@ class CommentsViewModel @Inject constructor(
                 .catch { }.collect {
                     _showDeleteDialog.value = false
                     getComments(selectedTopicId)
+                    _commentCount.value = (commentCount.value - 1).coerceAtLeast(0)
                     Log.e("@@@", it.toString() + "test")
                 }
         }
