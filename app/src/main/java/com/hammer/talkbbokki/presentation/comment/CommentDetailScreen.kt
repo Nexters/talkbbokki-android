@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hammer.talkbbokki.R
+import com.hammer.talkbbokki.presentation.BannerAds
 import com.hammer.talkbbokki.ui.dialog.CommonDialog
 import com.hammer.talkbbokki.ui.theme.Gray06
 import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
@@ -268,6 +269,10 @@ fun RecommentList(
 ) {
     val listState = rememberLazyListState()
     LazyColumn(state = listState) {
+        item {
+            BannerAds()
+        }
+
         itemsIndexed(comments) { idx, comment ->
             RecommentItem(
                 comment = comment,
