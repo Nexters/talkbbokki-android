@@ -7,7 +7,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -38,7 +40,7 @@ fun CommentsRoute(
     onBackClick: () -> Unit,
     onRecommentClick: (CommentModel) -> Unit,
     onReportClick: (CommentModel) -> Unit,
-    viewModel: CommentsViewModel = hiltViewModel(),
+    viewModel: CommentsViewModel = hiltViewModel()
 ) {
     val commentCount by viewModel.commentCount.collectAsState()
     val comments by viewModel.commentItems.collectAsState()
@@ -59,7 +61,7 @@ fun CommentsRoute(
             disagreeText = stringResource(R.string.comment_delete_dialog_cancel),
             disagreeAction = {
                 viewModel.closeDeleteDialog()
-            },
+            }
         )
     }
     CommentsScreen(
@@ -77,6 +79,9 @@ fun CommentsRoute(
             tempDeleteComment = it
             viewModel.showDeleteDialog()
         },
+        loadMore = {
+            viewModel.getNextPage()
+        }
     )
 }
 
@@ -88,21 +93,22 @@ fun CommentsScreen(
     onClickPostComment: (String) -> Unit,
     onReportClick: (CommentModel) -> Unit,
     onDeleteClick: (CommentModel) -> Unit,
-    comments: List<CommentModel>,
+    loadMore: () -> Unit,
+    comments: List<CommentModel>
 ) {
     Box(
         Modifier
             .fillMaxSize()
-            .background(MainBackgroundColor),
+            .background(MainBackgroundColor)
     ) {
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(bottom = 78.dp),
+                .padding(bottom = 78.dp)
         ) {
             CommentsHeader(
                 commentCount,
-                onBackClick,
+                onBackClick
             )
             if (comments.isEmpty()) {
                 CommentEmpty()
@@ -112,6 +118,7 @@ fun CommentsScreen(
                     onRecommentClick = { onRecommentClick(it) },
                     onReportClick = { onReportClick(it) },
                     onDeleteClick = { onDeleteClick(it) },
+                    loadMore = { loadMore() }
                 )
             }
         }
@@ -124,13 +131,13 @@ fun CommentsScreen(
 @Composable
 fun CommentsHeader(
     commentCount: Int,
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val replyCount = commentCount
     Box(
         Modifier
             .height(56.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_arrow_left),
@@ -141,12 +148,12 @@ fun CommentsHeader(
                     onBackClick()
                 }
                 .align(Alignment.CenterStart)
-                .padding(start = 20.dp),
+                .padding(start = 20.dp)
         )
         Text(
             text = "댓글 ($replyCount)",
             Modifier.align(Alignment.Center),
-            color = White,
+            color = White
         )
     }
 }
@@ -156,24 +163,24 @@ fun CommentItem(
     comment: CommentModel,
     onDeleteClick: () -> Unit,
     onRecommentClick: () -> Unit,
-    onReportClick: (CommentModel) -> Unit,
+    onReportClick: (CommentModel) -> Unit
 ) {
     val isMine = comment.isMine
     Column(
-        modifier = Modifier.fillMaxWidth().padding(20.dp),
+        modifier = Modifier.fillMaxWidth().padding(20.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
-                modifier = Modifier.weight(9f),
+                modifier = Modifier.weight(9f)
             ) {
                 Text(
                     text = comment.nickname,
                     style = TalkbbokkiTypography.b3_bold,
-                    color = if (isMine) MainColor01 else White,
+                    color = if (isMine) MainColor01 else White
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = comment.date, style = TalkbbokkiTypography.caption, color = Gray06)
@@ -186,7 +193,7 @@ fun CommentItem(
                     modifier = Modifier
                         .size(18.dp)
                         .clickable { onDeleteClick() }
-                        .weight(0.6f),
+                        .weight(0.6f)
                 )
             }
         }
@@ -204,7 +211,7 @@ fun CommentItem(
                 color = Gray06,
                 modifier = Modifier.clickable {
                     onRecommentClick()
-                },
+                }
             )
             Spacer(modifier = Modifier.width(12.dp))
             if (!isMine) {
@@ -214,7 +221,7 @@ fun CommentItem(
                         onReportClick(comment)
                     },
                     style = TalkbbokkiTypography.caption,
-                    color = Gray06,
+                    color = Gray06
                 )
             }
         }
@@ -226,20 +233,20 @@ fun CommentEmpty() {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(id = R.drawable.image_comment_none),
                 contentDescription = "",
                 modifier = Modifier
                     .size(width = 106.dp, height = 116.dp)
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = 16.dp)
             )
             Text(
                 text = "아직 등록된 댓글이 없어요\n" +
                     "첫 번째 댓글을 달아보세요",
                 style = TalkbbokkiTypography.b2_bold,
-                color = Gray05,
+                color = Gray05
             )
         }
     }
@@ -251,22 +258,29 @@ fun CommentList(
     onRecommentClick: (CommentModel) -> Unit,
     onReportClick: (CommentModel) -> Unit,
     onDeleteClick: (CommentModel) -> Unit,
+    loadMore: () -> Unit
 ) {
-    LazyColumn {
+    val listState = rememberLazyListState()
+    LazyColumn(state = listState) {
         itemsIndexed(comments) { idx, comment ->
             CommentItem(
                 comment = comment,
                 onDeleteClick = { onDeleteClick(comment) },
                 onRecommentClick = { onRecommentClick(comment) },
-                onReportClick = { onReportClick(it) },
+                onReportClick = { onReportClick(it) }
             )
         }
+    }
+
+    listState.OnBottomReached {
+        // do on load more
+        loadMore()
     }
 }
 
 @Composable
 fun CommentInputArea(
-    onClickPostComment: (String) -> Unit,
+    onClickPostComment: (String) -> Unit
 ) {
     val commentText = remember { mutableStateOf("") }
     Column(
@@ -275,12 +289,12 @@ fun CommentInputArea(
                 .defaultMinSize(minHeight = 78.dp)
                 .background(MainBackgroundColor)
                 .padding(horizontal = 20.dp, vertical = 16.dp)
-        },
+        }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Gray06, RoundedCornerShape(8.dp)),
+                .background(Gray06, RoundedCornerShape(8.dp))
         ) {
             TextField(
                 modifier = Modifier
@@ -299,8 +313,8 @@ fun CommentInputArea(
                     focusedIndicatorColor = Transparent,
                     unfocusedIndicatorColor = Transparent,
                     disabledIndicatorColor = Transparent,
-                    cursorColor = MainColor01,
-                ),
+                    cursorColor = MainColor01
+                )
             )
             Text(
                 modifier = Modifier
@@ -312,14 +326,38 @@ fun CommentInputArea(
                     .padding(
                         top = 12.dp,
                         bottom = 12.dp,
-                        end = 12.dp,
+                        end = 12.dp
                     ),
                 text = stringResource(R.string.comment_send_button),
                 style = TalkbbokkiTypography.b2_bold,
                 color = White,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
         }
+    }
+}
+
+@Composable
+fun LazyListState.OnBottomReached(
+    loadMore: () -> Unit
+) {
+    // state object which tells us if we should load more
+    val shouldLoadMore = remember {
+        derivedStateOf {
+            val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
+                ?: return@derivedStateOf true
+
+            lastVisibleItem.index == layoutInfo.totalItemsCount - 1
+        }
+    }
+
+    // Convert the state into a cold flow and collect
+    LaunchedEffect(shouldLoadMore) {
+        snapshotFlow { shouldLoadMore.value }
+            .collect {
+                // if should load more, then invoke loadMore
+                if (it) loadMore()
+            }
     }
 }
 
@@ -332,7 +370,7 @@ data class CommentModel(
     val content: String,
     val topicId: Int,
     val replyCount: Int,
-    val isMine: Boolean,
+    val isMine: Boolean
 ) : Parcelable {
     override fun toString(): String {
         return Uri.encode(Gson().toJson(this))

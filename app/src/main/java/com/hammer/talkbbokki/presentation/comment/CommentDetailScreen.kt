@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -27,7 +28,7 @@ import com.hammer.talkbbokki.ui.theme.*
 fun CommentDetailRoute(
     onBackClick: () -> Unit,
     onReportClick: (CommentModel) -> Unit,
-    viewModel: ChildCommentsViewModel = hiltViewModel(),
+    viewModel: ChildCommentsViewModel = hiltViewModel()
 ) {
     val parentComment = viewModel.parentComment
     val recomments by viewModel.commentItems.collectAsState()
@@ -49,7 +50,7 @@ fun CommentDetailRoute(
             disagreeText = stringResource(R.string.comment_delete_dialog_cancel),
             disagreeAction = {
                 viewModel.closeDeleteDialog()
-            },
+            }
         )
     }
 
@@ -67,6 +68,9 @@ fun CommentDetailRoute(
                 tempDeleteComment = it
                 viewModel.showDeleteDialog()
             },
+            loadMore = {
+                viewModel.getNextPage()
+            }
         )
     }
 }
@@ -80,28 +84,30 @@ fun CommentDetailScreen(
     onClickPostComment: (String) -> Unit,
     onReportClick: (CommentModel) -> Unit,
     onDeleteClick: (CommentModel) -> Unit,
+    loadMore: () -> Unit
 ) {
     Box(
         Modifier
             .fillMaxSize()
-            .background(MainBackgroundColor),
+            .background(MainBackgroundColor)
     ) {
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(bottom = 78.dp),
+                .padding(bottom = 78.dp)
         ) {
             CommentDetailHeader(commentCount, onBackClick)
             CommentContents(
                 isParentComment = true,
                 comment = comment,
                 onReportClick = { onReportClick(it) },
-                onDeleteClick = { onDeleteClick(it) },
+                onDeleteClick = { onDeleteClick(it) }
             )
             RecommentList(
                 recomments,
                 onReportClick = { onReportClick(it) },
                 onDeleteClick = { onDeleteClick(it) },
+                loadMore = { loadMore() }
             )
         }
         Box(Modifier.align(Alignment.BottomCenter)) {
@@ -113,13 +119,13 @@ fun CommentDetailScreen(
 @Composable
 fun CommentDetailHeader(
     commentCount: Int,
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val replyCount = commentCount
     Box(
         Modifier
             .height(56.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_arrow_left),
@@ -130,12 +136,12 @@ fun CommentDetailHeader(
                     onBackClick()
                 }
                 .align(Alignment.CenterStart)
-                .padding(start = 20.dp),
+                .padding(start = 20.dp)
         )
         Text(
             text = "답글 ($replyCount)",
             Modifier.align(Alignment.Center),
-            color = White,
+            color = White
         )
     }
 }
@@ -144,19 +150,19 @@ fun CommentDetailHeader(
 fun RecommentItem(
     comment: CommentModel,
     onReportClick: (CommentModel) -> Unit,
-    onDeleteClick: (CommentModel) -> Unit,
+    onDeleteClick: (CommentModel) -> Unit
 ) {
     Box(modifier = Modifier.padding(20.dp)) {
         Image(
             modifier = Modifier.size(18.dp),
             painter = painterResource(id = R.drawable.ic_recomment),
-            contentDescription = null,
+            contentDescription = null
         )
         CommentContents(
             isParentComment = false,
             comment = comment,
             onReportClick = { onReportClick(it) },
-            onDeleteClick = onDeleteClick,
+            onDeleteClick = onDeleteClick
         )
     }
 }
@@ -166,24 +172,24 @@ fun CommentContents(
     isParentComment: Boolean,
     comment: CommentModel,
     onReportClick: (CommentModel) -> Unit,
-    onDeleteClick: (CommentModel) -> Unit,
+    onDeleteClick: (CommentModel) -> Unit
 ) {
     val isMine = comment.isMine
     Column(
-        modifier = Modifier.fillMaxWidth().padding(start = 26.dp),
+        modifier = Modifier.fillMaxWidth().padding(start = 26.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
-                modifier = Modifier.weight(9f),
+                modifier = Modifier.weight(9f)
             ) {
                 Text(
                     text = comment.nickname,
                     style = TalkbbokkiTypography.b3_bold,
-                    color = if (isMine) MainColor01 else White,
+                    color = if (isMine) MainColor01 else White
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = comment.date, style = TalkbbokkiTypography.caption, color = Gray06)
@@ -198,7 +204,7 @@ fun CommentContents(
                         .clickable {
                             onDeleteClick(comment)
                         }
-                        .weight(0.6f),
+                        .weight(0.6f)
                 )
             }
         }
@@ -210,7 +216,7 @@ fun CommentContents(
                 Text(
                     text = stringResource(R.string.recommnet_count, comment.replyCount),
                     style = TalkbbokkiTypography.caption,
-                    color = Gray06,
+                    color = Gray06
                 )
                 Spacer(modifier = Modifier.width(12.dp))
             }
@@ -222,7 +228,7 @@ fun CommentContents(
                         onReportClick(comment)
                     },
                     style = TalkbbokkiTypography.caption,
-                    color = Gray06,
+                    color = Gray06
                 )
             }
         }
@@ -234,15 +240,21 @@ fun RecommentList(
     comments: List<CommentModel>,
     onReportClick: (CommentModel) -> Unit,
     onDeleteClick: (CommentModel) -> Unit,
+    loadMore: () -> Unit
 ) {
-    LazyColumn {
+    val listState = rememberLazyListState()
+    LazyColumn(state = listState) {
         itemsIndexed(comments) { idx, comment ->
             RecommentItem(
                 comment = comment,
                 onReportClick = { onReportClick(comment) },
-                onDeleteClick = { onDeleteClick(comment) },
+                onDeleteClick = { onDeleteClick(comment) }
             )
         }
+    }
+    listState.OnBottomReached {
+        // do on load more
+        loadMore()
     }
 }
 
@@ -255,12 +267,12 @@ fun RecommentInputArea() {
                 .defaultMinSize(minHeight = 78.dp)
                 .background(MainBackgroundColor)
                 .padding(horizontal = 20.dp, vertical = 16.dp)
-        },
+        }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Gray06, RoundedCornerShape(8.dp)),
+                .background(Gray06, RoundedCornerShape(8.dp))
         ) {
             TextField(
                 modifier = Modifier
@@ -279,8 +291,8 @@ fun RecommentInputArea() {
                     focusedIndicatorColor = Transparent,
                     unfocusedIndicatorColor = Transparent,
                     disabledIndicatorColor = Transparent,
-                    cursorColor = MainColor01,
-                ),
+                    cursorColor = MainColor01
+                )
             )
             Box(
                 modifier = Modifier
@@ -289,7 +301,7 @@ fun RecommentInputArea() {
                     }
                     .align(Alignment.Bottom)
                     .size(height = 48.dp, width = 52.dp)
-                    .padding(horizontal = 12.dp),
+                    .padding(horizontal = 12.dp)
             ) {
                 Text(
                     stringResource(R.string.comment_send_button),
@@ -298,7 +310,7 @@ fun RecommentInputArea() {
                         .wrapContentHeight()
                         .align(Alignment.Center),
                     color = White,
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
             }
         }
