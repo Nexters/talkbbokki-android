@@ -28,21 +28,27 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.google.gson.Gson
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.presentation.BannerAds
@@ -63,6 +69,15 @@ fun CommentsRoute(
     onReportClick: (CommentModel) -> Unit,
     viewModel: CommentsViewModel = hiltViewModel()
 ) {
+    OnLifecycleEvent { owner, event ->
+        // do stuff on event
+        when (event) {
+            Lifecycle.Event.ON_RESUME -> {
+                viewModel.getComments()
+            }
+        }
+    }
+
     val commentCount by viewModel.commentCount.collectAsState()
     val comments by viewModel.commentItems.collectAsState()
 
@@ -399,5 +414,23 @@ data class CommentModel(
 ) : Parcelable {
     override fun toString(): String {
         return Uri.encode(Gson().toJson(this))
+    }
+}
+
+@Composable
+fun OnLifecycleEvent(onEvent: (owner: LifecycleOwner, event: Lifecycle.Event) -> Unit) {
+    val eventHandler = rememberUpdatedState(onEvent)
+    val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
+
+    DisposableEffect(lifecycleOwner.value) {
+        val lifecycle = lifecycleOwner.value.lifecycle
+        val observer = LifecycleEventObserver { owner, event ->
+            eventHandler.value(owner, event)
+        }
+
+        lifecycle.addObserver(observer)
+        onDispose {
+            lifecycle.removeObserver(observer)
+        }
     }
 }

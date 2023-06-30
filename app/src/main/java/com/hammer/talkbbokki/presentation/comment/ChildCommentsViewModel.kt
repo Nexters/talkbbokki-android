@@ -37,11 +37,7 @@ class ChildCommentsViewModel @Inject constructor(
     private val _showDeleteDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showDeleteDialog: StateFlow<Boolean> get() = _showDeleteDialog.asStateFlow()
 
-    init {
-        getChildComments()
-    }
-
-    private fun getChildComments() {
+    fun getChildComments() {
         _topicId ?: return
         _parentCommentId ?: return
 

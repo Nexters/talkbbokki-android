@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import com.hammer.talkbbokki.R
 import com.hammer.talkbbokki.presentation.BannerAds
 import com.hammer.talkbbokki.ui.dialog.CommonDialog
@@ -53,6 +54,15 @@ fun CommentDetailRoute(
     onReportClick: (CommentModel) -> Unit,
     viewModel: ChildCommentsViewModel = hiltViewModel()
 ) {
+    OnLifecycleEvent { owner, event ->
+        // do stuff on event
+        when (event) {
+            Lifecycle.Event.ON_RESUME -> {
+                viewModel.getChildComments()
+            }
+        }
+    }
+
     val parentComment = viewModel.parentComment
     val recomments by viewModel.commentItems.collectAsState()
     val commentCount by viewModel.commentCount.collectAsState()

@@ -36,14 +36,9 @@ class CommentsViewModel @Inject constructor(
     private val totalCommentList: MutableList<CommentModel> = mutableListOf()
     private var _nextPageId: Int? = null
 
-    init {
-        getComments(selectedTopicId)
-        Log.e("@@@", selectedTopicId.toString() + "test")
-    }
-
-    private fun getComments(topicId: Int) {
+    fun getComments() {
         viewModelScope.launch {
-            repository.getCommentList(topicId)
+            repository.getCommentList(selectedTopicId)
                 .catch {}
                 .collect {
                     totalCommentList.clear()
@@ -84,7 +79,7 @@ class CommentsViewModel @Inject constructor(
                 Log.e("@@@", "${it.message}")
             }.collect {
                 Log.e("@@@", it.toString() + "test")
-                getComments(selectedTopicId)
+                getComments()
                 _commentCount.value = commentCount.value + 1
             }
         }
@@ -95,7 +90,7 @@ class CommentsViewModel @Inject constructor(
             repository.deleteComment(selectedTopicId, comment.id)
                 .catch { }.collect {
                     _showDeleteDialog.value = false
-                    getComments(selectedTopicId)
+                    getComments()
                     _commentCount.value = (commentCount.value - 1).coerceAtLeast(0)
                     Log.e("@@@", it.toString() + "test")
                 }
