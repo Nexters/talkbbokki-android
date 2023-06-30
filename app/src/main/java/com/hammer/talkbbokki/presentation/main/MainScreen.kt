@@ -66,6 +66,7 @@ import com.hammer.talkbbokki.ui.theme.Gray04
 import com.hammer.talkbbokki.ui.theme.Gray06
 import com.hammer.talkbbokki.ui.theme.Gray07
 import com.hammer.talkbbokki.ui.theme.MainBackgroundColor
+import com.hammer.talkbbokki.ui.theme.MainColor01
 import com.hammer.talkbbokki.ui.theme.MainColor02
 import com.hammer.talkbbokki.ui.theme.TalkbbokkiTypography
 import com.hammer.talkbbokki.ui.theme.White
@@ -98,8 +99,7 @@ fun MainRoute(
                 showDrawerMenu = true
             },
             onClickLevel = onClickLevel,
-            onClickEvent = onClickEvent,
-            onClickSuggestion = onClickSuggestion
+            onClickEvent = onClickEvent
         )
         AnimatedVisibility(
             visible = showDrawerMenu,
@@ -151,8 +151,7 @@ fun MainScreen(
     categoryLevel: List<CategoryLevel>,
     onClickBookmarkMenu: () -> Unit,
     onClickLevel: (String, String, String) -> Unit,
-    onClickEvent: (String, String) -> Unit,
-    onClickSuggestion: () -> Unit
+    onClickEvent: (String, String) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
@@ -292,6 +291,18 @@ fun LevelItem(
             contentScale = ContentScale.FillBounds,
             contentDescription = null
         )
+        if (level.isActive && level.id.lowercase() == "event") {
+            Text(
+                modifier = Modifier.background(
+                    color = White,
+                    shape = RoundedCornerShape(4.dp)
+                ).padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 2.dp),
+                text = "NEW",
+                style = TalkbbokkiTypography.caption,
+                color = MainColor01,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
