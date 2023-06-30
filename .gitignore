@@ -19,3 +19,9 @@ local.properties
 private/
 
 app/google-services.json
+
+*.apk
+
+app/prod/release/
+
+*.aab
