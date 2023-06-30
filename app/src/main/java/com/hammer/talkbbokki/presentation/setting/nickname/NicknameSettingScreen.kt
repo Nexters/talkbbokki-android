@@ -44,6 +44,7 @@ import com.hammer.talkbbokki.ui.theme.White
 @Composable
 fun NicknameSettingScreen(
     modifier: Modifier = Modifier,
+    forceSetting: Boolean,
     textState: Int,
     checkNickname: (String) -> Unit,
     onClickSend: (String) -> Unit,
@@ -71,6 +72,7 @@ fun NicknameSettingScreen(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
+                forceSetting = forceSetting,
                 onBackClick = onBackClick
             )
 
@@ -106,6 +108,7 @@ fun NicknameSettingScreen(
 @Composable
 fun NicknameSettingHeader(
     modifier: Modifier,
+    forceSetting: Boolean,
     onBackClick: () -> Unit
 ) {
     Box(
@@ -119,14 +122,16 @@ fun NicknameSettingHeader(
             style = TalkbbokkiTypography.b2_bold,
             color = White
         )
-        Icon(
-            painter = painterResource(id = R.drawable.ic_close),
-            contentDescription = null,
-            tint = White,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .clickable { onBackClick() }
-        )
+        if (!forceSetting) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close),
+                contentDescription = null,
+                tint = White,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .clickable { onBackClick() }
+            )
+        }
     }
 }
 

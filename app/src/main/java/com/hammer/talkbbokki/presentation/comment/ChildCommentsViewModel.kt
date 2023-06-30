@@ -16,51 +16,63 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class CommentsViewModel @Inject constructor(
+class ChildCommentsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: CommentRepository,
     private val userInfoCache: UserInfoCache
 ) : ViewModel() {
+    val parentComment = savedStateHandle.get<CommentModel>("comment")
+    private val _parentCommentId = parentComment?.id
+    private val _topicId = parentComment?.topicId
+    private var _nextPageId: Int? = null
+    private val totalCommentList: MutableList<CommentModel> = mutableListOf()
+    private val _commentItems: MutableStateFlow<List<CommentModel>> = MutableStateFlow(listOf())
+    val commentItems: StateFlow<List<CommentModel>> get() = _commentItems
+
     private val _commentCount: MutableStateFlow<Int> = MutableStateFlow(
-        savedStateHandle.get<Int>("commentCount") ?: 0
+        parentComment?.replyCount ?: 0
     )
     val commentCount: StateFlow<Int> get() = _commentCount.asStateFlow()
-
-    private val _commentItems: MutableStateFlow<List<CommentModel>> = MutableStateFlow(listOf())
-    val commentItems: StateFlow<List<CommentModel>> get() = _commentItems.asStateFlow()
 
     private val _showDeleteDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showDeleteDialog: StateFlow<Boolean> get() = _showDeleteDialog.asStateFlow()
 
-    val selectedTopicId = savedStateHandle.get<Int>("topicId") ?: 0
-    private val totalCommentList: MutableList<CommentModel> = mutableListOf()
-    private var _nextPageId: Int? = null
-
     init {
-        getComments(selectedTopicId)
-        Log.e("@@@", selectedTopicId.toString() + "test")
+        getChildComments()
     }
 
-    private fun getComments(topicId: Int) {
+    private fun getChildComments() {
+        _topicId ?: return
+        _parentCommentId ?: return
+
         viewModelScope.launch {
-            repository.getCommentList(topicId)
-                .catch {}
-                .collect {
-                    totalCommentList.clear()
-                    totalCommentList.addAll(
-                        it.result?.contents?.map { it.toModel(userInfoCache) }.orEmpty()
-                    )
-                    _commentItems.value = totalCommentList.distinctBy { it.id }
-                    _nextPageId = it.result?.next
-                }
+            repository.getChildCommentList(
+                topicId = _topicId,
+                parentCommentId = _parentCommentId,
+                next = _nextPageId
+            ).catch {
+            }.collect {
+                totalCommentList.clear()
+                totalCommentList.addAll(
+                    it.result?.contents?.map { it.toModel(userInfoCache) }.orEmpty()
+                )
+                _commentItems.value = totalCommentList.distinctBy { it.id }
+                _nextPageId = it.result?.next
+            }
         }
     }
 
     fun getNextPage() {
+        _topicId ?: return
+        _parentCommentId ?: return
         _nextPageId ?: return
 
         viewModelScope.launch {
-            repository.getCommentList(selectedTopicId, _nextPageId)
+            repository.getChildCommentList(
+                topicId = _topicId,
+                parentCommentId = _parentCommentId,
+                next = _nextPageId
+            )
                 .catch {}
                 .collect {
                     totalCommentList.addAll(
@@ -73,32 +85,23 @@ class CommentsViewModel @Inject constructor(
     }
 
     fun postComment(body: String) {
+        _topicId ?: return
+
         viewModelScope.launch {
             repository.postComment(
-                selectedTopicId,
+                _topicId,
                 CommentRequest(
                     body = body,
-                    userId = userInfoCache.id
+                    userId = userInfoCache.id,
+                    parentCommentId = _parentCommentId
                 )
             ).catch {
                 Log.e("@@@", "${it.message}")
             }.collect {
                 Log.e("@@@", it.toString() + "test")
-                getComments(selectedTopicId)
+                getChildComments()
                 _commentCount.value = commentCount.value + 1
             }
-        }
-    }
-
-    fun deleteComment(comment: CommentModel) {
-        viewModelScope.launch {
-            repository.deleteComment(selectedTopicId, comment.id)
-                .catch { }.collect {
-                    _showDeleteDialog.value = false
-                    getComments(selectedTopicId)
-                    _commentCount.value = (commentCount.value - 1).coerceAtLeast(0)
-                    Log.e("@@@", it.toString() + "test")
-                }
         }
     }
 
@@ -108,5 +111,22 @@ class CommentsViewModel @Inject constructor(
 
     fun closeDeleteDialog() {
         _showDeleteDialog.value = false
+    }
+
+    fun deleteComment(comment: CommentModel) {
+        _topicId ?: return
+        _parentCommentId ?: return
+        viewModelScope.launch {
+            repository.deleteChildComment(
+                topicId = _topicId,
+                parentCommentId = _parentCommentId,
+                commentId = comment.id
+            ).catch { }.collect {
+                _showDeleteDialog.value = false
+                getChildComments()
+                _commentCount.value = (commentCount.value - 1).coerceAtLeast(0)
+                Log.e("@@@", it.toString() + "test")
+            }
+        }
     }
 }

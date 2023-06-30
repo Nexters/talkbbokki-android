@@ -1,25 +1,15 @@
 package com.hammer.talkbbokki.data.remote
 
 import com.hammer.talkbbokki.data.entity.*
-import com.hammer.talkbbokki.domain.model.Comment
+import com.hammer.talkbbokki.domain.model.CommentRequest
 import com.hammer.talkbbokki.domain.model.ReportRequest
+import com.hammer.talkbbokki.domain.model.UserInfoRequest
 import retrofit2.http.*
 
 internal interface TalkbbokkiService {
-
-    @FormUrlEncoded
     @POST("/api/users")
     suspend fun saveDeviceToken(
-        @Field("uuid") ssaid: String,
-        @Field("pushToken") deviceToken: String
-    )
-
-    @FormUrlEncoded
-    @POST("/api/users")
-    suspend fun saveDeviceToken(
-        @Field("uuid") ssaid: String,
-        @Field("pushToken") deviceToken: String,
-        @Field("nickName") nickName: String? = ""
+        @Body request: UserInfoRequest
     )
 
     @GET("/api/users/nickname/exists")
@@ -61,17 +51,35 @@ internal interface TalkbbokkiService {
 
     @GET("/api/topics/{topicId}/comments")
     suspend fun getComments(
-        @Path("topicId") topicId: Int
+        @Path("topicId") topicId: Int,
+        @Query("next") next: Int?,
+        @Query("pageSize") pageSize: Int?
+    ): CommentEntity
+
+    @GET("/api/topics/{topicId}/comments/{parentId}/child-comments")
+    suspend fun getChildComments(
+        @Path("topicId") topicId: Int,
+        @Path("parentId") parentCommentId: Int,
+        @Query("next") next: Int?,
+        @Query("pageSize") pageSize: Int?
     ): CommentEntity
 
     @POST("/api/topics/{topicId}/comments")
     suspend fun postComments(
         @Path("topicId") topicId: Int,
-        @Body comment: Comment
+        @Body comment: CommentRequest
     )
 
-    @DELETE("/api/comments/{commentId}")
+    @DELETE("/api/topics/{topicId}/comments/{commentId}")
     suspend fun deleteComment(
+        @Path("topicId") topicId: Int,
+        @Path("commentId") commentId: Int
+    )
+
+    @DELETE("/api/topics/{topicId}/parent-comments/{parentCommentId}/comments/{commentId}")
+    suspend fun deleteChildComment(
+        @Path("topicId") topicId: Int,
+        @Path("parentCommentId") parentCommentId: Int,
         @Path("commentId") commentId: Int
     )
 

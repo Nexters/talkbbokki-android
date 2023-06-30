@@ -85,6 +85,8 @@ class EventViewModel @Inject constructor(
     }
 
     private fun getCommentsCount(id: Int) {
+        if (id == 0) return
+
         viewModelScope.launch {
             detailRepository.getTopicCommentsCount(id)
                 .catch {

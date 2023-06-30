@@ -5,6 +5,7 @@ import com.facebook.flipper.plugins.network.FlipperOkhttpInterceptor
 import com.facebook.flipper.plugins.network.NetworkFlipperPlugin
 import com.google.gson.GsonBuilder
 import com.hammer.talkbbokki.BuildConfig
+import com.hammer.talkbbokki.data.remote.CacheStoreInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +28,8 @@ object NetworkModule {
         return OkHttpClient.Builder().apply {
             connectTimeout(200, TimeUnit.SECONDS)
             readTimeout(200, TimeUnit.SECONDS)
+            addNetworkInterceptor(CacheStoreInterceptor())
+            retryOnConnectionFailure(false)
             if (BuildConfig.DEBUG) {
                 addInterceptor(
                     HttpLoggingInterceptor().apply {

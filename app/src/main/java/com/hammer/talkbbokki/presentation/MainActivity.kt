@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
             Settings.Secure.ANDROID_ID
         )
         Log.d(TAG, "SSAID : $id")
-        viewModel.saveUserId(id)
+        viewModel.saveUserInfo(id)
         FirebaseMessaging.getInstance().token.addOnCompleteListener(
             OnCompleteListener { task ->
                 if (!task.isSuccessful) {
@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
 
                 val token = task.result
                 Log.d(TAG, "FCM token : $token")
-                viewModel.saveDeviceToken(id, token)
+                viewModel.saveDeviceToken(token)
             }
         )
     }

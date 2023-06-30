@@ -13,14 +13,20 @@ object CommentsDestination : TalkbbokkiNavigationDestination {
 
 fun NavGraphBuilder.commentsGraph(
     onBackClick: () -> Unit,
-    navigateToCommentDetail: () -> Unit
+    onClickReport: (CommentModel) -> Unit,
+    navigateToCommentDetail: (CommentModel) -> Unit,
 ) {
-    composable(route = CommentsDestination.route + "?topicId={topicId}",
-        arguments = listOf(navArgument("topicId") { type = NavType.IntType })
+    composable(
+        route = CommentsDestination.route + "?topicId={topicId}&commentCount={commentCount}",
+        arguments = listOf(
+            navArgument("topicId") { type = NavType.IntType },
+            navArgument("commentCount") { type = NavType.IntType },
+        ),
     ) {
         CommentsRoute(
             onBackClick = onBackClick,
-            onRecommentClick = navigateToCommentDetail
+            onRecommentClick = navigateToCommentDetail,
+            onReportClick = onClickReport,
         )
     }
 }

@@ -2,6 +2,7 @@ package com.hammer.talkbbokki.presentation.comment
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.hammer.talkbbokki.presentation.navigation.TalkbbokkiNavigationDestination
 
 object CommentDetailDestination : TalkbbokkiNavigationDestination {
@@ -11,10 +12,17 @@ object CommentDetailDestination : TalkbbokkiNavigationDestination {
 
 fun NavGraphBuilder.commentDetailGraph(
     onBackClick: () -> Unit,
+    onReportClick: (CommentModel) -> Unit,
 ) {
-    composable(route = CommentDetailDestination.route) {
+    composable(
+        route = CommentDetailDestination.route + "?comment={comment}",
+        arguments = listOf(
+            navArgument("comment") { type = CommentType },
+        ),
+    ) {
         CommentDetailRoute(
             onBackClick = onBackClick,
+            onReportClick = onReportClick,
         )
     }
 }

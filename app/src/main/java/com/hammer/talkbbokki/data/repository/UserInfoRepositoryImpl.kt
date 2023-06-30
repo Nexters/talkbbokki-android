@@ -3,6 +3,8 @@ package com.hammer.talkbbokki.data.repository
 import com.hammer.talkbbokki.data.local.DataStoreManager
 import com.hammer.talkbbokki.data.local.cache.UserInfoCache
 import com.hammer.talkbbokki.data.remote.TalkbbokkiService
+import com.hammer.talkbbokki.domain.model.UserInfoModel
+import com.hammer.talkbbokki.domain.model.UserInfoRequest
 import com.hammer.talkbbokki.domain.repository.UserInfoRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -17,23 +19,29 @@ internal class UserInfoRepositoryImpl @Inject constructor(
         cache.id = id
     }
 
-    override fun postUserInfo(id: String, pushToken: String): Flow<Unit> = flow {
-        cache.update(id, pushToken)
-        dataStoreManager.updateDeviceToken(pushToken)
-        emit(service.saveDeviceToken(id, pushToken))
+    override fun postUserInfo(request: UserInfoRequest): Flow<Unit> = flow {
+        emit(
+            service.saveDeviceToken(request)
+        )
     }
 
-    override fun postUserNickname(nickname: String): Flow<Unit> = flow {
-        cache.nickname = nickname
-        dataStoreManager.updateNickname(nickname)
-        emit(service.saveDeviceToken(cache.id, cache.deviceToken, nickname))
+    override fun postUserNickname(request: UserInfoRequest): Flow<Unit> = flow {
+        emit(
+            service.saveDeviceToken(request)
+        )
     }
 
     override fun getUserId(): Flow<String?> = flow { emit(cache.id) }
 
     override fun getUserDeviceToken(): Flow<String?> = dataStoreManager.appDeviceToken
 
-    override fun getUserNickname(): Flow<String?> = dataStoreManager.userNickname
+    override fun getUserNickname(): Flow<String?> = flow {
+        emit(cache.nickname)
+    }
+
+    override fun getUserInfo(id: String): Flow<UserInfoModel> = flow {
+        emit(service.getUserInfo(id).toModel())
+    }
 
     override fun checkUserNickname(nickname: String): Flow<Unit> = flow {
         emit(service.isNicknameExists(nickname))
